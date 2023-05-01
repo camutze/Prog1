@@ -14,7 +14,7 @@ int main()
     do{
 
 
-        /* ler */
+        /* ler git hub test */
 
     }while (i<7);
     return 0;
