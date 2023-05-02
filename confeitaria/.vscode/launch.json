@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/bcc/catm21/Documentos/prog1/confeitaria",
-      "program": "/home/bcc/catm21/Documentos/prog1/confeitaria/build/Debug/outDebug",
+      "cwd": "/home/bcc/catm21/Documentos/Prog1/confeitaria",
+      "program": "/home/bcc/catm21/Documentos/Prog1/confeitaria/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

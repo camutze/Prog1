@@ -1,24 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define CIMA 20
-#define BAIXO 10
+#define CIMA 2
+#define BAIXO 1
 
-struct bolodepote{
+struct bolodepote
+{
     char tipo;
-    int data_pote; 
+    int data_pote;
 };
 
-struct tortinha{
+struct tortinha
+{
     int data;
-    int data_tortinha; 
+    int data_tortinha;
 };
 
-struct frigobar{
+struct frigobar
+{
     struct bolodepote *p_cima[CIMA];
     struct tortinha *p_baixo[BAIXO];
 };
 
-struct frigobar cria_frigobar();
+void cria_frigobar(struct frigobar *consul);
 
 int posi_disponivel(struct frigobar *consul, int parte_de);
 

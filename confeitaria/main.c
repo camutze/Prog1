@@ -4,13 +4,14 @@
 int main()
 {   
     int i;
-   // aloca_vetor(&consul);
-
+    struct frigobar consul;
+    //aloca_vetor(&consul, CIMA);
+    cria_frigobar(&consul);
     i=0;
     do{
 
 
-        /* ler git hub test */
+    cria_produto(&consul);
     i++;
 
     }while (i<7);
