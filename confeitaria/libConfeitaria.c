@@ -1,4 +1,5 @@
 #include "libConfeitaria.h"
+
 struct frigobar cria_frigobar(){
     struct frigobar consul;
     int i;
@@ -25,7 +26,6 @@ int posi_disponivel(struct frigobar *consul, int parte_de){
             i++;       
         }while(i<CIMA);
     }
-
     else if (parte_de==BAIXO){
         i = 0;
         do{
@@ -35,18 +35,22 @@ int posi_disponivel(struct frigobar *consul, int parte_de){
         }while(i<BAIXO);
         
     }
-    else{
-        return -1; /*nenhuma posição disponivel*/
-    }
-    
 
-    
-    
+    return -1; /*nenhuma posição disponivel*/
 }
+void inserir_prateleira(struct frigobar *consul, int parte_de, int posi){
+    if(parte_de == CIMA){
+        struct bolodepote p;
+        do{
+            printf("c - Chocolate\n m - Morango\n");
+            scanf("%c", &consul->p_cima[posi]->tipo);
 
 
+    }while(consul->p_cima[posi]->tipo!='c' || consul->p_cima[posi]->tipo != 'm');
+
+}
 void cria_produto(struct frigobar *consul){
-    int caso, indice;
+    int caso;
 
     printf("Digite para inserir:\n");
     printf("1 - Bolo de Pote - CIMA/n");
@@ -57,85 +61,81 @@ void cria_produto(struct frigobar *consul){
     while (caso!=0){
         switch (caso)
         {
-        case 1:
-            /*Verica posição disponivel para bolo de pote*/
-            indice= posi_disponivel(consul, CIMA);
-
-            if(indice!= -1){
-                printf("Sem espaço disponivel EM CIMA");
-                return;
-            }
-            
-            consul->p_cima[indice]= malloc(sizeof(struct bolodepote));
-
-            if(consul->p_cima[indice]){
-                printf("Erro, IMPOSSIVEL ALOCAR MEMÓRIA");
-                return;
-            }
+        case 1:            
+            aloca_vetor(consul, CIMA);
 
             break;
 
         case 2:
-            /*Verica posição disponivel parte de baixo*/
-            indice= posi_disponivel(consul, BAIXO);
-            if(indice!= -1){
-                printf("Sem espaço disponivel EM BAIXO");
-                return;
-            }
 
-            consul->p_baixo[indice]= malloc(sizeof(struct bolodepote));
-
-            if(consul->p_baixo[indice]){
-                printf("Erro, IMPOSSIVEL ALOCAR MEMÓRIA");
-                return;
-            }
-
+            aloca_vetor(consul, BAIXO);
             break;
 
         case 0:
-            break;
-    
+            exit(0);
+             
         default:
-            printf("Digite uma opção correta");      
-            break;
+            printf("Digite uma opção correta\n"); 
+            
         }
          
 
     }
   
-   
-    
-    return consul;
 }
 
-struct frigobar aloca_vetor(struct frigobar *consul, int index){
-
+void aloca_vetor(struct frigobar *consul, int parte_de) {
+    int posi;
+    if (parte_de == CIMA) {
+        posi = posi_disponivel(consul, CIMA);
+        if (posi == -1) {
+            printf("Sem espaço disponível EM CIMA\n");
+            return;
+        }
+        consul->p_cima[posi] = malloc(sizeof(struct bolodepote));
+        if (!consul->p_cima[posi]) {
+            printf("Erro, IMPOSSÍVEL ALOCAR MEMÓRIA\n");
+            return;
+        }
+    } else if (parte_de == BAIXO) {
+        posi = posi_disponivel(consul, BAIXO);
+        if (posi == -1) {
+            printf("Sem espaço disponível EM BAIXO\n");
+            return;
+        }
+        consul->p_baixo[posi] = malloc(sizeof(struct bolodepote));
+        if (!consul->p_baixo[posi]) {
+            printf("Erro, IMPOSSÍVEL ALOCAR MEMÓRIA\n");
+            return;
+        }
+    } else {
+        printf("Índice inválido\n");
+        return;
+    }
 }
 
 int lista_qtd(){
+    return 0;
 
 }
 
-void destroi_vencido(){
+void destroi_vencido(struct frigobar *consul, int dia){
+    dia++;
+    consul->p_baixo[0]=0;
+
+
 
 }
 
-void destroi_figobar(struct frigobar consul){
-    int up, donw;
+void destroi_figobar(struct frigobar *consul){
+    int i;
 
-    up=0;
-    donw=0;
+    i=0;
     do{
-        if(up<CIMA){
-            consul.p_cima[up]=0;
-            up++;
-        }
-        if(donw<BAIXO){
-            consul.p_baixo[donw]=0;
-            donw++;
-        }
+        if(i<CIMA)
+            free(consul->p_cima[i]);
+        if(i<BAIXO)
+            free(consul->p_baixo[i]);
 
-    }while(up!=CIMA || donw!= BAIXO );
-    return consul;
-
+    }while(i<BAIXO || i<CIMA );
 }

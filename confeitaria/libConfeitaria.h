@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #define CIMA 20
 #define BAIXO 10
 
@@ -11,7 +13,6 @@ struct tortinha{
     int data_tortinha; 
 };
 
-
 struct frigobar{
     struct bolodepote *p_cima[CIMA];
     struct tortinha *p_baixo[BAIXO];
@@ -19,19 +20,14 @@ struct frigobar{
 
 struct frigobar cria_frigobar();
 
-/* Retorna a posição do vetor parte de BAIXO ou cima
- onde sera possivel fazer malloc ou -1 para erro*/
 int posi_disponivel(struct frigobar *consul, int parte_de);
 
-void cria_produto();
+void cria_produto(struct frigobar *consul);
 
-struct frigobar aloca_vetor(struct frigobar *consul, int index);
+void aloca_vetor(struct frigobar *consul, int index);
 
 int lista_qtd();
 
-void destroi_vencido();
+void destroi_vencido(struct frigobar *consul, int dia);
 
-void destroi_figobar();
-
-
-
+void destroi_figobar(struct frigobar *consul);
