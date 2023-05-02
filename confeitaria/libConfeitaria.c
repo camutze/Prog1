@@ -62,7 +62,7 @@ void inserir_prateleira(struct frigobar *consul, int parte_de, int posi)
         printf("ISERIDO\n");
     }
 }
-
+/* nao comentei ainda*/
 void cria_produto(struct frigobar *consul)
 {
     int caso;
