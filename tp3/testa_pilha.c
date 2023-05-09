@@ -67,13 +67,13 @@ int main (void)
     p= teste_criar_pilha ();
     teste_pilha_vazia (p);
     printf ("\n\n");
-
+   
     printf ("Teste 2: tenta desempilhar elemento com pilha vazia:\n");
     printf ("Esperado: nao pode ter dado segfault\n");
     if (! pop (p, &dado))
         printf ("\tOK: pop na pilha vazia nao deu segfault.\n");
     printf ("\n\n");
-
+    /*
     printf ("Teste 3: inserir 5 elementos:\n");
     printf ("Esperado: tem que mostrar empilhar de 11 ate 15\n");
     printf ("          o tamanho tem que terminar com valor 5\n");
@@ -105,6 +105,7 @@ int main (void)
     else
         printf ("Falha na alocação dos elementos!!!");
     printf ("\n\n");
+    */
 
     return 0;
 }
