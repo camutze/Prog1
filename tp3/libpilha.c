@@ -17,7 +17,7 @@ void pilha_destroi(pilha_t **pilha)
     while ((*pilha!=NULL))
     {
         aux= *pilha;
-        //GIT
+        //hollmann delineados
     }
     
 
