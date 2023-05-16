@@ -13,13 +13,6 @@ pilha_t *pilha_cria()
 
 void pilha_destroi(pilha_t **pilha)
 {
-    pilha_t *aux;
-    while ((*pilha!=NULL))
-    {
-        aux= *pilha;
-        //hollmann delineados
-    }
-    
 
 }
 
@@ -30,6 +23,7 @@ int push(pilha_t *pilha, int dado)
 
 int pop(pilha_t *pilha, int *dado)
 {
+    
     return 0;
 }
 int pilha_topo(pilha_t *pilha, int *dado)
