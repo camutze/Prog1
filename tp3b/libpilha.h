@@ -25,7 +25,7 @@ typedef struct pilha {
 /* 
  * Cria e retorna uma nova pilha.
  * Retorna NULL em caso de erro de alocação.
-*/labs
+*/
 pilha_t *pilha_cria ();
 
 /* Desaloca toda memoria da pilha e faz pilha receber NULL. */
