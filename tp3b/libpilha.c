@@ -1,6 +1,7 @@
 #include "libpilha.h"
 #include <stdlib.h>
 
+
 pilha_t *pilha_cria()
 {
     pilha_t *nova;
