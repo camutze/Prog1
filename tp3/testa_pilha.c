@@ -74,7 +74,7 @@ int main(void)
     if (!pop(p, &dado))
         printf("\tOK: pop na pilha vazia nao deu segfault.\n");
     printf("\n\n");
-    /*
+
     printf ("Teste 3: inserir 5 elementos:\n");
     printf ("Esperado: tem que mostrar empilhar de 11 ate 15\n");
     printf ("          o tamanho tem que terminar com valor 5\n");
@@ -82,7 +82,7 @@ int main(void)
     teste_push (p, MAX);
     teste_pilha_vazia (p);
     printf ("\n\n");
-
+    
     printf ("Teste 4: esvaziar a pilha:\n");
     printf ("Esperado: tem que mostrar desempilhar de 15 ate 11\n");
     printf ("          o tamanho tem que terminar com valor 0\n");
@@ -106,7 +106,7 @@ int main(void)
     else
         printf ("Falha na alocação dos elementos!!!");
     printf ("\n\n");
-    */
+    
 
     return 0;
 }
