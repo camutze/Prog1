@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#define TAM 100
 
 int verifica_parenteses(const char *expressao)
 {
@@ -44,17 +45,21 @@ int verifica_parenteses(const char *expressao)
     return vazia;
 }
 
+void ler_caracteres(char *expressao, int tamanho)
+{
+    
+
+}
 int main()
 {
-    char *expressao = (char *)malloc(100 * sizeof(char));
-    if (expressao == NULL)
+    char *expressao;
+    if (!(expressao = malloc(TAM * sizeof(char))))
     {
         printf("Erro ao alocar memória.\n");
         return 1;
     }
 
     printf("Digite a expressão aritmética: ");
-    fgets(expressao, 100, stdin);
 
     if (verifica_parenteses(expressao))
     {
