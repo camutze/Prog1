@@ -3,74 +3,43 @@
 #include <stdio.h>
 #include <string.h>
 #define TAM 100
-
-int verifica_parenteses(const char *expressao)
+int eh_igual(pilha_t *fila, char *dado1, char *dado2)
 {
-    pilha_t *pilha = pilha_cria();
-    int tamanho = strlen(expressao);
-    int i;
-
-    for (i = 0; i < tamanho; i++)
-    {
-        char c = expressao[i];
-        if (c == '(' || c == '[' || c == '{')
-        {
-            push(pilha, c);
-        }
-        else if (c == ')' || c == ']' || c == '}')
-        {
-            if (pilha_vazia(pilha))
-            {
-                pilha_destroi(&pilha);
-                return 0;
-            }
-
-            int topo;
-            pilha_topo(pilha, &topo);
-            if ((c == ')' && topo == '(') || (c == ']' && topo == '[') || (c == '}' && topo == '{'))
-            {
-                int dado;
-                pop(pilha, &dado);
-            }
-            else
-            {
-                pilha_destroi(&pilha);
-                return 0;
-            }
-        }
-    }
-
-    int vazia = pilha_vazia(pilha);
-    pilha_destroi(&pilha);
-    return vazia;
-}
-
-void ler_caracteres(char *expressao, int tamanho)
-{
-    
 
 }
 int main()
 {
     char *expressao;
+    int i;
+    pilha_t *pilha;
+    pilha = pilha_cria();
+
     if (!(expressao = malloc(TAM * sizeof(char))))
-    {
-        printf("Erro ao alocar memória.\n");
-        return 1;
-    }
-
+        exit(0);
     printf("Digite a expressão aritmética: ");
+    scanf("%s", expressao);
 
-    if (verifica_parenteses(expressao))
+    i = 0;
+    while (expressao[i] != '\0')
     {
-        printf("CORRETA\n");
+        if (expressao[i] == '{' || expressao[i] == '(' || expressao[i] == '[')
+        {
+            if (!push(pilha, expressao[i]))
+                printf("erro de push");
+        }
+        else if (expressao[i] == '}' || expressao[i] == ')' || expressao[i] == ']')
+            if (!pop(pilha, expressao[i]))
+                printf("erro de pop");
+
+        i++;
     }
-    else
+
+    if (pilha_vazia(pilha))
     {
-        printf("INCORRETA\n");
+        printf("CORRETO");
+        return 0;
     }
 
-    free(expressao);
-
+    printf("INCORRETO");
     return 0;
 }
