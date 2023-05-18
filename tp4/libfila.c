@@ -17,37 +17,43 @@ fila_t *fila_cria()
 
 void fila_destroi(fila_t **fila)
 {
-    if (!(*fila)) // se tiver  : ! ele testa for igual a zero/NULL
-        return;
+    nodo_t *aux;
 
-    int dado;
-    while (dequeue(*fila, &dado))
+    while ((*fila)->cabeca)
     {
-        // Continua removendo elementos até que a fila esteja vazia
+        aux = (*fila)->cabeca;
+        (*fila)->cabeca = (*fila)->cabeca->prox;
+        free(aux);
     }
-
     free(*fila);
+    aux = NULL;
     *fila = NULL;
 }
+
 int enqueue(fila_t *fila, int dado)
 {
-    if (!fila)
-        return 0;
-
     nodo_t *novo_nodo;
+
     if (!(novo_nodo = malloc(sizeof(nodo_t))))
         return 0;
-
     novo_nodo->dado = dado;
-    novo_nodo->prox = fila->cauda;
-    fila->cauda = novo_nodo;
+    novo_nodo->prox = NULL;
     fila->tamanho++;
+
+    if (fila_vazia(fila))
+    {
+        fila->cabeca = novo_nodo;
+        fila->cauda = novo_nodo;
+        return 1;
+    }
+
+    fila->cauda->prox = novo_nodo;
+    fila->cauda = novo_nodo;
     return 1;
 }
 
 int dequeue(fila_t *fila, int *dado)
 {
-    printf("chegou no decui\n\n\n");
     if (fila_vazia(fila))
         return 0;
 
