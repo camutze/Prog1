@@ -1,5 +1,6 @@
 #include "libfila.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 fila_t *fila_cria()
 {
@@ -16,13 +17,17 @@ fila_t *fila_cria()
 
 void fila_destroi(fila_t **fila)
 {
-    if (!fila || !(*fila))
+    if (!(*fila)) // se tiver  : ! ele testa for igual a zero/NULL
         return;
-    while (dequeue(*fila, &(*fila)->cabeca->dado))
-        ;
 
-    free((*fila));
-    (*fila) = NULL;
+    int dado;
+    while (dequeue(*fila, &dado))
+    {
+        // Continua removendo elementos até que a fila esteja vazia
+    }
+
+    free(*fila);
+    *fila = NULL;
 }
 int enqueue(fila_t *fila, int dado)
 {
@@ -42,23 +47,29 @@ int enqueue(fila_t *fila, int dado)
 
 int dequeue(fila_t *fila, int *dado)
 {
+    printf("chegou no decui\n\n\n");
     if (fila_vazia(fila))
         return 0;
 
-    nodo_t *aux;
     *dado = fila->cabeca->dado;
-    aux = fila->cabeca->prox;
-    fila->cabeca = fila->cabeca->prox;
-    fila->tamanho--;
-    free(aux);
 
-    aux = NULL;
+    nodo_t *aux_prox;
+    aux_prox = fila->cabeca;
+
+    fila->cabeca = fila->cabeca->prox;
+    if (!fila->tamanho)
+        fila->cauda = NULL;
+
+    free(aux_prox);
+
+    fila->tamanho--;
+    aux_prox = NULL;
     return 1;
 }
 
 int fila_tamanho(fila_t *fila)
 {
-     if (!fila)
+    if (!fila)
         return 0;
 
     return fila->tamanho;
