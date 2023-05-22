@@ -4,7 +4,7 @@
 #include <string.h>
 #define TAM 100
 
-/*retorna 0 para INCORRETO e 1 caso CORRETO*/
+/* Retorna 0 para INCORRETO e 1 caso CORRETO */
 int test_char(pilha_t *pilha, char delimitador)
 {
     int dado = (int)delimitador;
@@ -13,9 +13,10 @@ int test_char(pilha_t *pilha, char delimitador)
 
     else if (pilha->topo->dado == dado)
     {
-        if (!pop(pilha, &dado))
+        int valor;
+        if (!pop(pilha, &valor))
         {
-            printf("erro de pop");
+            printf("Erro ao desempilhar");
             exit(0);
         }
         return 1;
@@ -23,29 +24,28 @@ int test_char(pilha_t *pilha, char delimitador)
 
     return 0;
 }
+
 int main()
 {
-    char *expressao;
-    int i, dado;
+    char expressao[TAM];
+    int i;
     pilha_t *pilha;
     pilha = pilha_cria();
 
-    if (!(expressao = malloc(TAM * sizeof(char))))
-        exit(0);
     printf("Digite a expressão aritmética: ");
     scanf("%s", expressao);
 
-    i = 0;
-    while (expressao[i] != '\0')
+    for (i = 0; expressao[i] != '\0'; i++)
     {
         if (expressao[i] == '{' || expressao[i] == '[' || expressao[i] == '(')
         {
-            dado = (int)expressao[i];
+            int dado = (int)expressao[i];
             if (!push(pilha, dado))
-                printf("erro de push");
+            {
+                printf("Erro ao empilhar");
+                exit(0);
+            }
         }
-
-        /* Teste para remover na pilha*/
         else if (expressao[i] == '}')
         {
             if (!test_char(pilha, '{'))
@@ -54,7 +54,6 @@ int main()
                 exit(0);
             }
         }
-
         else if (expressao[i] == ']')
         {
             if (!test_char(pilha, '['))
@@ -63,7 +62,6 @@ int main()
                 exit(0);
             }
         }
-
         else if (expressao[i] == ')')
         {
             if (!test_char(pilha, '('))
@@ -72,15 +70,14 @@ int main()
                 exit(0);
             }
         }
-        i++;
-    }
-    /* final*/
-    if (!pilha_vazia(pilha))
-    {
-        printf("CORRETO");
-        return 0;
     }
 
-    printf("INCORRETO - pilha n vazia");
+    if (!pilha_vazia(pilha))
+    {
+        printf("INCORRETO - pilha não vazia");
+        exit(0);
+    }
+
+    printf("CORRETO");
     return 0;
 }
