@@ -33,7 +33,7 @@ int main()
     pilha = pilha_cria();
 
     printf("Digite a expressão aritmética: ");
-    scanf("%s", expressao);
+    scanf("%[^\n]", expressao);
 
     for (i = 0; expressao[i] != '\0'; i++)
     {
