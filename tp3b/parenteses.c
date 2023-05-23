@@ -4,19 +4,19 @@
 #include <string.h>
 #define TAM 100
 
-/* Retorna 0 para INCORRETO e 1 caso CORRETO */
+/* Retorna 0 caso Não existe no topo da fila o complementar,
+    Retorna 1 caso contrario */
 int test_char(pilha_t *pilha, char delimitador)
 {
     int dado = (int)delimitador;
     if (pilha_vazia(pilha))
         return 0;
-
     else if (pilha->topo->dado == dado)
     {
         int valor;
         if (!pop(pilha, &valor))
         {
-            printf("Erro ao desempilhar");
+            printf("Erro ao desempilhar\n");
             exit(0);
         }
         return 1;
@@ -25,12 +25,16 @@ int test_char(pilha_t *pilha, char delimitador)
     return 0;
 }
 
+
 int main()
 {
-    char expressao[TAM];
+    char *expressao;
     int i;
     pilha_t *pilha;
     pilha = pilha_cria();
+
+    if (!(expressao = malloc(TAM * sizeof(char))))
+        return 0;
 
     printf("Digite a expressão aritmética: ");
     scanf("%[^\n]", expressao);
@@ -50,7 +54,7 @@ int main()
         {
             if (!test_char(pilha, '{'))
             {
-                printf("INCORRETO - {}");
+                printf("INCORRETA\n");
                 exit(0);
             }
         }
@@ -58,7 +62,7 @@ int main()
         {
             if (!test_char(pilha, '['))
             {
-                printf("INCORRETO - []");
+                printf("INCORRETA\n");
                 exit(0);
             }
         }
@@ -66,7 +70,7 @@ int main()
         {
             if (!test_char(pilha, '('))
             {
-                printf("INCORRETO - ()");
+                printf("INCORRETA\n");
                 exit(0);
             }
         }
@@ -74,10 +78,11 @@ int main()
 
     if (!pilha_vazia(pilha))
     {
-        printf("INCORRETO - pilha não vazia");
+        printf("INCORRETA\n");
         exit(0);
     }
-
-    printf("CORRETO");
+    pilha_destroi(&pilha);
+    printf("CORRETA\n");
+    free(expressao);
     return 0;
 }
