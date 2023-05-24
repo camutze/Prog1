@@ -17,3 +17,4 @@ int main(){
     aux= (-b -delta)/(2*a);
     printf("X2= %f", aux);
 }
+//teste 23/056
