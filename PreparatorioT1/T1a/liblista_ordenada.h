@@ -31,8 +31,7 @@ typedef struct nodo {
     struct nodo *prox;
 } nodo_t;
 
-/*
- * Representacao da Lista 
+/*cabeca->proxsta 
 */
 typedef struct lista {
     nodo_t *ini;

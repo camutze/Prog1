@@ -6,18 +6,18 @@ LDFLAGS = -lm
 CC = gcc
 
 # arquivos-objeto
-	objects = testa_fila.o libfila.o 
+	objects = testa_lista_ordenada.o liblista_ordenada.o 
      
-all: testa_fila.o libfila.o
-	$(CC) -o testa_fila testa_fila.o libfila.o $(LDFLAGS)
+all: testa_lista_ordenada.o liblista_ordenada.o
+	$(CC) -o testa_lista_ordenada testa_lista_ordenada.o liblista_ordenada.o $(LDFLAGS)
 
-libfila.o: libfila.c
-	$(CC) -c $(CFLAGS) libfila.c
+liblista_ordenada.o: liblista_ordenada.c
+	$(CC) -c $(CFLAGS) liblista_ordenada.c
 
-testa_fila.o: testa_fila.c
-	$(CC) -c $(CFLAGS) testa_fila.c
+testa_lista_ordenada.o: testa_lista_ordenada.c
+	$(CC) -c $(CFLAGS) testa_lista_ordenada.c
 
 clean:
-	rm -f $(objects) testa_fila
+	rm -f $(objects) testa_lista_ordenada
 
 
