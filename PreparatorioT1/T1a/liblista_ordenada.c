@@ -1,102 +1,91 @@
-#include "liblista_ordenada.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "liblista_ordenada.h"
+
 lista_t *lista_cria()
 {
-    lista_t *nova_lista;
-    if (!(nova_lista = malloc(sizeof(lista_t))))
-        return 0;
-
-    nova_lista->ini = NULL;
-
-    return nova_lista;
+    lista_t *l = (lista_t *)malloc(sizeof(lista_t));
+    if (l != NULL)
+    {
+        l->ini = NULL;
+    }
+    return l;
 }
 
 void lista_destroi(lista_t **l)
 {
-    nodo_t *aux;
-
-    while ((*l)->ini)
+    if (l != NULL && *l != NULL)
     {
-        aux = (*l)->ini;
-        (*l)->ini = (*l)->ini->prox;
-        free(aux);
+        nodo_t *atual = (*l)->ini;
+        while (atual != NULL)
+        {
+            nodo_t *prox = atual->prox;
+            free(atual->elemento);
+            free(atual);
+            atual = prox;
+        }
+        free(*l);
+        *l = NULL;
     }
-    free(*l);
-    aux = NULL;
-    *l = NULL;
 }
 
 int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
 {
-    nodo_t *novo_nodo;
-    nodo_t *aux;
-
-    if (!(novo_nodo = malloc(sizeof(nodo_t))))
+    if (l == NULL || elemento == NULL)
+    {
         return 0;
-
-    novo_nodo->elemento = elemento;
-
-    if (l->ini == NULL)
-    {
-        novo_nodo->prox = NULL;
-        l->ini = novo_nodo;
     }
 
-    else if (l->ini->elemento->chave > elemento->chave)
+    nodo_t *novo = (nodo_t *)malloc(sizeof(nodo_t));
+    if (novo == NULL)
     {
-        novo_nodo->prox = l->ini->prox;
-        l->ini->prox = novo_nodo;
+        return 0;
     }
-    else
-    {
-        aux = l->ini->prox;
-        while (aux->prox != NULL && aux->prox->elemento->chave < elemento->chave)
-        {
-            aux = aux->prox;
-        }
+    novo->elemento = elemento;
 
-        novo_nodo->prox = aux->prox;
-        aux->prox = novo_nodo;
+    if (l->ini == NULL || elemento->chave < l->ini->elemento->chave)
+    {
+        novo->prox = l->ini;
+        l->ini = novo;
+        return 1;
     }
 
+    nodo_t *atual = l->ini;
+    while (atual->prox != NULL && atual->prox->elemento->chave < elemento->chave)
+    {
+        atual = atual->prox;
+    }
+
+    novo->prox = atual->prox;
+    atual->prox = novo;
     return 1;
 }
 
 int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
 {
-    if (l->ini == NULL)
-    {
+    nodo_t *aux, *temp;
+
+    if (l->ini)
         return 0;
-        printf("lista ja vazia\n");
-    }
 
-    nodo_t *aux;
-    nodo_t *tmp;
-
-    if (l->ini->elemento->chave == elemento->chave)
+    else if (l->ini->elemento->chave == elemento->chave)
     {
         aux = l->ini;
-        l->ini = l->ini->prox;
+        l->ini = aux->prox;
         free(aux);
+        return 1;
+    }
+    aux = l->ini;
+    while (aux->prox != NULL && aux->prox->elemento->chave < elemento->chave)
+        aux = aux->prox;
+
+    if (elemento->chave == aux->prox->elemento->chave)
+    {
+        temp = aux->prox;
+        aux->prox = temp->prox;
+        free(temp);
+        return 1;
     }
     else
-    {
-        aux = l->ini->prox;
-        while (aux->prox != NULL)
-        {
-            if (aux->prox->elemento->chave == elemento->chave)
-            {
-                break;
-            }
-            aux = aux->prox;
-        }
-        if (!aux)
-            return 0;
-
-        tmp = aux->prox;
-        aux->prox = tmp->prox;
-        free(tmp);
-    }
-    return 1;
+        return 0;
 }
