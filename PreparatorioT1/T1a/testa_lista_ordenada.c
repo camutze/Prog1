@@ -2,77 +2,57 @@
 #include <stdlib.h>
 #include "liblista_ordenada.h"
 
-void imprimir_lista(lista_t *lista) {
-    printf("Lista: ");
-    nodo_t *atual = lista->ini;
-    while (atual != NULL) {
-        printf("%d ", atual->elemento->chave);
-        atual = atual->prox;
-    }
-    printf("\n");
-}
-
-int main()
-{
+int main() {
     lista_t *lista = lista_cria();
-
-    int opcao;
-    int chave;
     elemento_t *elemento;
+    int opcao;
 
-    while (1)
-    {
-        printf("=== MENU ===\n");
-        printf("1. Inserir elemento\n");
-        printf("2. Remover elemento\n");
-        printf("0. Sair\n");
-        printf("Opção: ");
+    do {
+        printf("1 - Inserir elemento\n");
+        printf("2 - Remover elemento\n");
+        printf("3 - Imprimir lista\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opção: ");
         scanf("%d", &opcao);
 
-        switch (opcao)
-        {
-        case 1:
-            printf("Digite a chave do elemento: ");
-            scanf("%d", &chave);
-            elemento = (elemento_t *)malloc(sizeof(elemento_t));
-            elemento->chave = chave;
-            if (lista_insere_ordenado(lista, elemento))
-            {
-                printf("Elemento inserido com sucesso.\n");
-            }
-            else
-            {
-                printf("Falha ao inserir o elemento.\n");
+        switch (opcao) {
+            case 1:
+                elemento = malloc(sizeof(elemento_t));
+                printf("Digite a chave do elemento: ");
+                scanf("%d", &elemento->chave);
+                if (lista_insere_ordenado(lista, elemento))
+                    printf("Elemento inserido com sucesso!\n");
+                else
+                    printf("Erro ao inserir elemento!\n");
+                break;
+            case 2:
+                elemento = malloc(sizeof(elemento_t));
+                printf("Digite a chave do elemento a ser removido: ");
+                scanf("%d", &elemento->chave);
+                if (lista_remove_ordenado(lista, elemento))
+                    printf("Elemento removido com sucesso!\n");
+                else
+                    printf("Elemento não encontrado na lista!\n");
                 free(elemento);
-            }
-            imprimir_lista(lista);
-            break;
-
-        case 2:
-            printf("Digite a chave do elemento a ser removido: ");
-            scanf("%d", &chave);
-            elemento = (elemento_t *)malloc(sizeof(elemento_t));
-            elemento->chave = chave;
-            if (lista_remove_ordenado(lista, elemento))
-            {
-                printf("Elemento removido com sucesso.\n");
-                free(elemento);
-            }
-            else
-                printf("Elemento não encontrado na lista.\n");
-                
-            free(elemento);
-            imprimir_lista(lista);
-            break;
-
-        case 0:
-            lista_destroi(&lista);
-            return 0;
-
-        default:
-            printf("Opção inválida. Tente novamente.\n");
+                break;
+            case 3:
+                printf("\nLista: ");
+                nodo_t *no = lista->ini;
+                while (no != NULL) {
+                    printf("%d ", no->elemento->chave);
+                    no = no->prox;
+                }
+                printf("\n\n");
+                break;
+            case 0:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida!\n");
+                break;
         }
+    } while (opcao != 0);
 
-        printf("\n");
-    }
+    lista_destroi(&lista);
+    return 0;
 }
