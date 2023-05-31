@@ -63,29 +63,39 @@ int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
 
 int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
 {
-    nodo_t *aux, *temp;
+    nodo_t *aux;
+    nodo_t *atual;
 
-    if (l->ini)
+    /* Se lista vazia */
+    if (l->ini == NULL)
         return 0;
-
-    else if (l->ini->elemento->chave == elemento->chave)
-    {
-        aux = l->ini;
-        l->ini = aux->prox;
-        free(aux);
-        return 1;
-    }
-    aux = l->ini;
-    while (aux->prox != NULL && aux->prox->elemento->chave < elemento->chave)
-        aux = aux->prox;
-
-    if (elemento->chave == aux->prox->elemento->chave)
-    {
-        temp = aux->prox;
-        aux->prox = temp->prox;
-        free(temp);
-        return 1;
-    }
     else
-        return 0;
+    {
+        /* Se remover for 1 posicao */
+        if (l->ini->elemento->chave == elemento->chave)
+        {
+            aux = l->ini;
+            l->ini = aux->prox;
+        }
+        else
+        {
+            atual = l->ini;
+
+            while (atual->prox != NULL && elemento->chave > atual->prox->elemento->chave)
+                atual = atual->prox;
+
+            if (atual->prox == NULL && elemento->chave > atual->elemento->chave)
+                return 0;
+            /* Verifica se o elemento existe na lista */
+            else if (atual->prox->elemento->chave == elemento->chave)
+            {
+                aux = atual->prox;
+                atual->prox = aux->prox;
+            }
+            else
+                return 0;
+        }
+        free(aux);
+    }
+    return 1;
 }
