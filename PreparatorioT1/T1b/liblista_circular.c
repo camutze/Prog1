@@ -1,8 +1,10 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "liblista_circular.h"
 
 lista_t *lista_cria()
 {
+    printf("lista cria\n");
     lista_t *l;
     nodo_t *sent;
     if (!(l = malloc(sizeof(lista_t))))
@@ -19,6 +21,7 @@ lista_t *lista_cria()
 
 void lista_destroi(lista_t **l)
 {
+    printf("lista destroi\n");
     nodo_t *aux;
 
     while (*l != NULL)
@@ -34,6 +37,7 @@ void lista_destroi(lista_t **l)
 
 int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
 {
+    printf("insere\n");
     nodo_t *novo;
     nodo_t *aux;
 
@@ -48,17 +52,18 @@ int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
         aux = aux->prox;
     }
 
-    novo->prox = aux;
     novo->prev = aux->prev;
+    novo->prox = aux;
 
-    aux->prox = novo;
-    novo->prox->prev = novo;
+    aux->prev = novo;
+    novo->prev->prox = novo;
 
     return 1;
 }
 
 int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
 {
+    printf("remove\n");
     nodo_t *aux;
 
     aux = l->ini->prox;
