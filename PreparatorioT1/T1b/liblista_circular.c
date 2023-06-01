@@ -69,7 +69,7 @@ int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
     aux = l->ini->prox;
     l->ini->elemento = elemento;
 
-    while (elemento->chave != aux->elemento->chave)
+    while (l->ini->elemento->chave != aux->elemento->chave)
     {
         aux = aux->prox;
     }
