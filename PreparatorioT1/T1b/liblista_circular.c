@@ -1,103 +1,81 @@
 #include <stdlib.h>
 #include "liblista_circular.h"
 
-lista_t *lista_cria() {
-    lista_t *l = (lista_t *)malloc(sizeof(lista_t));
-    l->ini = NULL;
+lista_t *lista_cria()
+{
+    lista_t *l;
+    nodo_t *sent;
+    if (!(l = malloc(sizeof(lista_t))))
+        return 0;
+
+    if (!(sent = malloc(sizeof(nodo_t))))
+        return 0;
+    sent->elemento = NULL;
+    sent->prox = sent; /*sentinela aponta para ele mesmo*/
+    sent->prev = sent;
+    l->ini = sent;
     return l;
 }
 
-void lista_destroi(lista_t **l) {
-    if (l == NULL || *l == NULL)
-        return;
+void lista_destroi(lista_t **l)
+{
+    nodo_t *aux;
 
-    nodo_t *atual = (*l)->ini;
-    nodo_t *primeiro = atual;
-
-    while (atual != NULL) {
-        nodo_t *prox = atual->prox;
-        free(atual);
-        atual = prox;
-
-        if (atual == primeiro)
-            break;
+    while (*l != NULL)
+    {
+        aux = (*l)->ini;
+        (*l)->ini = aux->prox;
+        free(aux->elemento);
+        free(aux);
     }
-
     free(*l);
-    *l = NULL;
+    (*l) = NULL;
 }
 
-int lista_insere_ordenado(lista_t *l, elemento_t *elemento) {
-    nodo_t *novo = (nodo_t *)malloc(sizeof(nodo_t));
-    novo->elemento = elemento;
-    novo->prox = NULL;
-    novo->prev = NULL;
+int lista_insere_ordenado(lista_t *l, elemento_t *elemento)
+{
+    nodo_t *novo;
+    nodo_t *aux;
 
-    if (l->ini == NULL) {
-        l->ini = novo;
-        novo->prox = novo;
-        novo->prev = novo;
-        return 1;
+    if (!(novo = malloc(sizeof(nodo_t))))
+        return 0;
+
+    l->ini->elemento = elemento;
+
+    aux = l->ini->prox;
+    while (elemento->chave < aux->elemento->chave)
+    {
+        aux = aux->prox;
     }
 
-    nodo_t *atual = l->ini;
-    nodo_t *anterior = NULL;
+    novo->prox = aux;
+    novo->prev = aux->prev;
 
-    do {
-        if (elemento->chave <= atual->elemento->chave)
-            break;
-
-        anterior = atual;
-        atual = atual->prox;
-    } while (atual != l->ini);
-
-    if (anterior == NULL) {
-        novo->prox = l->ini;
-        novo->prev = l->ini->prev;
-        l->ini->prev->prox = novo;
-        l->ini->prev = novo;
-        l->ini = novo;
-    } else {
-        anterior->prox = novo;
-        novo->prev = anterior;
-        novo->prox = atual;
-        atual->prev = novo;
-    }
+    aux->prox = novo;
+    novo->prox->prev = novo;
 
     return 1;
 }
 
-int lista_remove_ordenado(lista_t *l, elemento_t *elemento) {
-    if (l->ini == NULL)
-        return 0;
+int lista_remove_ordenado(lista_t *l, elemento_t *elemento)
+{
+    nodo_t *aux;
 
-    nodo_t *atual = l->ini;
-    nodo_t *anterior = NULL;
+    aux = l->ini->prox;
+    l->ini->elemento = elemento;
 
-    do {
-        if (atual->elemento->chave == elemento->chave)
-            break;
-
-        anterior = atual;
-        atual = atual->prox;
-    } while (atual != l->ini);
-
-    if (atual->elemento->chave != elemento->chave)
-        return 0;
-
-    if (atual == l->ini) {
-        l->ini = atual->prox;
-        l->ini->prev = atual->prev;
-        atual->prev->prox = l->ini;
-    } else {
-        anterior->prox = atual->prox;
-        atual->prox->prev = anterior;
+    while (elemento->chave != aux->elemento->chave)
+    {
+        aux = aux->prox;
     }
 
-    free(atual);
-    return 1;
-}
+    if (l->ini->elemento->chave == aux->elemento->chave)
+        return 0;
 
-int lista_vazia(lista_t *l) {
-    return (l->ini == NULL);
+    aux->prox->prev = aux->prev;
+    aux->prev->prox = aux->prox;
+    free(aux->elemento);
+    free(aux);
+
+    return 1;
 }
