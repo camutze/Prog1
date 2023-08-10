@@ -1,42 +1,51 @@
 #include <stdio.h>
-#define TAM 10
-
-int main()
-{
-    int vet[TAM];
-    if (ler(vet))
-        printf("Erro ao ler\n");
-    imprimir(vet);
-
-    return 0;
-}
+#define TAM 3
 
 int ler(int vet[])
 {
     for (int i = 0; i < TAM; i++)
     {
         printf("digite vet[%d]:\n", i);
-        scanf("%d", vet);
+        scanf("%d", &vet[i]);
     }
+    return 0;
 }
 
 void imprimir(int vet[])
 {
     int i;
-    for (i = 0; i < TAM - 1; i++)
+    for (i = 0; i < (TAM - 1); i++)
     {
         printf("%d, ", vet[i]);
     }
     printf("%d.", vet[TAM - 1]);
     printf("\n");
 }
-void imprimir_inversp(int vet[])
+
+void imprimir_inverso(int vet[])
 {
     int i;
-    for (i = TAM; i > 0; i--)
+    for (i = (TAM - 1); i > 0; i--)
     {
         printf("%d, ", vet[i]);
     }
     printf("%d.", vet[0]);
     printf("\n");
+}
+
+int main()
+{
+    int vet[TAM];
+    if (ler(vet))
+        printf("Erro ao ler\n");
+
+    imprimir(vet);
+    imprimir_inverso(vet);
+
+    return 0;
+}
+
+int ordenar(int vet[])
+{
+
 }
