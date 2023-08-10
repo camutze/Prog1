@@ -8,10 +8,7 @@ int main()
     {
         printf("Digite o numero: \n");
         scanf("%d", &n);
-    } while (n <= 0);
-
-    //debug
-    printf("numero lido: %d\n", n);
+    } while (n < 0);
 
     i = 1;
     produto = 1;
@@ -20,9 +17,6 @@ int main()
         produto = i * (i + 1) * (i + 2);
         i++;
     } while (produto < n);
-    
-    //debug
-    printf("produto: %d\n", produto);
 
     // Verifica se é Triangular
     if (produto == n)
