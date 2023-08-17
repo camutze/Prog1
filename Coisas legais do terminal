@@ -1,0 +1,18 @@
+Coisas legais do terminal:
+
+- Ver informações do sistema:
+Use uname para informações básicas do sistema e df para espaço em disco.
+uname -a
+df -h
+
+- Ver processos em execução:
+top
+htop
+
+- Rede e conecções:
+ping endereço.com
+ifconfig
+
+- Visualizar o histórico de comandos:
+history
+
