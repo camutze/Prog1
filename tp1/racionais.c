@@ -1,46 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "racionais.h"
-/* acrescente demais includes que voce queira ou precise */
 
-/* 
- * Implemente aqui as funcoes definidas no racionais.h 
- * caso queira, você pode definir neste arquivo funcoes
- * adicionais que serao internas e so podem ser usadas
- * aqui.
-*/
+aleat(int min, int max)
+{
+    if (max < min)
+    {
+        printf("Erro: max deve ser maior do que min.\n");
+        exit(1);
+    }
 
-int aleat(int min, int max) {
+    return min + (rand() % (max - min + 1));
 }
 
-int mdc(int a, int b) {
+int mdc(int a, int b)
+{
+    if (b == 0)
+        return a;
+    return mdc(b, a % b);
 }
 
-int mmc(int a, int b) {
+int mmc(int a, int b)
+{
+    return ((a * b) / mdc(a, b));
 }
 
-struct racional simplifica_r(struct racional r) {
+struct racional simplifica_r(struct racional r)
+{
+    if (r.den == 0)
+    {
+        printf("ERRO. Fração indefinida\n");
+        exit(1);
+    }
 }
-
-struct racional cria_r(int numerador, int denominador) {
-}
-
-struct racional sorteia_r(int n) {
-}
-
-void imprime_r(struct racional r) {
-}
-
-int valido_r(struct racional r) {
-}
-
-struct racional soma_r(struct racional r1, struct racional r2) {
-}
-
-struct racional subtrai_r(struct racional r1, struct racional r2) {
-}
-
-struct racional multiplica_r(struct racional r1, struct racional r2) {
-}
-
-struct racional divide_r(struct racional r1, struct racional r2) {
-}
-
