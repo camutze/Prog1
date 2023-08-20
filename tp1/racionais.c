@@ -2,17 +2,14 @@
 #include <stdlib.h>
 #include "racionais.h"
 
-aleat(int min, int max)
+int aleat(int min, int max)
 {
-    /*Garantindo que nao sorteie o zero*/
-    if (!min)
-        min += 1;
-
     if (max < min)
     {
         /*garantindo que max seja maior*/
-        max *= -1;
-        min *= -1;
+        int troca = max;
+        max = min;
+        min = troca;
     }
 
     return min + (rand() % (max - min + 1));
@@ -32,13 +29,7 @@ int mmc(int a, int b)
 
 struct racional simplifica_r(struct racional r)
 {
-    int cont;
-    if (!(valido_r(r) = r.valido))
-    {
-        printf("ERRO. Fração indefinida\n");
-        return 0;
-    }
-
+    int divisor_comum;
     /*percebi que se o denominador estiver negativo,
     vou ter que multiplicar o numerador por -1,
     não importando o sinal*/
@@ -48,23 +39,15 @@ struct racional simplifica_r(struct racional r)
         r.den *= -1;
     }
 
-    cont = 2;
-    while (cont < 10)
-    {
-
-        if ((r.den % cont == 0) && (r.nume % cont == 0))
-        {
-            r.num /= cont;
-            r.den /= cont;
-        }
-        else
-            cont++;
-    }
+    divisor_comum = mdc(r.num, r.den);
+    r.num /= divisor_comum;
+    r.den /= divisor_comum;
     return r;
 }
 struct racional cria_r(int numerador, int denominador)
 {
     struct racional r;
+
     r.num = numerador;
     r.den = denominador;
     r.valido = valido_r(r);
@@ -75,11 +58,14 @@ struct racional cria_r(int numerador, int denominador)
 struct racional sorteia_r(int n)
 {
     struct racional r;
+    int denominador, numerador;
 
-    /*coloca 2 numeros aleatorios, entre 0 e n, cria
-    e ja simplifica em uma linha só*/
-    r = simplifica(cria_r(aleat(n), aleat(n)));
+    numerador = aleat(0, n);
+    denominador = aleat(0, n);
 
+    r = cria_r(numerador, denominador);
+
+    r = simplifica_r(r);
     return r;
 }
 void imprime_r(struct racional r)
@@ -108,6 +94,12 @@ void imprime_r(struct racional r)
     }
     else
         printf("%d/%d", r.num, r.den);
+}
+int valido_r(struct racional r)
+{
+    if(!r.den)
+        return 0;
+    return 1;
 }
 
 struct racional soma_r(struct racional r1, struct racional r2)
@@ -170,5 +162,5 @@ struct racional divide_r(struct racional r1, struct racional r2)
     r2.den = r2.num;
     r2.num = mutz;
 
-   return multiplica_r(r1,r2);
+    return multiplica_r(r1, r2);
 }
