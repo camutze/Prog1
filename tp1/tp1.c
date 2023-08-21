@@ -29,8 +29,8 @@ int main()
     {
         printf("%d: ", i);
 
-        r1 = sorteia_r(n);
-        r2 = sorteia_r(n);
+        r1 = sorteia_r(max);
+        r2 = sorteia_r(max);
         if (!(r1.valido) || !(r2.valido))
         {
             printf("NUMERO INVALIDO\n");
@@ -40,7 +40,7 @@ int main()
         imprime_r(subtrai_r(r1, r2));
         imprime_r(multiplica_r(r1, r2));
 
-        struct racional divisao_resultado = divide_r(r1, r2); // Suponho que divide_r divida dois números racionais
+        struct racional divisao_resultado = divide_r(r1, r2);
 
         if (!divisao_resultado.valido)
         {
