@@ -11,7 +11,7 @@ int aleat(int min, int max)
         max = min;
         min = troca;
     }
-
+    
     return min + (rand() % (max - min + 1));
 }
 
