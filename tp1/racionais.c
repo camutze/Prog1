@@ -11,7 +11,7 @@ int aleat(int min, int max)
         max = min;
         min = troca;
     }
-    
+
     return min + (rand() % (max - min + 1));
 }
 
@@ -29,20 +29,22 @@ int mmc(int a, int b)
 
 struct racional simplifica_r(struct racional r)
 {
-    int divisor_comum;
-    divisor_comum = mdc(r.num, r.den);
-    r.num /= divisor_comum;
-    r.den /= divisor_comum;
-
-    /*percebi que se o denominador estiver negativo,
-    vou ter que multiplicar o numerador por -1,
-    não importando o sinal do numerador*/
-    if (r.den < 0)
+    if (valido_r(r))
     {
-        r.num *= -1;
-        r.den *= -1;
-    }
+        int divisor_comum;
+        divisor_comum = mdc(r.num, r.den);
+        r.num /= divisor_comum;
+        r.den /= divisor_comum;
 
+        /*perceba que se o denominador estiver negativo,
+        vou ter que multiplicar o numerador por -1,
+        não importando o sinal do numerador*/
+        if (r.den < 0)
+        {
+            r.num *= -1;
+            r.den *= -1;
+        }
+    }
     return r;
 }
 struct racional cria_r(int numerador, int denominador)
@@ -109,19 +111,24 @@ struct racional soma_r(struct racional r1, struct racional r2)
     {
         if (r1.den == r2.den)
         {
+            /*se os denominadores forem iguais, é só fazer a soma
+            dos numeradores*/
             r1.num += r2.num;
-            return r1;
         }
         else
         {
-            r1.num = (r1.num * r2.den) + (r2.num * r1.den);
-            r1.den = mmc(r1.den, r2.den);
+            /*caso contrario, calcula o mmc dos denominadores,
+            divide pelo denominador de r1 vezes o numerador de r1
+            mais o resultado de
+            mmc dividido pelo numerador de r2 vezes o numerador de r2*/
+            int mmc_var = mmc(r1.den, r2.den);
+            r1.num = ((mmc_var / r1.den) * r1.num) + ((mmc_var / r2.den) * r2.num);
+            r1.den = mmc_var;
         }
-
-        r1 = simplifica_r(r1);
 
         return r1;
     }
+    /*aterrando, garantindo que o retorno seja invalido*/
     r1.den = 0;
     return r1;
 }
@@ -136,11 +143,11 @@ struct racional subtrai_r(struct racional r1, struct racional r2)
         }
         else
         {
-            r1.num = (r1.num * r2.den) - (r2.num * r1.den);
-            r1.den = mmc(r1.den, r2.den);
+            /*exceto o sinal, mesma coisa que a soma*/
+            int mmc_var = mmc(r1.den, r2.den);
+            r1.num = ((mmc_var / r1.den) * r1.num) - ((mmc_var / r2.den) * r2.num);
+            r1.den = mmc_var;
         }
-
-        r1 = r1;
 
         return r1;
     }
