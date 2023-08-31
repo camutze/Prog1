@@ -4,7 +4,7 @@
 #define SEED 0
 #define MAX 100
 void trocar(struct racional *a, struct racional *b);
-void bolha_ord(struct racional r[], int n);
+void bolha_ord(struct racional *r, int n);
 void imprime_vet(struct racional r[], int n);
 
 int main()
@@ -16,47 +16,61 @@ int main()
     do
     {
         scanf("%d", &n);
+
     } while (n <= 0 || n > 100);
 
     for (int i = 0; i < n; i++)
     {
-        r[i] = sorteia_r(n);
-        imprime_r(r[i]);
+        scanf("%d", &r[i].num);
+        scanf("%d", &r[i].den);
     }
+
+    imprime_vet(r, n);
+
+    for (int i = 0; i < n; i++)
+    {
+        if (!(r[i].valido = valido_r(r[i])))
+        {
+            r[i] = r[n - 1];
+            n--;
+        }
+    }
+
     printf("\n");
     imprime_vet(r, n);
 
-    bolha_ord(r, n); // ordena
-
-    printf("\n");
+    printf("ordena aqui\n");
     imprime_vet(r, n);
+    printf("\n");
 
     return 0;
 }
+
 void imprime_vet(struct racional r[], int n)
 {
     for (int i = 0; i < n; i++)
     {
-        if (valido_r(r[i]))
-            imprime_r(r[i]);
+        imprime_r(r[i]);
     }
 }
 
 void bolha_ord(struct racional r[], int n)
 {
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 1; i < n; i++)
     {
-        // Últimos i elementos já estão no lugar certo
-        for (int j = 0; j < n - i - 1; j++)
+        struct racional chave = r[i];
+        int j = i - 1;
+
+        while (j >= 0 && compara_r(r[j], chave) == 1)
         {
-            // Troca se o elemento atual for maior que o próximo elemento
-            if (compara_r(r[i], r[i + 1]) == 1)
-            {
-                trocar(&r[j], &r[j + 1]);
-            }
+            r[j + 1] = r[j];
+            j--;
         }
+
+        r[j + 1] = chave;
     }
 }
+
 void trocar(struct racional *a, struct racional *b)
 {
     struct racional mutz = *a;

@@ -2,13 +2,16 @@
 #include <stdlib.h>
 #include "racionais.h"
 
-/* retorna um numero aleatorio entre min e max, inclusive. */
-int aleat(int min, int max)
+int aleat(int max)
 {
-    /*garantindo que max seja maior*/
-    int troca = max;
-    max = min;
-    min = troca;
+    int min;
+    if (max > 0)
+        min = max * (-1);
+    else
+    {
+        min = max;
+        max *= (-1);
+    }
 
     return min + (rand() % (max - min + 1));
 }
@@ -45,11 +48,11 @@ struct racional sorteia_r(int max)
     struct racional r;
     int denominador, numerador;
 
-    numerador = aleat(max * -1, max);
-    denominador = aleat(max * -1, max);
+    numerador = aleat(max);
+    denominador = aleat(max);
 
     r = cria_r(numerador, denominador);
-    r.valido = valido_r(r);
+    r.valido = simplifica_r(&r);
     return r;
 }
 
@@ -72,39 +75,23 @@ int valido_r(struct racional r)
 
 void imprime_r(struct racional r)
 {
-    if (!simplifica_r(&r))
-        exit(0);
-
     if (!valido_r(r))
-    {
         printf("INVALIDO ");
-        return;
-    }
     else if (r.den == r.num)
-    {
         printf("1 ");
-        return;
-    }
-
     else if (!r.num)
-    {
         printf("0 ");
-        return;
-    }
     else if (r.den == 1)
-    {
         printf("%d ", r.num);
-        return;
-    }
     else
         printf("%d/%d ", r.num, r.den);
 }
 
 int compara_r(struct racional r1, struct racional r2)
 {
-    float n1, n2;
     if (valido_r(r1) && valido_r(r2))
     {
+        float n1, n2;
 
         n1 = numerador_r(r1) / denominador_r(r1);
         n2 = numerador_r(r2) / denominador_r(r2);
@@ -116,6 +103,7 @@ int compara_r(struct racional r1, struct racional r2)
 
         return 0;
     }
+    return 3;
 }
 
 int simplifica_r(struct racional *r)
@@ -206,7 +194,8 @@ int divide_r(struct racional r1, struct racional r2, struct racional *r3)
         if (!valido_r(r2))
             return 0;
 
-        r3 = multiplica_r(r1, r2, **r3);
+        if (!multiplica_r(r1, r2, r3))
+            return 0;
         return 1;
     }
     return 0;
