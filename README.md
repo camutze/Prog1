@@ -18,7 +18,7 @@ Se você quiser contribuir para este repositório com seus próprios exemplos ou
 
 ## Contato
 
-Se você tiver alguma pergunta, sugestão ou quiser discutir sobre programação, sinta-se à vontade para entrar em contato comigo. Você pode me encontrar no [seu e-mail ou rede social aqui] ou através das issues deste repositório.
+Se você tiver alguma pergunta, sugestão ou quiser discutir sobre programação, sinta-se à vontade para entrar em contato comigo. Você pode me encontrar no camutze@gmail.com ou através das issues deste repositório.
 
 Divirta-se programando e boa sorte com seus estudos!
 
