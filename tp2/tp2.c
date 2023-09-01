@@ -6,6 +6,10 @@
 void trocar(struct racional *a, struct racional *b);
 void bolha_ord(struct racional *r, int n);
 void imprime_vet(struct racional r[], int n);
+void bubble_sort(struct racional *r, int n);
+
+
+
 
 int main()
 {
@@ -39,9 +43,19 @@ int main()
     printf("\n");
     imprime_vet(r, n);
 
-    printf("ordena aqui\n");
-    imprime_vet(r, n);
+    bubble_sort(r, n);
     printf("\n");
+    imprime_vet(r, n);
+
+    struct racional sum;
+    sum = r[0];
+
+    for (int i = 1; i < n; i++)
+    {
+        soma_r(sum, r[i], &sum);
+    }
+
+    printf("\nSoma: %d / %d ", sum.num, sum.den);
 
     return 0;
 }
@@ -54,26 +68,24 @@ void imprime_vet(struct racional r[], int n)
     }
 }
 
-void bolha_ord(struct racional r[], int n)
+void bubble_sort(struct racional *r, int n)
 {
-    for (int i = 1; i < n; i++)
+    for (int i = 0; i < n - 1; i++)
     {
-        struct racional chave = r[i];
-        int j = i - 1;
-
-        while (j >= 0 && compara_r(r[j], chave) == 1)
+        for (int j = 0; j < n - i - 1; j++)
         {
-            r[j + 1] = r[j];
-            j--;
+            if (compara_r(r[j], r[j + 1]) == 1)
+            {
+                trocar(&r[j], &r[j + 1]);
+            }
         }
-
-        r[j + 1] = chave;
     }
 }
 
 void trocar(struct racional *a, struct racional *b)
 {
-    struct racional mutz = *a;
+    struct racional mutz;
+    mutz = *a;
     *a = *b;
     *b = mutz;
 }
