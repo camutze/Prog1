@@ -68,9 +68,7 @@ int denominador_r(struct racional r)
 
 int valido_r(struct racional r)
 {
-    if (!r.den)
-        return 0;
-    return 1;
+    return r.den;
 }
 
 void imprime_r(struct racional r)
@@ -89,21 +87,19 @@ void imprime_r(struct racional r)
 
 int compara_r(struct racional r1, struct racional r2)
 {
-    if (valido_r(r1) && valido_r(r2))
+
+    float n1, n2;
+    n1 = numerador_r(r1) / (float)denominador_r(r1);
+    n2 = numerador_r(r2) / (float)denominador_r(r2);
+    if (n1 < n2)
     {
-        float n1, n2;
-
-        n1 = numerador_r(r1) / denominador_r(r1);
-        n2 = numerador_r(r2) / denominador_r(r2);
-
-        if (n1 < n2)
-            return -1;
-        else if (n1 > n2)
-            return 1;
-
-        return 0;
+        return -1;
     }
-    return 3;
+    else if (n1 > n2)
+    {
+        return 1;
+    }
+    return 0;
 }
 
 int simplifica_r(struct racional *r)
