@@ -58,10 +58,6 @@ int valido_r(struct racional *r)
 
 void imprime_r(struct racional *r)
 {
-
-    // // o racional deve estar na forma simplificada;
-    // se o racional for negativo, o sinal deve ser impresso antes do numero;
-    //  - se numerador e denominador forem negativos, o racional eh positivo.
     if (!r)
     {
         printf("NULO");
@@ -82,7 +78,7 @@ void imprime_r(struct racional *r)
 
     if (r->den == 1)
     {
-        printf("%d", r->num);
+        printf("%ld", r->num);
         return;
     }
 
@@ -91,6 +87,7 @@ void imprime_r(struct racional *r)
         printf("1");
         return;
     }
+    printf("%ld/%ld", r->num, r->den);
 }
 
 int compara_r(struct racional *r1, struct racional *r2)
@@ -137,16 +134,18 @@ int soma_r(struct racional *r1, struct racional *r2, struct racional *r3)
     if (!valido_r(r1) || !valido_r(r2))
         return 0;
 
-    if (r1->den = r2->den)
+    if (r1->den == r2->den)
     {
         r3->num = r1->num + r2->num;
         r3->den = r1->den;
+        simplifica_r(r3);
         return 1;
     }
 
     r3->den = mmc(r1->num, r2->den);
     r3->num = (r3->den / r1->den) * r1->num;
     r3->num += (r3->den / r2->den) * r2->num;
+    simplifica_r(r3);
     return 1;
 }
 int subtrai_r(struct racional *r1, struct racional *r2, struct racional *r3)
@@ -156,7 +155,7 @@ int subtrai_r(struct racional *r1, struct racional *r2, struct racional *r3)
     if (!valido_r(r1) || !valido_r(r2))
         return 0;
 
-    if (r1->den = r2->den)
+    if (r1->den == r2->den)
     {
         r3->num = r1->num - r2->num;
         r3->den = r1->den;
@@ -179,6 +178,7 @@ int multiplica_r(struct racional *r1, struct racional *r2, struct racional *r3)
         return 0;
     r3->num = r1->num * r2->num;
     r3->den = r1->den * r2->den;
+    simplifica_r(r3);
     return 1;
 }
 void troca_var(struct racional *r)
@@ -195,7 +195,7 @@ int divide_r(struct racional *r1, struct racional *r2, struct racional *r3)
     if (!valido_r(r1) || !valido_r(r2))
         return 0;
 
-    troca_var(&r2);
+    troca_var(r2);
 
     if (!multiplica_r(r1, r2, r3))
         return 0;
