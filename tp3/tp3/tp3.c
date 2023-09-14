@@ -4,6 +4,9 @@
 
 void imprime_vet(struct racional **r, int n);
 void sem_invalido(struct racional **r, int *n);
+void selection_sort(struct racional **r, int n);
+void trocar(struct racional *r1,struct racional *r2);
+void soma_tudo(struct racional *r1,struct racional *r2,struct racional *r3);
 
 int main()
 {
@@ -16,7 +19,7 @@ int main()
     scanf("%d", &n);
   } while (n < 0 || n > 100);
 
-  if (!(r = malloc(n * sizeof(r))))
+  if (!(r = malloc(n * sizeof(r)))) //ver se ta certo
     return 0;
 
   for (int i = 0; i < n; i++)
@@ -29,8 +32,14 @@ int main()
   }
 
   imprime_vet(r, n);
+  
   sem_invalido(r, &n);
   imprime_vet(r, n);
+
+  selection_sort(r, n);
+  imprime_vet(r, n);
+
+  
 
   /*
 
@@ -71,38 +80,36 @@ void sem_invalido(struct racional **r, int *n)
   }
 }
 
-void trocar(int *a, int *b)
+void trocar(struct racional *r1,struct racional *r2)
 {
-  int t = *a;
-  *a = *b;
-  *b = t;
+    struct racional *aux;
+    aux = r1;
+    r1 = r2;
+    r2 = aux;
+
 }
 
-int particionar(int v[], int baixo, int alto)
+void selection_sort(struct racional **r, int n)
 {
-  int pivo = v[alto];
-  int i = (baixo - 1);
+  int i, j, menor;
 
-  for (int j = baixo; j <= alto - 1; j++)
+  if (!r)
+    return;
+
+  for (i = 0; i < n - 1; i++)
   {
-    if (v[j] < pivo)
+    menor = i;
+    for (j = i + 1; j < n; j++)
     {
-      i++;
-      trocar(v[i], v[j]);
+      if (compara_r(r[j], r[menor]) == -1)
+      {
+        menor = j;
+      }
     }
+    trocar(r[i], r[menor]);
   }
-
-  trocar(&v[i + 1], &v[alto]);
-  return (i + 1);
 }
-
-void ordenar_quick(int **v, int baixo, int alto)
+void soma_tudo(struct racional *r1,struct racional *r2,struct racional *r3)
 {
-  if (baixo < alto)
-  {
-    int pi = particionar(v, baixo, alto);
-
-    ordenar_quick(v, baixo, pi - 1);
-    ordenar_quick(v, pi + 1, alto);
-  }
+  for(int i)
 }
