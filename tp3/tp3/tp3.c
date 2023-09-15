@@ -5,7 +5,7 @@
 void imprime_vet(struct racional **r, int n);
 void sem_invalido(struct racional **r, int *n);
 void selection_sort(struct racional **r, int n);
-void trocar(struct racional *r1, struct racional *r2);
+void trocar(struct racional **r1, struct racional **r2);
 void soma_tudo(struct racional **r, struct racional *soma, int n);
 int destroi_tudo(struct racional **r, struct racional *soma, int n);
 
@@ -20,7 +20,7 @@ int main()
     scanf("%d", &n);
   } while (n < 0 || n > 100);
 
-  if (!(r = malloc(n * sizeof(r)))) // ver se ta certo
+  if (!(r = malloc(n * sizeof(struct racional *))))
     return 0;
 
   for (int i = 0; i < n; i++)
@@ -30,8 +30,8 @@ int main()
 
     if (!(r[i] = cria_r(num, den)))
       return 0;
+    simplifica_r(r[i]);
   }
-
   imprime_vet(r, n);
 
   sem_invalido(r, &n);
@@ -40,15 +40,19 @@ int main()
   selection_sort(r, n);
   imprime_vet(r, n);
 
-  if (!(soma = cria_r(r[0]->num, r[0]->den)))
+  
+  if (!(soma = cria_r(0, 1)))
     return 0;
-  soma_tudo(r, soma, n);
-  printf("SOMA = ");
   imprime_r(soma);
+  // ok
 
-  printf("\n");
+   soma_tudo(r, soma, n);
+   printf("SOMA = ");
+   imprime_r(soma);
 
-  destroi_tudo(r, soma, n);
+   printf("\n");
+
+  // destroi_tudo(r, soma, n);
 
   /*
 
@@ -68,6 +72,7 @@ void imprime_vet(struct racional **r, int n)
 {
   for (int i = 0; i < n; i++)
   {
+
     imprime_r(r[i]);
     printf(" ");
   }
@@ -81,23 +86,28 @@ void sem_invalido(struct racional **r, int *n)
     {
       while (!valido_r(r[*n - 1]))
       {
+        free(r[*n - 1]);
         (*n)--;
-        free(r[*n]);
+        r[*n] = NULL;
       }
-      free(r[i]);
-      
-      r[i] = r[*n - 1];
-      (*n)--;
+
+      if (r[i] && i< *n -2)
+      {
+        free(r[i]);
+
+        r[i] = r[*n - 1];
+        (*n)--;
+      }
     }
   }
 }
 
-void trocar(struct racional *r1, struct racional *r2)
+void trocar(struct racional **r1, struct racional **r2)
 {
   struct racional *aux;
-  aux = r1;
-  r1 = r2;
-  r2 = aux;
+  aux = *r1;
+  *r1 = *r2;
+  *r2 = aux;
 }
 
 void selection_sort(struct racional **r, int n)
@@ -118,29 +128,30 @@ void selection_sort(struct racional **r, int n)
         menor = j;
       }
     }
-    trocar(r[i], r[menor]);
+    trocar(&r[i], &r[menor]);
   }
 }
 void soma_tudo(struct racional **r, struct racional *soma, int n)
 {
-  /*pouco antes de chamar a função, ja foi passado o primeiro
-  elemento do vetor para soma, logo, o laço começa com i=1*/
-  for (int i = 1; i < n; i++)
+  if(!r)
+    return;
+  
+  for (int i = 0; i < n; i++)
   {
     soma_r(soma, r[i], soma);
-    if (!(simplifica_r(soma)))
-      return;
+    
   }
 }
 int destroi_tudo(struct racional **r, struct racional *soma, int n)
 {
   if (!r)
     return 0;
-  for (int i; i < n; i++)
+  if (soma)
+    free(soma);
+  for (int i = 0; i < n; i++)
   {
-    if (!r[i])
+    if (r[i])
       free(r[i]);
-
   }
   free(r);
   return 1;
