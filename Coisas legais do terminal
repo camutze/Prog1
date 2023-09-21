@@ -16,3 +16,5 @@ ifconfig
 - Visualizar o histórico de comandos:
 history
 
+- Compactar os trem
+tar zcvf tpx.tgz tpx

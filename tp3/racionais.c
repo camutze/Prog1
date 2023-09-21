@@ -35,18 +35,22 @@ void destroi_r(struct racional *r)
     r = NULL;
 }
 
-long int numerador_r(struct racional *r)
+int numerador_r(struct racional *r, long int *num)
 {
-    if (!r)
+    if (!num || !valido_r(r))
         return 0;
-    return r->num;
+    else
+        *num = r->num;
+    return 1;
 }
 
-long int denominador_r(struct racional *r)
+int denominador_r(struct racional *r, long int *den)
 {
-    if (!r)
+    if (!den || !valido_r(r))
         return 0;
-    return r->den;
+    else
+        *den = r->den;
+    return 1;
 }
 
 int valido_r(struct racional *r)
@@ -92,14 +96,19 @@ void imprime_r(struct racional *r)
 
 int compara_r(struct racional *r1, struct racional *r2)
 {
+    long int mmc_var;
+    long int num1, num2;
+
     if (!r1 || !r2)
+        return -2;
+    if (!valido_r(r1) || !valido_r(r2))
         return -2;
 
     /*deixa os denominadores equivalentes, e comparo somente
     os numeradores*/
-    long int mmc_var = mmc(r1->den, r2->den);
-    long int num1 = r1->num * (mmc_var / r1->den);
-    long int num2 = r2->num * (mmc_var / r2->den);
+    mmc_var = mmc(r1->den, r2->den);
+    num1 = r1->num * (mmc_var / r1->den);
+    num2 = r2->num * (mmc_var / r2->den);
 
     if (num1 < num2)
     {
@@ -107,15 +116,17 @@ int compara_r(struct racional *r1, struct racional *r2)
     }
     if (num1 > num2)
         return 1; /*r1 > r2*/
+
     return 0;     /* r1 == r2.*/
 }
 
 int simplifica_r(struct racional *r)
 {
+    int div_comum;
+
     if (!r || !valido_r(r))
         return 0;
 
-    int div_comum;
     div_comum = mdc(r->num, r->den);
     r->num /= div_comum;
     r->den /= div_comum;
@@ -127,6 +138,7 @@ int simplifica_r(struct racional *r)
     }
     return 1;
 }
+
 int soma_r(struct racional *r1, struct racional *r2, struct racional *r3)
 {
     if (!r1 || !r2 || !r3)
@@ -142,7 +154,7 @@ int soma_r(struct racional *r1, struct racional *r2, struct racional *r3)
         return 1;
     }
 
-    r3->den = mmc(r1->num, r2->den);
+    r3->den = mmc(r1->den, r2->den);
     r3->num = (r3->den / r1->den) * r1->num;
     r3->num += (r3->den / r2->den) * r2->num;
     simplifica_r(r3);
@@ -176,6 +188,7 @@ int multiplica_r(struct racional *r1, struct racional *r2, struct racional *r3)
         return 0;
     if (!valido_r(r1) || !valido_r(r2))
         return 0;
+
     r3->num = r1->num * r2->num;
     r3->den = r1->den * r2->den;
     simplifica_r(r3);
@@ -184,6 +197,7 @@ int multiplica_r(struct racional *r1, struct racional *r2, struct racional *r3)
 void troca_var(struct racional *r)
 {
     int aux;
+    
     aux = r->den;
     r->den = r->num;
     r->num = aux;
@@ -201,4 +215,3 @@ int divide_r(struct racional *r1, struct racional *r2, struct racional *r3)
         return 0;
     return 1;
 }
-
