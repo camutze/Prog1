@@ -4,19 +4,20 @@
 #define SEED 0
 #define MAX 100
 
-int gerar_aleat(struct racional *r, int n);
-void imprime_vet(struct racional *r, int n);
-void sem_invalido(struct racional *r, int *n);
-void soma_tudo(struct racional *r, int n);
+int gerar_aleat(struct racional r[], int n);
+void imprime_vet(struct racional r[], int n);
+void sem_invalido(struct racional r[], int *n);
+void soma_tudo(struct racional r[], struct racional *soma, int n);
 void trocar(struct racional *a, struct racional *b);
-void bolha_ord(struct racional *r, int n);
+void bolha_ord(struct racional r[], int n);
 
 int main()
 {
-    srand(SEED);
     int n;
-    /*vou usar a ultima posição para armazenar a soma*/
-    struct racional r[MAX + 1];
+    struct racional r[MAX];
+    struct racional soma;
+
+    srand(SEED);
 
     do
     {
@@ -25,39 +26,37 @@ int main()
 
     if (!(gerar_aleat(r, n)))
         return -1;
+
     imprime_vet(r, n);
-    printf("\n");
 
     sem_invalido(r, &n);
     imprime_vet(r, n);
-    printf("\n");
 
     bolha_ord(r, n);
     imprime_vet(r, n);
-    printf("\n");
 
-    soma_tudo(r, n);
+    soma_tudo(r, &soma, n);
     printf("a soma de todos os elementos eh: ");
-    imprime_r(r[MAX]);
+    imprime_r(soma);
     printf("\n");
-
 
     return 0;
 }
 /*FIM DO MAIN*/
-void soma_tudo(struct racional *r, int n)
+void soma_tudo(struct racional r[], struct racional *soma, int n)
 {
-    r[MAX] = r[0];
+    *soma = r[0];
     for (int i = 1; i < n; i++)
     {
         /*!!! Overflow em alguns casos !!!*/
-        soma_r(r[MAX], r[i], &r[MAX]);
-        if(!(simplifica_r(&r[MAX])))
+        if (!(soma_r(*soma, r[i], soma)))
+            return;
+        if (!(simplifica_r(soma)))
             return;
     }
 }
 
-void sem_invalido(struct racional *r, int *n)
+void sem_invalido(struct racional r[], int *n)
 {
     for (int i = 0; i < *n; i++)
     {
@@ -70,7 +69,7 @@ void sem_invalido(struct racional *r, int *n)
     }
 }
 
-int gerar_aleat(struct racional *r, int n)
+int gerar_aleat(struct racional r[], int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -81,12 +80,15 @@ int gerar_aleat(struct racional *r, int n)
     return 1;
 }
 
-void imprime_vet(struct racional *r, int n)
+void imprime_vet(struct racional r[], int n)
 {
     for (int i = 0; i < n; i++)
     {
         imprime_r(r[i]);
+        printf(" ");
     }
+    printf("\n");
+
 }
 
 void trocar(struct racional *a, struct racional *b)
@@ -96,7 +98,7 @@ void trocar(struct racional *a, struct racional *b)
     *b = mutz;
 }
 
-void bolha_ord(struct racional *r, int n)
+void bolha_ord(struct racional r[], int n)
 {
     for (int i = 0; i < n - 1; i++)
     {
