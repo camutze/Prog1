@@ -1,19 +1,35 @@
-// TAD lista de números inteiros - programa de teste
-// Carlos Maziero - DINF/UFPR, Set 2023
+#include <stdlib.h>
+#include <stdio.h>
+#include <liblista.h>
 
-// Coloque os includes necessários a este arquivo aqui.
-
-// Eventuais funções auxiliares (usadas somente neste arquivo) podem vir aqui.
-
-int main ()
+char *get_nome();
+int main()
 {
-  // cria uma lista L vazia
-  // imprime L
-  // insere no final de L os valores 10, 11, 12, 13 e 14, nessa ordem
-  // imprime L
-  // insere no início de L o valor 32
-  // insere no início de L o valor 64
-  // imprime L
+  lista_t *L;
+  int elem, pos, i;
+  char *nome;
+
+  if (!(L = lista_cria()))
+    return 1;
+  nome = get_nome;
+  lista_imprime(nome, L);
+
+  i = 10;
+  while (i < 15)
+  {
+    lista_insere(L, i, -1);
+    i++;
+  }
+  lista_imprime(nome, L);
+
+  lista_insere(L, 32, 0);
+  lista_insere(L, 64, 0);
+  lista_imprime(nome, L);
+
+  lista_insere(L, 103, 5);
+  lista_insere(L, 47, 5);
+
+
   // insere no meio de L o valor 103
   // insere no meio de L 0 valor 47
   // imprime L
@@ -34,4 +50,14 @@ int main ()
   // fim enquanto
   // destrói L
   // encerra
+}
+
+char *get_nome()
+{
+  char *nome;
+  if ((nome = malloc(sizeof(char) * 24)) == NULL)
+    return NULL;
+
+  strcpy(nome, "Carlos A. T. Mutzenberg");
+  return nome;
 }

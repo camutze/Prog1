@@ -225,10 +225,13 @@ void lista_imprime (char *nome, lista_t* lst)
         return -1;
     if(!lst->head)
         return;
-    printf("nome: [ ");
-    while ()
-    {
-        /* code */
-    }
+    printf("%s: [ ", *nome);
+   while(i < lst->size)
+   {
+       printf("%d ", aux->val);
+       aux = aux->next;
+       i++;
+   }
+   printf("] (%d elementos)\n", lst->size);  
     
 }
