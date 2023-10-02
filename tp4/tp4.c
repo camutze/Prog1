@@ -3,7 +3,7 @@
 #include <string.h>
 #include "liblista.h"
 
-char *get_nome();
+int get_nome(char *nome);
 
 int main()
 {
@@ -13,7 +13,10 @@ int main()
 
   if (!(L = lista_cria()))
     return 1;
-  nome = get_nome;
+
+  if(!get_nome(nome))
+    return 1;
+
   lista_imprime(nome, L);
 
   i = 10;
@@ -33,8 +36,8 @@ int main()
 
   lista_imprime(nome, L);
   
-  
-  // imprime L
+  lista_retira(L, &elem, 0);
+
   // para as posições início, 5, última e 100:
   //   imprime o conteúdo da posição em L
   // fim para
@@ -50,16 +53,18 @@ int main()
   //   retira o último valor de L e o imprime
   // imprime L
   // fim enquanto
+
+  free(nome);
   // destrói L
   // encerra
 }
 
-char *get_nome()
+int get_nome(char *nome)
 {
-  char *nome;
-  if ((nome = malloc(sizeof(char) * 24)) == NULL)
-    return NULL;
+  if (!(nome = malloc(sizeof(char) * 24)))
+    return 0;
 
   strcpy(nome, "Carlos A. T. Mutzenberg");
-  return nome;
+  nome[24] = '\0';
+  return 1;
 }

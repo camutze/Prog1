@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include <stdio.h>
 #include "liblista.h"
 
 lista_t *lista_cria()
@@ -11,6 +11,7 @@ lista_t *lista_cria()
     l->head = NULL;
     l->tail = NULL;
     l->size = 0;
+    return l;
 }
 
 lnode_t *cria_nodo(int elem)
@@ -40,7 +41,7 @@ lista_t *lista_destroi(lista_t *lst)
     }
 
     free(lst);
-    return 1;
+    return NULL;
 }
 
 int lista_insere(lista_t *lst, int elem, int pos)
@@ -133,7 +134,7 @@ int lista_retira(lista_t *lst, int *elem, int pos)
         return lst->size;
     }
     // retirada do final
-    if(pos == -1)
+    if (pos == -1 || pos >= lst->size)
     {
         aux = lst->tail;
 
@@ -157,15 +158,15 @@ int lista_retira(lista_t *lst, int *elem, int pos)
     // retirada do meio
     i = 0;
     aux = lst->head;
-    //corrigir, nada certo
-    while(i<pos && aux)
+    // quando chegar aqui, eu ja garanti que
+    // pos é um valor válido para a lista
+    // sem acessar valro fora da lista
+    while (i < pos)
     {
         aux = aux->next;
         i++;
     }
-    if(!aux)
-        return -1;
-        
+
     aux->prev->next = aux->next;
     aux->next->prev = aux->prev;
     *elem = aux->val;
@@ -193,10 +194,12 @@ int lista_consulta(lista_t *lst, int *elem, int pos)
     }
 
     // consulta no final
-    if (pos == lst->size - 1)
+    if (pos == -1 || pos >= lst->size)
     {
         *elem = lst->tail->val;
+        return lst->size;
     }
+
     // consulta no meio
     i = 0;
     aux = lst->head;
@@ -206,7 +209,6 @@ int lista_consulta(lista_t *lst, int *elem, int pos)
         i++;
     }
     *elem = aux->val;
-
     return lst->size;
 }
 
@@ -220,7 +222,8 @@ int lista_procura(lista_t *lst, int elem)
 
     if (!lst->head)
         return -1;
-    while (i < lst)
+    // testar depois se não vai dar segfault
+    while (i <= lst->size )
     {
         if (aux->val == elem)
         {
@@ -254,13 +257,14 @@ void lista_imprime(char *nome, lista_t *lst)
     int i;
 
     if (!lst)
-        return -1;
+        return;
     if (!lst->head)
         return;
-    printf("%s: [ ", *nome);
+   // printf("%s: [ ", nome);
+    i=0;
     while (i < lst->size)
     {
-        printf("%d ", aux->val);
+        printf("%d", aux->val);
         aux = aux->next;
         i++;
     }
