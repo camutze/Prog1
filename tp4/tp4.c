@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <liblista.h>
+#include <string.h>
+#include "liblista.h"
 
 char *get_nome();
+
 int main()
 {
   lista_t *L;
@@ -29,9 +31,9 @@ int main()
   lista_insere(L, 103, 5);
   lista_insere(L, 47, 5);
 
-
-  // insere no meio de L o valor 103
-  // insere no meio de L 0 valor 47
+  lista_imprime(nome, L);
+  
+  
   // imprime L
   // para as posições início, 5, última e 100:
   //   imprime o conteúdo da posição em L
