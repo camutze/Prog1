@@ -89,13 +89,10 @@ int lista_insere(lista_t *lst, int elem, int pos)
         aux = aux->next;
         i++;
     }
-    // ponteiro que aponta para aux, aponta para o novo
+
     aux->prev->next = novo;
-    // ponteiro que aponta para o anterior de aux, aponta para o novo
     novo->prev = aux->prev;
-    // ponteiro que aponta para o próximo de aux, aponta para o novo
     novo->next = aux;
-    // ponteiro que aponta para aux, aponta para o novo
     aux->prev = novo;
     lst->size++;
     return lst->size;
@@ -222,8 +219,10 @@ int lista_procura(lista_t *lst, int elem)
 
     if (!lst->head)
         return -1;
-    // testar depois se não vai dar segfault
-    while (i <= lst->size )
+
+    aux = lst->head;
+    i = 0;
+    while (i <= lst->size - 1)
     {
         if (aux->val == elem)
         {
@@ -259,14 +258,20 @@ void lista_imprime(char *nome, lista_t *lst)
     if (!lst)
         return;
     if (!lst->head)
-        return;
-   // printf("%s: [ ", nome);
-    i=0;
-    while (i < lst->size)
     {
-        printf("%d", aux->val);
+        printf("%s: [ ] (%d elementos)\n", nome, lista_tamanho(lst));
+        return;
+    }
+    printf("%s: [ ", nome);
+    i = 0;
+    aux = lst->head;
+    while (i < lista_tamanho(lst) - 2)
+    {
+        printf("%d, ", aux->val);
         aux = aux->next;
         i++;
     }
-    printf("] (%d elementos)\n", lst->size);
+    aux = aux->next;
+    printf("%d", aux->val);
+    printf("] (%d elementos)\n", lista_tamanho(lst));
 }

@@ -3,68 +3,89 @@
 #include <string.h>
 #include "liblista.h"
 
-int get_nome(char *nome);
+void procura_e_imprime(lista_t *l, int elem);
+void consulta_e_imprime(lista_t *l, int pos);
 
 int main()
 {
-  lista_t *L;
-  int elem, pos, i;
-  char *nome;
+  lista_t *l;
+  int pos, i;
 
-  if (!(L = lista_cria()))
+  // cria uma lista L vazia
+  if (!(l = lista_cria()))
     return 1;
 
-  if(!get_nome(nome))
-    return 1;
+  lista_imprime("LISTA", l);
 
-  lista_imprime(nome, L);
-
+  // insere no final de L os valores 10, 11, 12, 13 e 14, nessa ordem
   i = 10;
-  while (i < 15)
+  do
   {
-    lista_insere(L, i, -1);
+    lista_insere(l, i, -1);
+    lista_imprime("LISTA", l);
+
     i++;
-  }
-  lista_imprime(nome, L);
+  } while (i < 15);
+  lista_imprime("LISTA", l);
 
-  lista_insere(L, 32, 0);
-  lista_insere(L, 64, 0);
-  lista_imprime(nome, L);
+  // insere no início de L o valor 32 e 64
+  lista_insere(l, 32, 0);
+  lista_insere(l, 64, 0);
+  lista_imprime("LISTA", l);
 
-  lista_insere(L, 103, 5);
-  lista_insere(L, 47, 5);
-
-  lista_imprime(nome, L);
-  
-  lista_retira(L, &elem, 0);
+  // insere no meio de L o valor 103 e 47
+  lista_insere(l, 103, lista_tamanho(l) / 2);
+  lista_insere(l, 47, lista_tamanho(l) / 2);
+  lista_imprime("LISTA", l);
 
   // para as posições início, 5, última e 100:
-  //   imprime o conteúdo da posição em L
-  // fim para
-  // para os valores 5, 10 e 14:
-  //   imprime posição do valor em L
-  // fim para
-  // para os valores 12, 103 e 79:
-  //   retira de L o elemento com o valor indicado, se estiver em L
-  // fim para
-  // imprime L
-  // enquanto L não estiver vazia
-  //   retira o primeiro valor de L e o imprime
-  //   retira o último valor de L e o imprime
-  // imprime L
-  // fim enquanto
+  consulta_e_imprime(l, 0);
+  consulta_e_imprime(l, 5);
+  consulta_e_imprime(l, -1);
+  consulta_e_imprime(l, 100);
 
-  free(nome);
-  // destrói L
-  // encerra
+  // para os valores 5, 10 e 14:
+  procura_e_imprime(l, 5);
+  procura_e_imprime(l, 10);
+  procura_e_imprime(l, 14);
+
+  // para os valores 12, 103 e 79:
+  lista_retira(l, &pos, 12);
+  lista_retira(l, &pos, 103);
+  lista_retira(l, &pos, 79);
+  lista_imprime("LISTA", l);
+
+  // enquanto L não estiver vazia
+  while (lista_tamanho(l) > 0)
+  {
+    // retira o primeiro valor de L e o imprime
+    lista_retira(l, &pos, 0);
+    printf("Valor retirado da posicao %d\n", pos);
+    // retira o último valor de L e o imprime
+    lista_retira(l, &pos, -1);
+    printf("Valor retirado da posicao %d\n", pos);
+    // imprime L
+    lista_imprime("LISTA", l);
+  }
+
+  lista_destroi(l);
 }
 
-int get_nome(char *nome)
+void procura_e_imprime(lista_t *l, int elem)
 {
-  if (!(nome = malloc(sizeof(char) * 24)))
-    return 0;
+  int i;
+  i = lista_procura(l, elem);
+  if (i != -1)
+    printf("Valor %d encontrado na posição %d\n", elem, i);
+  else
+    printf("Valor %d não encontrado\n", elem);
+}
 
-  strcpy(nome, "Carlos A. T. Mutzenberg");
-  nome[24] = '\0';
-  return 1;
+void consulta_e_imprime(lista_t *l, int pos)
+{
+  int elem;
+  if (lista_consulta(l, &elem, pos) != -1)
+    printf("Valor na posicao %d: %d\n", pos, elem);
+  else
+    printf("Posição %d invalida\n", pos);
 }
