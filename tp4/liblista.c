@@ -48,14 +48,13 @@ int lista_insere(lista_t *lst, int elem, int pos)
 {
     lnode_t *aux, *novo;
     int i;
-
     if (!lst)
         return -1;
 
     if (!(novo = cria_nodo(elem)))
         return -1;
 
-    // inserção no início lista vazia
+    /* inserção no início lista vazia*/
     if (!lst->head)
     {
         lst->head = novo;
@@ -63,7 +62,7 @@ int lista_insere(lista_t *lst, int elem, int pos)
         lst->size++;
         return lst->size;
     }
-    // inserindo também no início, mas a lista não está vazia
+    /* inserindo também no início, mas a lista não está vazia*/
     if (!pos)
     {
         novo->next = lst->head;
@@ -72,7 +71,7 @@ int lista_insere(lista_t *lst, int elem, int pos)
         lst->size++;
         return lst->size;
     }
-    // inserção no final
+    /* inserção no final*/
     if (pos == -1 || pos >= lst->size)
     {
         novo->prev = lst->tail;
@@ -81,7 +80,7 @@ int lista_insere(lista_t *lst, int elem, int pos)
         lst->size++;
         return lst->size;
     }
-    // inserção no meio
+    /* inserção no meio*/
     i = 0;
     aux = lst->head;
     while (i < pos)
@@ -262,11 +261,14 @@ void lista_imprime(char *nome, lista_t *lst)
         printf("%s: [ ] (%d elementos)\n", nome, lista_tamanho(lst));
         return;
     }
-    printf("%s: [ ", nome);
+    printf("%s: [", nome);
+
+
     i = 0;
     aux = lst->head;
-    while (i < lista_tamanho(lst) - 2)
+    while (aux->next->next)
     {
+        printf("Debug: %d\n", aux->val);
         printf("%d, ", aux->val);
         aux = aux->next;
         i++;

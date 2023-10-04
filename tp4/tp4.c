@@ -22,8 +22,6 @@ int main()
   do
   {
     lista_insere(l, i, -1);
-    lista_imprime("LISTA", l);
-
     i++;
   } while (i < 15);
   lista_imprime("LISTA", l);
