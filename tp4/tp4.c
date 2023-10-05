@@ -61,30 +61,23 @@ int main()
   printf("\n");
 
   // enquanto L não estiver vazia
-  i = 1;
   while (lista_tamanho(l) > 0)
   {
-    // retira o primeiro valor de L e o imprime
-    if (!i)
-    {
-      lista_retira(l, &elem, 0);
-      printf("RETIRADO PRIMEIRO: ");
-      i = 1;
-    }
-    else
-    {
-      lista_retira(l, &elem, -1);
-      printf("RETIRADO ULTIMO: ");
-      i = 0;
-    }
 
-    if (lista_tamanho(l) >= 0)
-      printf("%d\n", elem);
-    else
+    ;
+    printf("RETIRADO PRIMEIRO: ");
+    if (lista_retira(l, &elem, 0) == -1)
       printf("NAO ENCONTRADO\n");
+    else
+      printf("%d\n", elem);
 
-    if (i)
-      lista_imprime("LISTA", l);
+    printf("RETIRADO ULTIMO: ");
+    if (lista_retira(l, &elem, -1) == -1)
+      printf("NAO ENCONTRADO\n");
+    else
+      printf("%d\n", elem);
+
+    lista_imprime("LISTA", l);
     // imprime L
   }
 
