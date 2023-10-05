@@ -107,6 +107,9 @@ int lista_retira(lista_t *lst, int *elem, int pos)
 
     if (!lst->head)
         return -1;
+    
+    if(pos > lst->size)
+        return -1;
 
     // retirada do início
     if (!pos)
@@ -130,7 +133,7 @@ int lista_retira(lista_t *lst, int *elem, int pos)
         return lst->size;
     }
     // retirada do final
-    if (pos == -1 || pos >= lst->size)
+    if (pos == -1)
     {
         aux = lst->tail;
 
@@ -182,6 +185,10 @@ int lista_consulta(lista_t *lst, int *elem, int pos)
     if (!lst->head)
         return -1;
 
+    if(pos > lst->size)
+        return -1;
+
+
     // consulta no início
     if (!pos)
     {
@@ -190,7 +197,7 @@ int lista_consulta(lista_t *lst, int *elem, int pos)
     }
 
     // consulta no final
-    if (pos == -1 || pos >= lst->size)
+    if (pos == -1)
     {
         *elem = lst->tail->val;
         return lst->size;
@@ -252,28 +259,26 @@ int lista_tamanho(lista_t *lst)
 void lista_imprime(char *nome, lista_t *lst)
 {
     lnode_t *aux;
-    int i;
 
     if (!lst)
         return;
+
     if (!lst->head)
     {
         printf("%s: [ ] (%d elementos)\n", nome, lista_tamanho(lst));
         return;
     }
+
     printf("%s: [", nome);
-
-
-    i = 0;
     aux = lst->head;
-    while (aux->next->next)
+
+    while(aux)
     {
-        printf("Debug: %d\n", aux->val);
-        printf("%d, ", aux->val);
+        printf(" %d", aux->val);
+        if (aux->next)
+            printf(" ");
         aux = aux->next;
-        i++;
     }
-    aux = aux->next;
-    printf("%d", aux->val);
+
     printf("] (%d elementos)\n", lista_tamanho(lst));
 }

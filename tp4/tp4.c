@@ -5,11 +5,12 @@
 
 void procura_e_imprime(lista_t *l, int elem);
 void consulta_e_imprime(lista_t *l, int pos);
+void retira_imprime(lista_t *l, int elem);
 
 int main()
 {
   lista_t *l;
-  int pos, i;
+  int i, elem;
 
   // cria uma lista L vazia
   if (!(l = lista_cria()))
@@ -35,55 +36,96 @@ int main()
   lista_insere(l, 103, lista_tamanho(l) / 2);
   lista_insere(l, 47, lista_tamanho(l) / 2);
   lista_imprime("LISTA", l);
+  printf("\n");
 
-  // para as posições início, 5, última e 100:
+  // Imprime as posições início, 5, última e 100:
   consulta_e_imprime(l, 0);
   consulta_e_imprime(l, 5);
   consulta_e_imprime(l, -1);
   consulta_e_imprime(l, 100);
+  printf("\n");
 
   // para os valores 5, 10 e 14:
   procura_e_imprime(l, 5);
   procura_e_imprime(l, 10);
   procura_e_imprime(l, 14);
+  printf("\n");
 
   // para os valores 12, 103 e 79:
-  lista_retira(l, &pos, 12);
-  lista_retira(l, &pos, 103);
-  lista_retira(l, &pos, 79);
-  lista_imprime("LISTA", l);
+  // lista procura antes de retirar
+
+  retira_imprime(l, 12);
+  retira_imprime(l, 103);
+  retira_imprime(l, 79);
+
+  printf("\n");
 
   // enquanto L não estiver vazia
+  i = 1;
   while (lista_tamanho(l) > 0)
   {
     // retira o primeiro valor de L e o imprime
-    lista_retira(l, &pos, 0);
-    printf("Valor retirado da posicao %d\n", pos);
-    // retira o último valor de L e o imprime
-    lista_retira(l, &pos, -1);
-    printf("Valor retirado da posicao %d\n", pos);
+    if (!i)
+    {
+      lista_retira(l, &elem, 0);
+      printf("RETIRADO PRIMEIRO: ");
+      i = 1;
+    }
+    else
+    {
+      lista_retira(l, &elem, -1);
+      printf("RETIRADO ULTIMO: ");
+      i = 0;
+    }
+
+    if (lista_tamanho(l) >= 0)
+      printf("%d\n", elem);
+    else
+      printf("NAO ENCONTRADO\n");
+
+    if (i)
+      lista_imprime("LISTA", l);
     // imprime L
-    lista_imprime("LISTA", l);
   }
 
   lista_destroi(l);
+}
+
+void consulta_e_imprime(lista_t *l, int pos)
+{
+  int elem;
+  printf("VALOR NA POSICAO %d:", pos);
+  if (lista_consulta(l, &elem, pos) == -1)
+    printf(" NAO ENCONTRADO");
+  else
+    printf(" %d", elem);
+  printf("\n");
 }
 
 void procura_e_imprime(lista_t *l, int elem)
 {
   int i;
   i = lista_procura(l, elem);
+  printf("POSICAO DO VALOR %d:", elem);
   if (i != -1)
-    printf("Valor %d encontrado na posição %d\n", elem, i);
+    printf(" %d", i);
   else
-    printf("Valor %d não encontrado\n", elem);
+    printf(" NAO ENCONTRADO");
+  printf("\n");
 }
 
-void consulta_e_imprime(lista_t *l, int pos)
+void retira_imprime(lista_t *l, int elem)
 {
-  int elem;
-  if (lista_consulta(l, &elem, pos) != -1)
-    printf("Valor na posicao %d: %d\n", pos, elem);
+  int pos;
+  pos = lista_procura(l, elem);
+  printf("RETIRA VALOR %d ", elem);
+  if (pos == -1)
+    printf("NAO ENCONTRADO");
   else
-    printf("Posição %d invalida\n", pos);
+  {
+    lista_retira(l, &elem, pos);
+    printf("DA POSICAO %d", pos);
+  }
+
+  printf("\n");
 }
