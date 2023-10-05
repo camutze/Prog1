@@ -107,16 +107,16 @@ int lista_retira(lista_t *lst, int *elem, int pos)
 
     if (!lst->head)
         return -1;
-    
-    if(pos > lst->size)
+
+    if (pos > lst->size)
         return -1;
 
-    // retirada do início
+    /*retirada do início*/
     if (!pos)
     {
         aux = lst->head;
 
-        // se a lista tiver apenas um elemento
+        /*se a lista tiver apenas um elemento*/
         if (lst->size == 1)
         {
             lst->head = NULL;
@@ -132,12 +132,12 @@ int lista_retira(lista_t *lst, int *elem, int pos)
         lst->size--;
         return lst->size;
     }
-    // retirada do final
+    /* retirada do final*/
     if (pos == -1)
     {
         aux = lst->tail;
 
-        // se a lista tiver apenas um elemento
+        /* se a lista tiver apenas um elemento*/
         if (lst->size == 1)
         {
             lst->head = NULL;
@@ -154,12 +154,12 @@ int lista_retira(lista_t *lst, int *elem, int pos)
         return lst->size;
     }
 
-    // retirada do meio
+    /*retirada do meio*/
     i = 0;
     aux = lst->head;
-    // quando chegar aqui, eu ja garanti que
-    // pos é um valor válido para a lista
-    // sem acessar valro fora da lista
+    /* quando chegar aqui, eu ja garanti que
+     pos é um valor válido para a lista
+     sem acessar valor fora da lista*/
     while (i < pos)
     {
         aux = aux->next;
@@ -185,25 +185,24 @@ int lista_consulta(lista_t *lst, int *elem, int pos)
     if (!lst->head)
         return -1;
 
-    if(pos > lst->size)
+    if (pos > lst->size)
         return -1;
 
-
-    // consulta no início
+    /*consulta no início*/
     if (!pos)
     {
         *elem = lst->head->val;
         return lst->size;
     }
 
-    // consulta no final
+    /* consulta no final*/
     if (pos == -1)
     {
         *elem = lst->tail->val;
         return lst->size;
     }
 
-    // consulta no meio
+    /* consulta no meio*/
     i = 0;
     aux = lst->head;
     while (i < pos)
@@ -225,7 +224,8 @@ int lista_procura(lista_t *lst, int elem)
 
     if (!lst->head)
         return -1;
-
+    /*Caminha até o elemento,
+    quando encontrar retorna sua posicao*/
     aux = lst->head;
     i = 0;
     while (i <= lst->size - 1)
@@ -262,7 +262,7 @@ void lista_imprime(char *nome, lista_t *lst)
 
     if (!lst)
         return;
-
+    /*se a lista for vazi*/
     if (!lst->head)
     {
         printf("%s: [ ] (%d elementos)\n", nome, lista_tamanho(lst));
@@ -272,7 +272,7 @@ void lista_imprime(char *nome, lista_t *lst)
     printf("%s: [", nome);
     aux = lst->head;
 
-    while(aux)
+    while (aux)
     {
         printf(" %d", aux->val);
         if (aux->next)
