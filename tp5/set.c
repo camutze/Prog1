@@ -25,21 +25,26 @@ struct set_t *set_create(int max)
 
 struct set_t *set_destroy(struct set_t *s)
 {
+    if (!s || !s->flag)
+        return 0;
 
     free(s->flag);
     free(s);
 
-    return NULL;
+    return 0;
 }
 
 int set_add(struct set_t *s, int item)
 {
+    if (!s || !s->flag)
+        return 0;
+
     if (item >= s->size)
         return 0;
     if (!s->flag[item])
     {
         s->flag[item] = true;
-        s->size++;
+        s->num++;
         return 1;
     }
     return 0;
@@ -47,12 +52,15 @@ int set_add(struct set_t *s, int item)
 
 int set_del(struct set_t *s, int item)
 {
+    if (!s || !s->flag)
+        return 0;
+
     if (item >= s->size)
         return 0;
     if (s->flag[item])
     {
         s->flag[item] = false;
-        s->size--;
+        s->num--;
         return 1;
     }
     return 0;
@@ -60,74 +68,142 @@ int set_del(struct set_t *s, int item)
 
 int set_in(struct set_t *s, int item)
 {
-    if (item >= s->size)
+    if (!s || !s->flag)
+        return 0;
+
+    if (!s->flag[item])
         return 0;
     return 1;
 }
 
-int set_emply(struct set_t *s)
+int set_empty(struct set_t *s)
 {
+    if (!s)
+        return 0;
     return !s->size ? 0 : 1;
 }
 
-int set_card (struct set_t *s)
+int set_card(struct set_t *s)
 {
-    return s->size;
+    if (!s || !s->flag)
+        return -1;
+    return s->num;
 }
 
-int set_contains (struct set_t *s1, struct set_t *s2)
+int set_contains(struct set_t *s1, struct set_t *s2)
 {
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
     for (int i = 0; i < s1->size; i++)
     {
+        /*se s1 tem e s2 nao tem, nao contem*/
         if (s1->flag[i] && !s2->flag[i])
             return 0;
     }
     return 1;
 }
 
-int set_equal (struct set_t *s1, struct set_t *s2)
+int set_equal(struct set_t *s1, struct set_t *s2)
 {
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
     /*se o tamanho for diferente, não são iguais*/
     if (s1->size != s2->size)
         return 0;
     for (int i = 0; i < s1->size; i++)
-    {   /*algum elemento for diferente, nao sao iguais*/
+    {
+        /*algum elemento for diferente, nao sao iguais*/
         if (s1->flag[i] != s2->flag[i])
             return 0;
     }
     return 1;
-
 }
 
-int set_union (struct set_t *s1, struct set_t *s2, struct set_t *s3)
+int set_union(struct set_t *s1, struct set_t *s2, struct set_t *s3)
 {
-    for(int i = 0; i < s1->size; i++)
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
+    for (int i = 0; i < s1->size; i++)
     {
+        /*se tem s1 OU s2, coloca em s3*/
         if (s1->flag[i] || s2->flag[i])
             set_add(s3, i);
     }
     return 1;
-
 }
 
-int set_intersect (struct set_t *s1, struct set_t *s2, struct set_t *s3)
+int set_intersect(struct set_t *s1, struct set_t *s2, struct set_t *s3)
 {
-    for(int i = 0; i < s1->size; i++)
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
+    for (int i = 0; i < s1->size; i++)
     {
+        /*se tem s1 E s2, coloca em s3*/
         if (s1->flag[i] && s2->flag[i])
             set_add(s3, i);
     }
     return 1;
 }
 
-void set_print (struct set_t *s)
+int set_diff(struct set_t *s1, struct set_t *s2, struct set_t *s3)
 {
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
+    for (int i = 0; i < s1->size; i++)
+    {
+        /*se tem s1 E NAO tem s2, coloca em s3*/
+        if (s1->flag[i] && !s2->flag[i])
+            set_add(s3, i);
+    }
+    return 1;
+}
+
+int set_copy(struct set_t *s1, struct set_t *s2)
+{
+    if (!s1 || !s1->flag)
+        return 0;
+    if (!s2 || !s2->flag)
+        return 0;
+
+    for (int i = 0; i < s1->size; i++)
+    {
+        /*se tem s1, coloca em s2*/
+        if (s1->flag[i])
+            set_add(s2, i);
+    }
+    return 1;
+}
+
+void set_print(struct set_t *s)
+{
+    int i;
+
+    if (!s || !s->flag)
+        return;
+
     printf("[ ");
-    for (int i = 0; i < s->size; i++)
+    i = 0;
+    while (i < s->size)
     {
         if (s->flag[i])
             printf("%d ", i);
+        i++;
     }
-    printf(" ]\n");
-
+    printf("] ");
+    printf("(%d items) \n", s->num);
 }

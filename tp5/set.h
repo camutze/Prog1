@@ -55,17 +55,27 @@ int set_contains (struct set_t *s1, struct set_t *s2);
 int set_equal (struct set_t *s1, struct set_t *s2);
 
 // Puts in s3 the union of sets s1 and s2; s3 previous content
-// is cleared, but its range (min, max) is not modified
+// is cleared, but its range (0, max) is not modified
 // Return: 1 if success or 0 if failure
 int set_union (struct set_t *s1, struct set_t *s2, struct set_t *s3);
 
 // Puts in s3 the intersection of sets s1 and s2; s3 previous content
-// is cleared, but its range (min, max) is not modified
+// is cleared, but its range (0, max) is not modified
 // Return: 1 if success or 0 if failure
 int set_intersect (struct set_t *s1, struct set_t *s2, struct set_t *s3);
 
+// Puts in s3 the difference s1 - s2; s3 previous content is cleared,
+// but its range (0, max) is not modified
+// Return: 1 if success or 0 if failure
+int set_diff (struct set_t *s1, struct set_t *s2, struct set_t *s3);
+
+// Puts in s2 a copy of set s1; s2 previous content is cleared,
+// but its range (0, max) is not modified
+// Return: 1 if success or 0 if failure
+int set_copy (struct set_t *s1, struct set_t *s2);
+
 // Prints the content of a set using this template:
-// [ val val val ]\n
+// [ %d %d %d ] (%d items)\n
 // (Does not belong to the TAD definition, but is useful for testing)
 void set_print (struct set_t *s);
 

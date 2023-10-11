@@ -1,0 +1,39 @@
+==== set_create
+s1: [ ] (0 items) 
+s2: [ ] (0 items) 
+=== set_add
+s1: [ 2 4 6 8 10 12 14 16 18 20 ] (10 items) 
+s2: [ 1 3 5 7 9 11 13 15 17 19 ] (10 items) 
+=== set_del
+Deleting from s1: 6 7 8 9 10 11 12 13 14 15 
+s1: [ 2 4 16 18 20 ] (5 items) 
+Deleting from s2: 16 15 14 13 12 11 10 9 8 7 6 
+s2: [ 1 3 5 17 19 ] (5 items) 
+=== set_equal
+s1: [ 2 4 16 18 20 ] (5 items) 
+s2: [ 1 3 5 17 19 ] (5 items) 
+se: [ 2 4 16 18 20 ] (5 items) 
+s1 and s2 are different
+s1 and se are equal
+=== set_union
+s1: [ 2 4 16 18 20 ] (5 items) 
+s2: [ 1 3 5 17 19 ] (5 items) 
+su: [ 1 2 3 4 5 16 17 18 19 20 ] (10 items) 
+=== set_intersect
+se: [ 2 4 7 16 18 20 35 ] (7 items) 
+su: [ 1 2 3 4 5 16 17 18 19 20 ] (10 items) 
+si: [ 2 4 16 18 20 ] (5 items) 
+=== set_diff (se - su)
+se: [ 2 4 7 16 18 20 35 ] (7 items) 
+su: [ 1 2 3 4 5 16 17 18 19 20 ] (10 items) 
+sd: [ 7 35 ] (2 items) 
+=== set_contains
+su does not contain s1
+su does not contain s2
+su does not contain sd
+=== set_copy
+su: [ 1 2 3 4 5 16 17 18 19 20 ] (10 items) 
+sc: [ 1 2 3 4 5 16 17 18 19 20 ] (10 items) 
+=== huge set
+sh has 50000 items
+=== set_destroy
