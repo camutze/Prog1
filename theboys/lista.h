@@ -26,9 +26,10 @@ lista_t* lista_cria ();
 // Retorno: NULL.
 lista_t* lista_destroi (lista_t* lst);
 
-// Insere o elemento na lista na posição indicada; a posição 0 indica o
-// início da lista. Se a posição for além do fim da lista, insere no fim.
-// O fim da lista também pode ser indicado pela posição -1.
+// Nas operações insere/retira/consulta, a posição 0 indica o início da lista;
+// se a posição for -1 ou for além do fim, considerar o fim da lista.
+
+// Insere o elemento na lista na posição indicada.
 // Retorno: número de elementos na lista após a operação ou -1 se falhar.
 int lista_insere (lista_t* lst, int elem, int pos);
 
@@ -53,7 +54,7 @@ int lista_vazia (lista_t* lst);
 int lista_tamanho (lista_t* lst);
 
 // Imprime o conteúdo da lista, do inicio ao fim, neste formato:
-// nome: [ valor valor valor valor ... ] (nnn elementos)
+// [ valor valor valor valor ... ]
 // Esta função não faz parte do TAD, mas é útil para testes.
 void lista_imprime (char *nome, lista_t* lst);
 
