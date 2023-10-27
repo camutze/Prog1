@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "lef.h"
 #include <stdio.h>
+
 struct evento_t *cria_evento(int tempo, int tipo, int dado1, int dado2)
 {
     struct evento_t *e;
@@ -132,14 +133,14 @@ void imprime_lef(struct lef_t *l)
         return;
 
     aux = l->primeiro;
-
+    printf("LEF:\n");
     while (aux)
     {
-        printf("%d %d %d %d\n", aux->evento->tempo,
+        printf("\ttempo %d tipo %d d1 %d d2 %d\n", aux->evento->tempo,
                aux->evento->tipo, aux->evento->dado1, aux->evento->dado2);
         total++;
         aux = aux->prox;
     }
 
-    printf("total %d eventos\n", total);
+    printf("\tTotal %d eventos\n", total);
 }
