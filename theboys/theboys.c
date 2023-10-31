@@ -6,14 +6,9 @@
 #include "set.h"
 #include "lef.h"
 
-// seus #defines vão aqui
 
-// minimize o uso de variáveis globais
-
-// programa principal
 int main()
 {
-
   struct set_t *s;
   s = set_create(10);
   set_add(s, 1);
@@ -23,7 +18,7 @@ int main()
   e = cria_evento(1, 2, 3, 4);
 
   // criar a LEF
-  struct lef_t *l;
+  struct lef_t *l;      
   l = cria_lef();
   insere_lef(l, e);
   imprime_lef(l);
