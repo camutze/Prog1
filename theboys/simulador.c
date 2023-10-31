@@ -79,7 +79,7 @@ struct base_b *cria_base(int id)
 
 void cria_todas_bases(struct mundo_m *mundo)
 {
-    for (int i = 1; i < mundo->n_bases; i++)
+    for (int i = 0; i < mundo->n_bases; i++)
     {
         mundo->bases[i] = cria_base(i);
     }
@@ -87,7 +87,7 @@ void cria_todas_bases(struct mundo_m *mundo)
 
 void destroi_todas_bases(struct mundo_m *mundo)
 {
-    for (int i = 1; i < mundo->n_bases; i++)
+    for (int i = 0; i < mundo->n_bases; i++)
     {
         mundo->bases[i] = destroi_base(mundo->bases[i]);
     }
@@ -126,7 +126,7 @@ struct missao_m *cria_missao(int id)
 
 void cria_todas_missoes(struct mundo_m *mundo)
 {
-    for (int i = 1; i < mundo->n_missoes; i++)
+    for (int i = 0; i < mundo->n_missoes; i++)
     {
         mundo->missoes[i] = cria_missao(i);
     }
@@ -134,7 +134,7 @@ void cria_todas_missoes(struct mundo_m *mundo)
 
 void destroi_todas_missoes(struct mundo_m *mundo)
 {
-    for (int i = 1; i < mundo->n_missoes; i++)
+    for (int i = 0; i < mundo->n_missoes; i++)
     {
         mundo->missoes[i] = destroi_missao(mundo->missoes[i]);
     }
@@ -188,12 +188,14 @@ struct mundo_m *destroi_mundo(struct mundo_m *mundo)
     if (!mundo)
         return NULL;
         
-    free(mundo->herois);
-    free(mundo->bases);
-    free(mundo->missoes);
+    
     destroi_todas_bases(mundo);
     destroi_todas_missoes(mundo);
     destroi_todos_herois(mundo);
+    
+    free(mundo->herois);
+    free(mundo->bases);
+    free(mundo->missoes);
     free(mundo);
 
     return NULL;
