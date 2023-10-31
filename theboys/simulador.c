@@ -17,10 +17,10 @@ struct heroi_h *cria_um_heroi(int id)
     heroi->experiencia = 0;
     heroi->paciencia = gera_aleat(1, 100);
     heroi->velocidade = gera_aleat(50, 5000);
-    heroi->habilidades = set_create(gera_aleat(1, 3));
-    for (int i = 0; i < heroi->habilidades->size; i++)
+    heroi->habil = set_create(gera_aleat(1, 3));
+    for (int i = 0; i < heroi->habil->size; i++)
     {
-        set_add(heroi->habilidades, gera_aleat(0, N_HABILIDADES)); // Quanto eu inicio aqui?
+        set_add(heroi->habil, gera_aleat(0, N_HABILIDADES)); // Quanto eu inicio aqui?
     }
 
     return heroi;
@@ -30,8 +30,8 @@ struct heroi_h *destroi_um_heroi(struct heroi_h *heroi)
 {
     if (!heroi)
         return NULL;
-
-    set_destroy(heroi->habilidades);
+    if(heroi->habil)
+        set_destroy(heroi->habil);
     free(heroi);
 
     return NULL;
@@ -82,7 +82,7 @@ struct missao_m *cria_missao(int id)
     missao->local[0] = gera_aleat(0, N_TAMANHO_MUNDO - 1); // x
     missao->local[1] = gera_aleat(0, N_TAMANHO_MUNDO - 1); // y
 
-    missao->habilidades = set_create(gera_aleat(6, 10));
+    missao->habil = set_create(gera_aleat(6, 10));
 
     return missao;
 }
@@ -92,7 +92,7 @@ struct missao_m *destroi_missao(struct missao_m *missao)
     if (!missao)
         return NULL;
 
-    set_destroy(missao->habilidades);
+    set_destroy(missao->habil);
     free(missao);
 
     return NULL;
@@ -135,6 +135,7 @@ struct mundo_m *destroi_mundo(struct mundo_m *mundo)
 
     return NULL;
 }
+
 
 /*void destroi_tudo(struct mundo_m *mundo)
 {

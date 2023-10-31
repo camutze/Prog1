@@ -5,31 +5,60 @@
 #include <stdlib.h>
 #include "set.h"
 #include "lef.h"
-
+#include "simulador.h"
 
 int main()
 {
-  struct set_t *s;
-  s = set_create(10);
-  set_add(s, 1);
-  set_destroy(s);
+  /*testando heroi*/
+  struct heroi_h *h = cria_um_heroi(10);
+  h->experiencia = 10;
+  h->paciencia = 10;
+  h->velocidade = 10;
+  set_add(h->habil, 1);
+  set_add(h->habil, 2);
+  set_add(h->habil, 3);
+  set_add(h->habil, 4);
+  set_add(h->habil, 5);
+  h = destroi_um_heroi(h);
 
-  struct evento_t *e;
-  e = cria_evento(1, 2, 3, 4);
+  /*Testando base*/
+  struct base_b *b = cria_base(20);
+  b->id = 20;
+  b->local[0] = 10;
+  b->local[1] = 10;
+  b->lotacao = 10;
+  set_add(b->presentes, 2);
+  lista_insere(b->lista_espera, 1, -1);
+  lista_insere(b->lista_espera, 2, -1);
+  b = destroi_base(b);
 
-  // criar a LEF
-  struct lef_t *l;      
-  l = cria_lef();
-  insere_lef(l, e);
-  imprime_lef(l);
+  /* testando missão*/
+  struct missao_m *m = cria_missao(15);
+  m->id = 15;
+  m->local[0] = 10;
+  m->local[1] = 10;
+  set_add(m->habil, 1);
+  set_add(m->habil, 2);
+  set_add(m->habil, 3);
+  m = destroi_missao(m);
 
-  destroi_lef(l);
+  /* testando mundo*/
+  struct mundo_m *w = cria_mundo();
+  w->bases[0] = 10;
+  w->bases[1] = 10;
+  w->herois[0] = 10;
+  w->herois[1] = 10;
+  w->missoes[0] = 10;
+  w->missoes[1] = 10;
+  w->n_bases = 10;
+  w->n_herois = 10;
+  w->n_missoes = 10;
+  w->n_habil = 10;
+  w->size_max = 10;
+  w->relogio = 10;
+  w = destroi_mundo(w);
 
-  // iniciar o mundo
 
-  // executar o laço de simulação
-
-  // destruir o mundo
 
   return (0);
 }

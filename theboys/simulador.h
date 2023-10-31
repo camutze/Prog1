@@ -21,7 +21,7 @@ struct heroi_h
     int paciencia;
     int velocidade;
     int base_id;
-    struct set_t *habilidades;
+    struct set_t *habil;
 };
 
 struct base_b
@@ -36,7 +36,7 @@ struct base_b
 struct missao_m
 {
     int id;
-    struct set_t *habilidades; //conjunto de habilidades necessárias para cumprir a missão
+    struct set_t *habil; //conjunto de habilidades necessárias para cumprir a missão
     int local[2];
 };
 
@@ -53,3 +53,18 @@ struct mundo_m
     int n_habil; //número de habilidades distintas possíveis
 };
 
+struct heroi_h *cria_um_heroi(int id);
+
+struct heroi_h *destroi_um_heroi(struct heroi_h *heroi);
+
+struct base_b *cria_base(int id);
+
+struct base_b *destroi_base(struct base_b *base);
+
+struct missao_m *cria_missao(int id);
+
+struct missao_m *destroi_missao(struct missao_m *missao);
+
+struct mundo_m *cria_mundo();
+
+struct mundo_m *destroi_mundo(struct mundo_m *mundo);
