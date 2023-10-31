@@ -1,2 +1,3 @@
 Posso fazer um .h?
 Como arrumar o make, está certo do jeito que fiz?
+posicao é 0 ou 1?
