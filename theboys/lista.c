@@ -4,14 +4,14 @@
 
 lista_t *lista_cria()
 {
-    lista_t *l;
-    if (!(l = malloc(sizeof(lista_t))))
+    lista_t *lista;
+    if (!(lista = malloc(sizeof(lista_t))))
         return NULL;
 
-    l->head = NULL;
-    l->tail = NULL;
-    l->size = 0;
-    return l;
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->size = 0;
+    return lista;
 }
 
 lnode_t *cria_nodo(int elem)

@@ -1,15 +1,12 @@
 #include <stdlib.h>
-#include <simulador.h>
+#include "simulador.h"
 
-#define T_INICIO 0
-#define T_FIM_DO_MUNDO 525600
-#define N_TAMANHO_MUNDO 20000
-#define N_HABILIDADES 10
-#define N_HEROIS N_HABILIDADES * 5
-#define N_BASES N_HEROIS / 6
-#define N_MISSOES T_FIM_DO_MUNDO / 100
+int gera_aleat(int min, int max)
+{
+    return (rand() % (max - min + 1)) + min;
+}
 
-struct heroi_h *cria_um_heroi(struct missao_m *mundo, int id)
+struct heroi_h *cria_um_heroi(int id)
 {
     struct heroi_h *heroi;
 
@@ -56,7 +53,7 @@ struct base_b *cria_base(int id)
 
     base->presentes = set_create(base->lotacao);
 
-    base->lista_espera = lista_create();
+    base->lista_espera = lista_cria();
 
     return base;
 }
@@ -67,13 +64,13 @@ struct base_b *destroi_base(struct base_b *base)
         return NULL;
 
     set_destroy(base->presentes);
-    lista_destroy(base->lista_espera);
+    lista_destroi(base->lista_espera);
     free(base);
 
     return NULL;
 }
 
-//lembre se de passar o id sequencial que nao se repete
+// lembre se de passar o id sequencial que nao se repete
 struct missao_m *cria_missao(int id)
 {
     struct missao_m *missao;
@@ -86,7 +83,7 @@ struct missao_m *cria_missao(int id)
     missao->local[1] = gera_aleat(0, N_TAMANHO_MUNDO - 1); // y
 
     missao->habilidades = set_create(gera_aleat(6, 10));
-    
+
     return missao;
 }
 
@@ -99,13 +96,48 @@ struct missao_m *destroi_missao(struct missao_m *missao)
     free(missao);
 
     return NULL;
-
 }
 
-
-
-
-int gera_aleat(int min, int max)
+struct mundo_m *cria_mundo()
 {
-    return (rand() % (max - min + 1)) + min;
+    struct mundo_m *mundo;
+    // aloca o mundo
+    if (!(mundo = malloc(sizeof(struct mundo_m))))
+        return NULL;
+    // aloca os herois
+    if (!(mundo->herois = malloc(sizeof(int) * N_HEROIS)))
+        return NULL;
+    // aloca as bases
+    if (!(mundo->bases = malloc(sizeof(int) * N_BASES)))
+        return NULL;
+    // aloca as missoes
+    if (!(mundo->missoes = malloc(sizeof(int) * N_MISSOES)))
+        return NULL;
+
+    mundo->relogio =   T_INICIO;
+    mundo->size_max =  N_TAMANHO_MUNDO;
+    mundo->n_herois =  N_HEROIS;
+    mundo->n_bases =   N_BASES;
+    mundo->n_missoes = N_MISSOES;
+    mundo->n_habil =   N_HABILIDADES;
+    
+    return mundo;
 }
+struct mundo_m *destroi_mundo(struct mundo_m *mundo)
+{
+    if (!mundo)
+        return NULL;
+
+    free(mundo->herois);
+    free(mundo->bases);
+    free(mundo->missoes);
+    free(mundo);
+
+    return NULL;
+}
+
+/*void destroi_tudo(struct mundo_m *mundo)
+{
+    //fazer um for para destruir tudo
+}
+*/

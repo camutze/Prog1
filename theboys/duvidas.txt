@@ -1,0 +1,2 @@
+Posso fazer um .h?
+Como arrumar o make, está certo do jeito que fiz?

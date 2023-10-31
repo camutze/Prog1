@@ -5,12 +5,14 @@
 #include "lista.h"
 #include "lef.h"
 
-#define TAM_MUNDO 20000
-#define FIM_MUNDO 525600
-#define HABILIDADES 10
-#define HEROIS (HABILIDADES * 5)
-#define BASES (HEROIS / 6)
-#define MISSOES (FIM_MUNDO / 100)
+#define T_INICIO        0
+#define T_FIM_DO_MUNDO  525600
+#define N_TAMANHO_MUNDO 20000
+#define N_HABILIDADES   10
+#define N_HEROIS        (N_HABILIDADES * 5)
+#define N_BASES         (N_HEROIS / 6)
+#define N_MISSOES       (T_FIM_DO_MUNDO / 100)
+
 
 struct heroi_h
 {
@@ -27,7 +29,7 @@ struct base_b
     int id;
     int lotacao;
     struct set_t *presentes;
-    struct lista_t *lista_espera;
+    lista_t *lista_espera;
     int local[2];
 };
 
@@ -40,14 +42,14 @@ struct missao_m
 
 struct mundo_m
 {
-    int n_herois;
     int *herois; //vetor representando todos os heróis
-    int n_bases;
     int *bases; //vetor representando todas as bases
-    int n_missoes;
     int *missoes; //vetor representando todas as missões
-    int n_habilidades; //número de habilidades distintas possíveis
-    int tamanho_mundo[2];// coordenadas máximas do plano cartesiano (as coordenadas mínimas são 0, 0);
     int relogio;
+    int size_max;// x == y coordenadas máximas do plano cartesiano (as coordenadas mínimas são 0, 0);
+    int n_herois;
+    int n_bases;
+    int n_missoes;
+    int n_habil; //número de habilidades distintas possíveis
 };
 
