@@ -187,6 +187,10 @@ struct mundo_m *destroi_mundo(struct mundo_m *mundo)
 {
     if (!mundo)
         return NULL;
+        
+    free(mundo->herois);
+    free(mundo->bases);
+    free(mundo->missoes);
     destroi_todas_bases(mundo);
     destroi_todas_missoes(mundo);
     destroi_todos_herois(mundo);
