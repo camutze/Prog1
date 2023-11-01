@@ -45,9 +45,9 @@ struct missao_m
 
 struct mundo_m
 {
-    struct heroi_h **herois;   // vetor representando todos os heróis
-    struct base_b **bases;     // vetor representando todas as bases
-    struct missao_m **missoes; // vetor representando todas as missões
+    struct heroi_t *heroi;   // vetor representando todos os heróis
+    struct base_t  *base;     // vetor representando todas as bases
+    struct missao_t *missao; // vetor representando todas as missões
     int relogio;
     int size_max; // x == y coordenadas máximas do plano cartesiano (as coordenadas mínimas são 0, 0);
     int n_herois;
@@ -58,18 +58,18 @@ struct mundo_m
 
 int gera_aleat(int min, int max);
 
-struct heroi_h *cria_um_heroi(int id);
+struct heroi_t *cria_um_heroi(int id);
 
-struct heroi_h *destroi_um_heroi(struct heroi_h *heroi);
+struct heroi_t *destroi_um_heroi(struct heroi_h *heroi);
 
-struct base_b *cria_base(int id);
+struct base_t *cria_base(int id);
 
-struct base_b *destroi_base(struct base_b *base);
+struct base_t *destroi_base(struct base_b *base);
 
-struct missao_m *cria_missao(int id);
+struct missao_t *cria_missao(int id);
 
-struct missao_m *destroi_missao(struct missao_m *missao);
+struct missao_t *destroi_missao(struct missao_m *missao);
 
-struct mundo_m *cria_mundo();
+struct mundo_t *cria_mundo();
 
-struct mundo_m *destroi_mundo(struct mundo_m *mundo);
+struct mundo_t *destroi_mundo(struct mundo_m *mundo);

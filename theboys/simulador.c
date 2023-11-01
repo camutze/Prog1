@@ -6,38 +6,39 @@ int gera_aleat(int min, int max)
     return (rand() % (max - min + 1)) + min;
 }
 
-/*herois INICIO*/
-struct heroi_h *cria_um_heroi(int id)
+void set_aleat(struct set_t *set, int tam)
 {
-    struct heroi_h *heroi;
+    while (set_card(set) < tam)
+        set_add(set, gera_aleat(0, N_HABILIDADES));
+}
 
-    if (!(heroi = malloc(sizeof(struct heroi_h))))
+/*herois INICIO*/
+cria_herois(struct mundo_t *mundo)
+{
+    struct heroi_t *heroi;
+    int tam, i;
+
+    if (!(heroi = malloc(sizeof(struct heroi_t) * mundo->n_herois)))
         return NULL;
+
+    for(i = 0; i < mundo->n_herois; i++)
+    {
+
+    }
 
     heroi->id = id;
     heroi->experiencia = 0;
     heroi->paciencia = gera_aleat(1, 100);
     heroi->velocidade = gera_aleat(50, 5000);
-    heroi->habil = set_create(gera_aleat(1, 3));
-    while (set_card(heroi->habil) < heroi->habil->size)
-        set_add(heroi->habil, gera_aleat(0, N_HABILIDADES)); // Quanto eu inicio aqui?
+
+    tam = gera_aleat(1, 3);
+    heroi->habil = set_create(tam);
+    set_aleat(heroi->habil, tam);
 
     return heroi;
 }
 
-void cria_todos_herois(struct mundo_m *mundo)
-{
-    for (int i = 1; i < mundo->n_herois; i++)
-        mundo->herois[i] = cria_um_heroi(i);
-}
-
-void destroi_todos_herois(struct mundo_m *mundo)
-{
-    for (int i = 1; i < mundo->n_herois; i++)
-        mundo->herois[i] = destroi_um_heroi(mundo->herois[i]);
-}
-
-struct heroi_h *destroi_um_heroi(struct heroi_h *heroi)
+struct heroi_t *destroi_um_heroi(struct heroi_t *heroi)
 {
     if (!heroi)
         return NULL;
@@ -156,19 +157,10 @@ struct mundo_m *cria_mundo()
     mundo->n_herois = N_HABILIDADES * 5;
     mundo->n_bases = mundo->n_herois / 6;
 
-    // aloca os herois
-    if (!(mundo->herois = malloc(sizeof(struct heroi_h) * mundo->n_herois)))
-        return NULL;
-    // aloca as bases
-    if (!(mundo->bases = malloc(sizeof(struct base_b) * mundo->n_bases)))
-        return NULL;
-    // aloca as missoes
-    if (!(mundo->missoes = malloc(sizeof(struct missao_m) * mundo->n_missoes)))
-        return NULL;
 
-    cria_todos_herois(mundo);
-    cria_todas_bases(mundo);
-    cria_todas_missoes(mundo);
+    cria_herois(mundo);
+    cria_bases(mundo);
+    cria_missoes(mundo);
 
     return mundo;
 }
@@ -181,9 +173,6 @@ struct mundo_m *destroi_mundo(struct mundo_m *mundo)
     destroi_todas_missoes(mundo);
     destroi_todos_herois(mundo);
 
-    free(mundo->herois);
-    free(mundo->bases);
-    free(mundo->missoes);
     free(mundo);
 
     return NULL;

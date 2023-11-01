@@ -2,9 +2,16 @@
 #include <stdbool.h>
 
 #include "set.h"
+#include "lef.h"
 #include "eventos.h"
 #include "lista.h"
 #include "simulador.h"
+
+#define EV_CHEGA    0
+#define EV_ESPERA   1
+#define EV_DESISTE  2
+...
+
 
 struct eventos_e
 {
@@ -13,11 +20,11 @@ struct eventos_e
     struct pontos_p *local;
 };
 
-int calcula_distancia(struct pontos_p *local, struct pontos_p *local_destino)
+long calcula_distancia(struct pontos_p *local, struct pontos_p *local_destino)
 {
-    int distancia;
-    int x = (local_destino->x - local->x) * (local_destino->x - local->x);
-    int y = (local_destino->y - local->y) * (local_destino->y - local->y);
+    long distancia;
+    long x = (local_destino->x - local->x) * (local_destino->x - local->x);
+    long y = (local_destino->y - local->y) * (local_destino->y - local->y);
 
     distancia = sqrt(x + y);
 
@@ -40,14 +47,15 @@ se espera:
 senão:
     cria evento DESISTE (agora, H, B)*/
 
-void evento_chega(struct mundo_m *mundo, int tempo, int heroi_pos, int base_pos)
+void evento_chega(struct mundo_m *mundo, int tempo, int h, int b)
 {
     bool espera;
     espera = 0;
+    evento_t *ev ;
 
-    mundo->herois[heroi_pos]->base_id = mundo->bases[base_pos]->id;
+    mundo->herois[h]->base_id = b ;
 
-    if (mundo->bases[base_pos]->presentes->size < mundo->bases[base_pos]->lotacao && lista_vazia(mundo->bases[base_pos]->lista_espera))
+    if (mundo->bases[b]->presentes->size < mundo->bases[base_pos]->lotacao && lista_vazia(mundo->bases[base_pos]->lista_espera))
         espera = true;
     else if (mundo->herois[heroi_pos]->paciencia > (10 * set_card(mundo->bases[base_pos]->lista_espera)))
         espera = true;
@@ -56,7 +64,8 @@ void evento_chega(struct mundo_m *mundo, int tempo, int heroi_pos, int base_pos)
 
     /*Disparo de novos eventos*/
     if (espera)
-        evento_espera(mundo, heroi_pos, base_pos);
+        ev = cria_evento (mundo->tempo, EV_ESPERA, h, b);
+        insere_lef (ev) ;
     else
         evento_desiste(tempo, mundo->herois[heroi_pos], mundo->bases[base_pos]);
     return 1;
