@@ -20,9 +20,7 @@ struct heroi_h *cria_um_heroi(int id)
     heroi->velocidade = gera_aleat(50, 5000);
     heroi->habil = set_create(gera_aleat(1, 3));
     while (set_card(heroi->habil) < heroi->habil->size)
-    {
         set_add(heroi->habil, gera_aleat(0, N_HABILIDADES)); // Quanto eu inicio aqui?
-    }
 
     return heroi;
 }
@@ -30,17 +28,13 @@ struct heroi_h *cria_um_heroi(int id)
 void cria_todos_herois(struct mundo_m *mundo)
 {
     for (int i = 1; i < mundo->n_herois; i++)
-    {
         mundo->herois[i] = cria_um_heroi(i);
-    }
 }
 
 void destroi_todos_herois(struct mundo_m *mundo)
 {
     for (int i = 1; i < mundo->n_herois; i++)
-    {
         mundo->herois[i] = destroi_um_heroi(mundo->herois[i]);
-    }
 }
 
 struct heroi_h *destroi_um_heroi(struct heroi_h *heroi)
@@ -80,17 +74,13 @@ struct base_b *cria_base(int id)
 void cria_todas_bases(struct mundo_m *mundo)
 {
     for (int i = 0; i < mundo->n_bases; i++)
-    {
         mundo->bases[i] = cria_base(i);
-    }
 }
 
 void destroi_todas_bases(struct mundo_m *mundo)
 {
     for (int i = 0; i < mundo->n_bases; i++)
-    {
         mundo->bases[i] = destroi_base(mundo->bases[i]);
-    }
 }
 
 struct base_b *destroi_base(struct base_b *base)
@@ -121,23 +111,22 @@ struct missao_m *cria_missao(int id)
 
     missao->habil = set_create(gera_aleat(6, 10));
 
+    while (set_card(missao->habil) < missao->habil->size)
+        set_add(missao->habil, gera_aleat(0, N_HABILIDADES));
+
     return missao;
 }
 
 void cria_todas_missoes(struct mundo_m *mundo)
 {
     for (int i = 0; i < mundo->n_missoes; i++)
-    {
         mundo->missoes[i] = cria_missao(i);
-    }
 }
 
 void destroi_todas_missoes(struct mundo_m *mundo)
 {
     for (int i = 0; i < mundo->n_missoes; i++)
-    {
         mundo->missoes[i] = destroi_missao(mundo->missoes[i]);
-    }
 }
 
 struct missao_m *destroi_missao(struct missao_m *missao)
@@ -187,12 +176,11 @@ struct mundo_m *destroi_mundo(struct mundo_m *mundo)
 {
     if (!mundo)
         return NULL;
-        
-    
+
     destroi_todas_bases(mundo);
     destroi_todas_missoes(mundo);
     destroi_todos_herois(mundo);
-    
+
     free(mundo->herois);
     free(mundo->bases);
     free(mundo->missoes);

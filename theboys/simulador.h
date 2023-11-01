@@ -10,10 +10,6 @@
 #define N_TAMANHO_MUNDO 20000
 #define N_HABILIDADES 10
 
-/*
-#define N_HEROIS (N_HABILIDADES * 5)
-#define N_BASES (N_HEROIS / 6)
-#define N_MISSOES (T_FIM_DO_MUNDO / 100) */
 
 struct heroi_h
 {
@@ -59,6 +55,8 @@ struct mundo_m
     int n_missoes;
     int n_habil; // número de habilidades distintas possíveis
 };
+
+int gera_aleat(int min, int max);
 
 struct heroi_h *cria_um_heroi(int id);
 
