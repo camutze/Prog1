@@ -189,7 +189,13 @@ int set_copy(struct set_t *s1, struct set_t *s2)
     }
     return 1;
 }
+int set_size (struct set_t *s)
+{
+    if (!s || !s->flag)
+        return 0;
+    return s->size;
 
+}
 void set_print(struct set_t *s)
 {
     int i;

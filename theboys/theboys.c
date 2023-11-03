@@ -11,8 +11,8 @@ void testa_tudo();
 
 int main()
 {
-  struct mundo_m *w = cria_mundo();
-  w = destroi_mundo(w);
+  struct mundo_t *w = cria_mundo();
+  destroi_mundo(w);
   return 0;
 }
 

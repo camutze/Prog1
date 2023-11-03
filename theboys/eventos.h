@@ -1,25 +1,29 @@
-struct eventos_e
-{
-    int tipo;
-    int tempo;
-    struct pontos_p *local;
-};
+#include <stdlib.h>
+#include <stdbool.h>
 
-void evento_chega(struct mundo_m *mundo, int tempo, int heroi_pos, int base_pos);
+#include "set.h"
+#include "lef.h"
+#include "lista.h"
+#include "simulador.h"
 
-void evento_espera(struct mundo_m *mundo, int tempo, struct heroi_h *heroi, struct base_b *base);
 
-void evento_desiste(struct mundo_m *mundo, int tempo, struct heroi_h *heroi, struct base_b *base);
 
-void evento_avisa(struct mundo_m *mundo, int tempo, struct base_b *base);
+/*Tipos de enventos que vao entrar na lef:
+NAO usar 0 ou -1 pois sao #defines da lista_t*/
+#define EV_CHEGA 1
+#define EV_ESPERA 2
+#define EV_DESISTE 3
+#define EV_AVISA 4
+#define EV_ENTRA 5
+#define EV_SAI 6
+#define EV_VIAJA 7
+#define EV_MISSAO 8
 
-void evento_entra(struct mundo_m *mundo, struct mundo_m *m, int tempo, struct heroi_h *heroi, struct base_b *base);
 
-void evento_sai(struct mundo_m *mundo, int tempo, struct heroi_h *heroi, struct base_b *base);
+/*Representa um herói H chegando em uma base B no instante T*/
+void evento_chega(mundo_t *m, int h, int b);
 
-void envento_viaja(struct mundo_m *mundo, int tempo, struct heroi_h *heroi, struct base_b *base);
 
-void evento_missao(struct mundo_m *mundo, int tempo, struct heroi_h *heroi, struct base_b *base);
 
 
 

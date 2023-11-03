@@ -81,4 +81,6 @@ int set_copy (struct set_t *s1, struct set_t *s2);
 // (Does not belong to the TAD definition, but is useful for testing)
 void set_print (struct set_t *s);
 
+int set_size (struct set_t *s);
+
 #endif
