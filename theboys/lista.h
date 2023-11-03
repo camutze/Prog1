@@ -4,9 +4,6 @@
 #ifndef _LISTA_H
 #define _LISTA_H
 
-#define L_FIM -1
-#define L_INICIO 0
-
 // estrutura de um nodo da lista
 typedef struct lnode_t {
   int val ;			// valor armazenado

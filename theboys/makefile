@@ -9,15 +9,16 @@ ENTREGA = $(MAIN)-entrega
 TESTES  = testa-lef
 
 # programa principal
-$(MAIN):   $(MAIN).o lef.o lista.o set.o simulador.o 
-$(MAIN).o: $(MAIN).c lef.h lista.h set.h simulador.h 
-
+$(MAIN):   $(MAIN).o lef.o lista.o set.o simulador.o  eventos.o
+$(MAIN).o: $(MAIN).c lef.h lista.h set.h simulador.h  eventos.h	
+ 
 
 # TADs
 lef.o:   lef.c   lef.h
 lista.o: lista.c lista.h
 set.o:   set.c   set.h
 simulador.o: simulador.c simulador.h
+eventos.o: eventos.c eventos.h
 # eventos.o: eventos.c eventos.h
 
 # Teste da LEF

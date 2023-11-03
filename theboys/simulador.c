@@ -111,11 +111,11 @@ int cria_missoes(struct mundo_t *mundo)
         missao[i].local.x = gera_aleat(0, N_TAMANHO_MUNDO - 1);
         missao[i].local.y = gera_aleat(0, N_TAMANHO_MUNDO - 1);
 
+        missao[i].qtd_imposs = 0;;
         tam = gera_aleat(6, 10);
         missao[i].habil = set_create(tam);
         set_aleat(missao[i].habil, tam);
     }
-
     mundo->missao = missao;
     return 1;
 }
@@ -150,7 +150,7 @@ struct mundo_t *cria_mundo()
     mundo->n_missoes = T_FIM_DO_MUNDO / 100;
     mundo->n_herois = N_HABILIDADES * 5;
     mundo->n_bases = mundo->n_herois / 6;
-
+    
     mundo->eventos = cria_lef();
     cria_herois(mundo);
     cria_bases(mundo);

@@ -39,6 +39,7 @@ struct base_t
 struct missao_t
 {
     int id;
+    int qtd_imposs;
     struct set_t *habil; // conjunto de habilidades necessárias para cumprir a missão
     struct pontos_t local;
 };
