@@ -266,7 +266,7 @@ void lista_imprime(char *nome, lista_t *lst)
     /*se a lista for vazi*/
     if (!lst->head)
     {
-        printf("%s: [ ] (%d elementos)\n", nome, lista_tamanho(lst));
+        printf("%s: [ ] \n", nome, lista_tamanho(lst));
         return;
     }
 
@@ -281,5 +281,5 @@ void lista_imprime(char *nome, lista_t *lst)
         aux = aux->next;
     }
 
-    printf("] (%d elementos)\n", lista_tamanho(lst));
+    printf("] \n", lista_tamanho(lst));
 }
