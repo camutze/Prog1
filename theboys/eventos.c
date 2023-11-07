@@ -20,15 +20,16 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     bool espera;
-    m->relogio = clk;
 
+    testa_ponteiros(m);
+    m->relogio = clk;
     m->heroi[h].base_id = b;
+
     /*se há vagas em B e a fila de espera está vazia:*/
     if (set_card(m->base[b].presentes) < m->base->lotacao && lista_vazia(m->base[b].lista_espera))
         espera = true;
     else
-        /*Aqui se for maior TRUE, se for menor FALSE
-        ******OPERACAO BOLEANA********/
+        /*Se for maior espera TRUE, FALSE caso contrario*/
         espera = (m->heroi[h].paciencia) > (10 * lista_tamanho(m->base->lista_espera));
 
     /*Disparo de novos eventos*/
@@ -36,7 +37,6 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     {
         if (!(ev = cria_evento(m->relogio, EV_ESPERA, h, b)))
             fim_execucao("nao aloc func evento_chega");
-        insere_lef(m->eventos, ev);
     }
     else if (!(ev = cria_evento(m->relogio, EV_DESISTE, h, b)))
         fim_execucao("nao aloc func evento_chega");
@@ -46,12 +46,14 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
+
+    testa_ponteiros(m);
     m->relogio = clk;
 
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
 
-    if (!(ev = cria_evento(m->relogio, EV_ESPERA, h, b)))
+    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))
         fim_execucao("nao aloc func evento_espera");
     insere_lef(m->eventos, ev);
 }
@@ -60,6 +62,8 @@ void evento_desiste(mundo_t *m, int clk, int h)
 {
     struct evento_t *ev;
     int dest_b;
+
+    testa_ponteiros(m);
     m->relogio = clk;
 
     dest_b = gera_aleat(0, m->n_bases - 1);
@@ -69,22 +73,20 @@ void evento_desiste(mundo_t *m, int clk, int h)
     insere_lef(m->eventos, ev);
 }
 
-/*AVISA (T, B):
-
-enquanto houver vaga em B e houver heróis enao sper fila:
-    retira primeiro herói (H') da fila de B
-    adiciona H' ao conjunto de heróis presentes em B
-    cria evento ENTRA (agora, H', B)*/
-
 void evento_avisa(mundo_t *m, int clk, int b)
 {
-    evento_t *ev;
+    struct evento_t *ev;
     int h;
+
+    testa_ponteiros(m);
     m->relogio = clk;
 
+    /*enquanto houver vaga em B e houver heróis esperando na fila*/
     while ((set_card(m->base->presentes) < m->base->lotacao) && !lista_vazia(m->base->lista_espera))
     {
+        /*retira primeiro herói (H') da fila de B*/
         lista_retira(m->base->lista_espera, &h, L_INICIO);
+        /*adiciona H' ao conjunto de heróis presentes em B*/
         set_add(m->base->presentes, h);
 
         if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
@@ -95,33 +97,39 @@ void evento_avisa(mundo_t *m, int clk, int b)
 
 void evento_entra(mundo_t *m, int clk, int h, int b)
 {
-    evento_t *ev;
-    int tpb;
+    struct evento_t *ev;
+    int tpb; // tempo de permanência na base
+
+    testa_ponteiros(m);
     m->relogio = clk;
 
     tpb = 15 + m->heroi[h].paciencia * gera_aleat(1, 20);
 
-    m->relogio += tpb;
-    if (!(ev = cria_evento(m->relogio, EV_SAI, h, b)))
+    /*cria proximo evento que ira acontecer relogio + tpd*/
+    if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
         fim_execucao("nao aloc func evento_entra");
     insere_lef(m->eventos, ev);
 }
 
 void evento_sai(mundo_t *m, int clk, int h, int b)
 {
-    evento_t *ev;
+    struct evento_t *ev;
     int dest_b;
 
+    testa_ponteiros(m);
     m->relogio = clk;
 
+    /*retira H do conjunto de heróis presentes em B*/
     set_del(m->base[b].presentes, h);
-
+    /*escolhe uma base destino D aleatória*/
     dest_b = gera_aleat(0, m->n_bases - 1);
 
+    /*cria ev VIAJA*/
     if (!(ev = cria_evento(m->relogio, EV_VIAJA, h, dest_b)))
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 
+    /*cria ev AVISA*/
     if (!(ev = cria_evento(m->relogio, EV_AVISA, h, dest_b)))
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
@@ -129,32 +137,35 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
 
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
-    evento_t *ev;
-    long dist;    // calcular a distancia que vai viajar e o tempo que vai demorar
-    long duracao; // tempo que vai demorar a viagem
-    int id_origem = m->heroi[h].base_id;
+    struct evento_t *ev;
+    long dist;     // calcular a distancia que vai viajar e o tempo que vai demorar
+    long duracao;  // tempo que vai demorar a viagem
+    int id_origem; // id da base de origem
 
+    testa_ponteiros(m);
     m->relogio = clk;
 
+    id_origem = m->heroi[h].base_id;
     dist = calcula_distancia(m->base[id_origem].local, m->base[b].local);
 
     duracao = dist / m->heroi[h].velocidade;
 
-    m->relogio += duracao;
-    if (!(ev = cria_evento(m->relogio, EV_CHEGA, h, b)))
+    if (!(ev = cria_evento(m->relogio + duracao, EV_CHEGA, h, b)))
         fim_execucao("nao aloc func evento_viaja");
     insere_lef(m->eventos, ev);
 }
 
 void evento_missao(mundo_t *m, int clk, int mis)
 {
-    evento_t *ev;
+    struct evento_t *ev;
     struct set_t *uniao;
     int i, id_base;
     long dist, menor_dist;
 
+    testa_ponteiros(m);
+    m->relogio = clk;
+
     m->missao[mis].tentativa++; // incrementa o numero de tentativas
-    m->relogio = clk;           // atualiza relogio
 
     /*Calculo da distancia da base 0 até a missao*/
     menor_dist = calcula_distancia(m->base[0].local, m->base[mis].local);
@@ -172,10 +183,10 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
     if (!(uniao = set_create(N_HABILIDADES)))
         fim_execucao("set create in fun ev missao");
-    /*Estou na  base mais proxima, que é a id_base e faço a
-     Uniao entre as habilidades dos herois presentes na base id_base
-    e as habilidades necessarias para a missao*/
-    /*ele vai de 0 ate o lotação do conjunto set_t presentes*/
+
+    /*1 - Heroi esta na base mais proxima,onde o id é: "id_base"
+    **faço a uniao de todas as habilidades de todos os herois que estao na base.
+    **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
     i = 0;
     while (i <= m->base[id_base].lotacao)
     {
@@ -187,7 +198,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     }
 
     /* - Aqui ja chega salvo dentro da variavel "Uniao" a uniao de todos as
-    habilidades dos herois que estavam dentro da habilidade "id_base"*/
+    habilidades dos herois que estavam dentro da base "id_base"*/
     /* - Verifica se as habilidades "uniao" contem "m->[mis].habil"*/
     if (set_contains(uniao, m->missao[mis].habil))
     {
@@ -196,22 +207,26 @@ void evento_missao(mundo_t *m, int clk, int mis)
         {
             /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
             if (set_in(m->base[id_base].presentes, i))
-            {
                 m->heroi[i].experiencia += 10;
-            }
         }
     }
     /*se nao estiver apto pra missao adia*/
-    else if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
-        fim_execucao("nao aloc func evento_missao");
-    m->n_miss_impos++;
-    insere_lef(m->eventos, ev);
+    else
+    {
+        m->n_miss_impos++; // incrementa o numero de missões impossiveis
+
+        if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
+            fim_execucao("nao aloc func evento_missao");
+        insere_lef(m->eventos, ev);
+    }
 }
 
 void evento_fim(mundo_t *m)
 {
     int m_compridas;  // missões cumpridas (missao total - missao impossivel)
     float media_tent; // media de tentativas por missão
+
+    testa_ponteiros(m);
 
     for (int i = 0; i < m->n_herois; i++)
     {
@@ -231,16 +246,30 @@ void evento_fim(mundo_t *m)
 int media_missao(mundo_t *m)
 {
     float media;
-    if(!m)
+    if (!m)
         fim_execucao("mundo nao existe");
-    if(!m->missao)
+    if (!m->missao)
         fim_execucao("Missao nao existe");
 
     /*somo todas as as tentativas de cada uma missao, e divido pelo n_missoes*/
     media = 0;
-    for(int i = 0; i < m->n_missoes; i++)
+    for (int i = 0; i < m->n_missoes; i++)
         media += m->missao[i].tentativa;
-    
+
     media /= m->n_missoes;
     return media;
+}
+/*Garanto que os ponteiros estao chegando certos dentro da função*/
+void testa_ponteiros(mundo_t *m)
+{
+    if (!m)
+        fim_execucao("mundo nao existe");
+    if (!m->eventos)
+        fim_execucao("eventos nao existe");
+    if (!m->heroi)
+        fim_execucao("heroi nao existe");
+    if (!m->base)
+        fim_execucao("base nao existe");
+    if (!m->missao)
+        fim_execucao("missao nao existe");
 }

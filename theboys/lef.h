@@ -20,13 +20,13 @@
 /*
  * evento_t possui os dados que descrevem os eventos
  */
-typedef struct evento_t
+struct evento_t
 {
     int tempo; /* tempo logico do evento */
     int tipo;  /* inteiro para diferenciar os diferentes tipos de evento */
     int dado1; /* um inteiro para guardar dados do evento */
     int dado2; /* um inteiro para guardar dados do evento */
-} evento_t;
+};
 
 /*
  * nodo_t eh uma estrutura interna que representa cada nodo da LEF.

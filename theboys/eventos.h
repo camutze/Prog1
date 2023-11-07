@@ -22,26 +22,10 @@ NAO usar 0 ou -1 pois sao #defines da lista_t*/
 #define EV_VIAJA 7
 #define EV_MISSAO 8
 
+/*Retorna a distancia entre duas coordenadas*/
+long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc);
 
 /*Representa um herói H chegando em uma base B no instante T*/
-void evento_chega(mundo_t *m, int clk, int h, int b);
-
-void evento_espera(mundo_t *m, int clk, int h, int b);
-
-void evento_desiste(mundo_t *m, int clk, int h);
-
-void evento_avisa(mundo_t *m, int clk, int b);
-
-void evento_entra(mundo_t *m, int clk, int h, int b);
-
-void evento_sai(mundo_t *m, int clk, int h, int b);
-
-void evento_viaja(mundo_t *m, int clk, int h, int b);
-
-void evento_missao(mundo_t *m, int clk, int b);
-
-
-
 
 
 
