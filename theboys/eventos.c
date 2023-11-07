@@ -16,10 +16,54 @@ long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
     return distancia;
 }
 
+/*Garanto que os ponteiros estao chegando certos dentro da função*/
+void testa_ponteiros(mundo_t *m)
+{
+    if (!m)
+        fim_execucao("mundo nao existe");
+    if (!m->eventos)
+        fim_execucao("eventos nao existe");
+    if (!m->heroi)
+        fim_execucao("heroi nao existe");
+    if (!m->base)
+        fim_execucao("base nao existe");
+    if (!m->missao)
+        fim_execucao("missao nao existe");
+}
+
+/*Retorna a media de tentativas por missao*/
+float media_missao(mundo_t *m)
+{
+    float media;
+    if (!m)
+        fim_execucao("mundo nao existe");
+    if (!m->missao)
+        fim_execucao("Missao nao existe");
+
+    /*somo todas as as tentativas de cada uma missao, e divido pelo n_missoes*/
+    media = 0;
+    for (int i = 0; i < m->n_missoes; i++)
+        media += m->missao[i].tentativa;
+
+    media /= m->n_missoes;
+    return media;
+}
+
+
+/******************EVENTOS************************/
+
 void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     bool espera;
+    /* 45844: CHEGA  HEROI  0 BASE 2 ( 7/ 9) ESPERA
+    ou
+     45844: CHEGA  HEROI  0 BASE 2 ( 7/ 9) DESISTE
+
+    %6d: CHEGA  HEROI %2d BASE %d (%2d/%2d) ESPERA
+    %6d: CHEGA  HEROI %2d BASE %d (%2d/%2d) DESISTE*/
+    printf("%6d: CHEGA  HEROI %2d", clk, h);
+    printf("BASE %d (%2d/%2d) ", b, set_card(m->base[b].presentes), m->base[b].lotacao);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -230,8 +274,10 @@ void evento_fim(mundo_t *m)
 
     for (int i = 0; i < m->n_herois; i++)
     {
-        printf("HEROI %2d PAC  %3d VEL %4d EXP %4d HABS ", m->heroi[i].id, m->heroi[i].paciencia, m->heroi[i].velocidade);
+        printf("HEROI %2.d PAC  %3.d", m->heroi[i].id, m->heroi[i].paciencia);
+        printf(" VEL %4.d EXP %4.d HABS ", m->heroi[i].velocidade, m->heroi[i].experiencia);
         set_print(m->heroi[i].habil);
+        printf("\n");
     }
 
     m_compridas = m->n_missoes - m->n_miss_impos;
@@ -242,35 +288,3 @@ void evento_fim(mundo_t *m)
     printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
 }
 
-/*Retorna a media de tentativas por missao*/
-int media_missao(mundo_t *m)
-{
-    float media;
-    if (!m)
-        fim_execucao("mundo nao existe");
-    if (!m->missao)
-        fim_execucao("Missao nao existe");
-
-    /*somo todas as as tentativas de cada uma missao, e divido pelo n_missoes*/
-    media = 0;
-    for (int i = 0; i < m->n_missoes; i++)
-        media += m->missao[i].tentativa;
-
-    media /= m->n_missoes;
-    return media;
-}
-/*Garanto que os ponteiros estao chegando certos dentro da função*/
-void testa_ponteiros(mundo_t *m)
-{
-    if (!m)
-        fim_execucao("mundo nao existe");
-    if (!m->eventos)
-        fim_execucao("eventos nao existe");
-    if (!m->heroi)
-        fim_execucao("heroi nao existe");
-    if (!m->base)
-        fim_execucao("base nao existe");
-    if (!m->missao)
-        fim_execucao("missao nao existe");
-}
-void fazer

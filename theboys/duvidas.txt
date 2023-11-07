@@ -6,6 +6,8 @@ posso fazer um set_size pra não quebrar tad?
 
 
 
+  printf("HEROI %2d PAC  %3d VEL %4d EXP %4d HABS ", m->heroi[i].id, m->heroi[i].paciencia, m->heroi[i].velocidade);
+     COMO RESOLVO ISSO???
 
 
 
