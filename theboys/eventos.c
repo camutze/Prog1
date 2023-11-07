@@ -102,7 +102,6 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     tpb = 15 + m->heroi[h].paciencia * gera_aleat(1, 20);
 
     m->relogio += tpb;
-    // PERGUTAR, PODE? ev = cria_evento(m->relogio += tpb, EV_SAI, h, b);
     if (!(ev = cria_evento(m->relogio, EV_SAI, h, b)))
         fim_execucao("nao aloc func evento_entra");
     insere_lef(m->eventos, ev);
@@ -147,30 +146,20 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-/*Evento MISSAO
-Uma missão M é disparada no instante T. São características de uma missão:
-
-
-Ao completar uma missão, os heróis da equipe escolhida ganham pontos de experiência.
-Se uma missão não puder ser completada, ela é marcada como “impossível” e adiada de 24 horas.*/
-
-/*1 passo : Descobrir a base[i].local mais proxima da missao[m].local
-
-  2 passo : Assim que descobrir, entro na base, passo todos herois, e somente os que estiverem na base, eu faço a união de suas habilidades
-  */
 void evento_missao(mundo_t *m, int clk, int mis)
 {
     evento_t *ev;
     struct set_t *uniao;
     int i, id_base;
     long dist, menor_dist;
-    m->relogio = clk; /*atualiza relogio*/
+
+    m->missao[mis].tentativa++; // incrementa o numero de tentativas
+    m->relogio = clk;           // atualiza relogio
 
     /*Calculo da distancia da base 0 até a missao*/
     menor_dist = calcula_distancia(m->base[0].local, m->base[mis].local);
     dist = menor_dist;
-
-    /*Calculo da base mais proxima*/
+    /*Calculo da distancia da base i até a missao*/
     for (i = 1; i < m->n_bases; i++)
     {
         if (dist < menor_dist)
@@ -186,9 +175,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*Estou na  base mais proxima, que é a id_base e faço a
      Uniao entre as habilidades dos herois presentes na base id_base
     e as habilidades necessarias para a missao*/
-
-    i = 0;
     /*ele vai de 0 ate o lotação do conjunto set_t presentes*/
+    i = 0;
     while (i <= m->base[id_base].lotacao)
     {
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
@@ -216,42 +204,43 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*se nao estiver apto pra missao adia*/
     else if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
         fim_execucao("nao aloc func evento_missao");
-    m->n_mimposs++;
+    m->n_miss_impos++;
     insere_lef(m->eventos, ev);
 }
 
-/*  apresenta as experiências dos heróis
-  apresenta as estatísticas das missões
-  encerra a simulação
-
-
-  Evento FIM
-O evento FIM encerra a simulação, gerando um relatório com informações sobre heróis e missões:
-
-...
-525600: FIM
-HEROI  0 PAC  32 VEL 3879 EXP  441 HABS [ 5 ]
-HEROI  1 PAC  52 VEL 2974 EXP  620 HABS [ 2 9 ]
-HEROI  2 PAC  94 VEL 1480 EXP  581 HABS [ 0 6 9 ]
-...
-HEROI 48 PAC  39 VEL 1902 EXP  568 HABS [ 6 ]
-HEROI 49 PAC  84 VEL  522 EXP  510 HABS [ 5 ]
-5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO
-
-%6d: FIM
-HEROI %2d PAC %3d VEL %4d EXP %4d HABS [ %d %d %d ... ]
-%d/%d MISSOES CUMPRIDAS (%.2f%%), MEDIA %.2f TENTATIVAS/MISSAO
-Significado:
-
-O herói 0 tem paciência 32, velocidade 3879, experiência 441 e possui o conjunto de habilidades [ 5 ].
-Foram cumpridas 5242 das 5256 missões geradas (99,73% de sucesso); cada missão foi agendada em média 2,09 vezes até ser cumprida*/
 void evento_fim(mundo_t *m)
 {
-    destruir_lef(m->eventos);
+    int m_compridas;  // missões cumpridas (missao total - missao impossivel)
+    float media_tent; // media de tentativas por missão
 
     for (int i = 0; i < m->n_herois; i++)
     {
         printf("HEROI %2d PAC  %3d VEL %4d EXP %4d HABS ", m->heroi[i].id, m->heroi[i].paciencia, m->heroi[i].velocidade);
         set_print(m->heroi[i].habil);
     }
+
+    m_compridas = m->n_missoes - m->n_miss_impos;
+    media_tent = m->n_missoes / m_compridas;
+    /*5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO*/
+
+    printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), ", m_compridas, m->n_missoes, media_tent);
+    printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
+}
+
+/*Retorna a media de tentativas por missao*/
+int media_missao(mundo_t *m)
+{
+    float media;
+    if(!m)
+        fim_execucao("mundo nao existe");
+    if(!m->missao)
+        fim_execucao("Missao nao existe");
+
+    /*somo todas as as tentativas de cada uma missao, e divido pelo n_missoes*/
+    media = 0;
+    for(int i = 0; i < m->n_missoes; i++)
+        media += m->missao[i].tentativa;
+    
+    media /= m->n_missoes;
+    return media;
 }

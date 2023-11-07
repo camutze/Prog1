@@ -12,7 +12,6 @@ void set_aleat(struct set_t *set, int tam)
         set_add(set, gera_aleat(0, N_HABILIDADES));
 }
 
-/*herois INICIO*/
 int cria_herois(struct mundo_t *mundo)
 {
     struct heroi_t *heroi;
@@ -51,9 +50,6 @@ int destroi_herois(struct mundo_t *mundo)
     return 1;
 }
 
-/*herois FIM */
-
-/*base INICIO*/
 int cria_bases(struct mundo_t *mundo)
 {
     struct base_t *base;
@@ -93,10 +89,7 @@ int destroi_bases(struct mundo_t *mundo)
     free(mundo->base);
     return 1;
 }
-/*------------base FIM -------------*/
 
-// lembre se de passar o id sequencial que nao se repete
-/*-----------missao INICIO----------*/
 int cria_missoes(struct mundo_t *mundo)
 {
     struct missao_t *missao;
@@ -111,7 +104,8 @@ int cria_missoes(struct mundo_t *mundo)
 
         missao[i].local.x = gera_aleat(0, N_TAMANHO_MUNDO - 1);
         missao[i].local.y = gera_aleat(0, N_TAMANHO_MUNDO - 1);
-        
+        missao[i].tentativa = 0;
+
         tam = gera_aleat(6, 10);
         missao[i].habil = set_create(tam);
         set_aleat(missao[i].habil, tam);
@@ -134,7 +128,6 @@ int destroi_missoes(struct mundo_t *mundo)
 
     return 1;
 }
-/*-----------missao FIM----------*/
 
 struct mundo_t *cria_mundo()
 {
@@ -148,9 +141,9 @@ struct mundo_t *cria_mundo()
     mundo->size_max = N_TAMANHO_MUNDO;
     mundo->n_habil = N_HABILIDADES;
     mundo->n_missoes = T_FIM_DO_MUNDO / 100;
-    mundo->n_mimposs = 0;
     mundo->n_herois = N_HABILIDADES * 5;
     mundo->n_bases = mundo->n_herois / 6;
+    mundo->n_miss_impos = 0;
     
     mundo->eventos = cria_lef();
     cria_herois(mundo);

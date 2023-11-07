@@ -39,8 +39,9 @@ struct base_t
 struct missao_t
 {
     int id;
-    struct set_t *habil; // conjunto de habilidades necessárias para cumprir a missão
-    struct pontos_t local;
+    struct set_t *habil;   // conjunto de habilidades necessárias para cumprir a missão
+    int tentativa;         // número de tentativas para cumprir a missão
+    struct pontos_t local; // localização da missão
 };
 
 typedef struct mundo_t
@@ -49,13 +50,13 @@ typedef struct mundo_t
     struct heroi_t *heroi;   // vetor representando todos os heróis
     struct base_t *base;     // vetor representando todas as bases
     struct missao_t *missao; // vetor representando todas as missões
-    int relogio;
-    int size_max; // x == y coordenadas máximas do plano cartesiano (as coordenadas mínimas são 0, 0);
-    int n_herois;
-    int n_bases;
-    int n_missoes;
-    int n_mimposs; // número de missões impossíveis
-    int n_habil; // número de habilidades distintas possíveis
+    int relogio;             // tempo atual do mundo
+    int size_max;            // x == y coordenadas máximas do plano cartesiano (as coordenadas mínimas são 0, 0);
+    int n_herois;            // número de heróis
+    int n_bases;             // número de bases
+    int n_missoes;           // número de missões
+    int n_miss_impos;        // número de missões impossíveis
+    int n_habil;             // número de habilidades distintas possíveis
 
 } mundo_t;
 
