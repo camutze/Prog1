@@ -273,3 +273,4 @@ void testa_ponteiros(mundo_t *m)
     if (!m->missao)
         fim_execucao("missao nao existe");
 }
+void fazer
