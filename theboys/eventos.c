@@ -49,20 +49,14 @@ float media_missao(mundo_t *m)
     return media;
 }
 
-
 /******************EVENTOS************************/
 
 void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     bool espera;
-    /* 45844: CHEGA  HEROI  0 BASE 2 ( 7/ 9) ESPERA
-    ou
-     45844: CHEGA  HEROI  0 BASE 2 ( 7/ 9) DESISTE
 
-    %6d: CHEGA  HEROI %2d BASE %d (%2d/%2d) ESPERA
-    %6d: CHEGA  HEROI %2d BASE %d (%2d/%2d) DESISTE*/
-    printf("%6d: CHEGA  HEROI %2d", clk, h);
+    printf("%6d: CHEGA  HEROI %2d ", clk, h);
     printf("BASE %d (%2d/%2d) ", b, set_card(m->base[b].presentes), m->base[b].lotacao);
 
     testa_ponteiros(m);
@@ -81,15 +75,22 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     {
         if (!(ev = cria_evento(m->relogio, EV_ESPERA, h, b)))
             fim_execucao("nao aloc func evento_chega");
+        printf("ESPERA");
     }
-    else if (!(ev = cria_evento(m->relogio, EV_DESISTE, h, b)))
-        fim_execucao("nao aloc func evento_chega");
+    else
+    {
+        if (!(ev = cria_evento(m->relogio, EV_DESISTE, h, b)))
+            fim_execucao("nao aloc func evento_chega");
+        printf("DESISTE");
+    }
     insere_lef(m->eventos, ev);
 }
 
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
+
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, lista_tamanho(m->base->lista_espera));
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -287,4 +288,3 @@ void evento_fim(mundo_t *m)
     printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), ", m_compridas, m->n_missoes, media_tent);
     printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
 }
-

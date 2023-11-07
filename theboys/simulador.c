@@ -28,7 +28,7 @@ int cria_herois(struct mundo_t *mundo)
         heroi[i].velocidade = gera_aleat(50, 5000);
 
         tam = gera_aleat(1, 3);
-        heroi[i].habil = set_create(tam);
+        heroi[i].habil = set_create(N_HABILIDADES - 1);
         set_aleat(heroi[i].habil, tam);
     }
 
