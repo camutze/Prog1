@@ -39,14 +39,13 @@ struct base_t
 struct missao_t
 {
     int id;
-    int qtd_imposs;
     struct set_t *habil; // conjunto de habilidades necessárias para cumprir a missão
     struct pontos_t local;
 };
 
 typedef struct mundo_t
 {   
-    struct lef_t *eventos; // lista de eventos futuros
+    struct lef_t *eventos;   // lista de eventos futuros
     struct heroi_t *heroi;   // vetor representando todos os heróis
     struct base_t *base;     // vetor representando todas as bases
     struct missao_t *missao; // vetor representando todas as missões
@@ -55,6 +54,7 @@ typedef struct mundo_t
     int n_herois;
     int n_bases;
     int n_missoes;
+    int n_mimposs; // número de missões impossíveis
     int n_habil; // número de habilidades distintas possíveis
 
 } mundo_t;

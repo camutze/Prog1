@@ -154,13 +154,17 @@ Uma missão M é disparada no instante T. São características de uma missão:
 Ao completar uma missão, os heróis da equipe escolhida ganham pontos de experiência.
 Se uma missão não puder ser completada, ela é marcada como “impossível” e adiada de 24 horas.*/
 
+/*1 passo : Descobrir a base[i].local mais proxima da missao[m].local
+
+  2 passo : Assim que descobrir, entro na base, passo todos herois, e somente os que estiverem na base, eu faço a união de suas habilidades
+  */
 void evento_missao(mundo_t *m, int clk, int mis)
 {
     evento_t *ev;
     struct set_t *uniao;
     int i, id_base;
     long dist, menor_dist;
-    m->relogio = clk;
+    m->relogio = clk; /*atualiza relogio*/
 
     /*Calculo da distancia da base 0 até a missao*/
     menor_dist = calcula_distancia(m->base[0].local, m->base[mis].local);
@@ -179,22 +183,30 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
     if (!(uniao = set_create(N_HABILIDADES)))
         fim_execucao("set create in fun ev missao");
-    /*Verifica se a base mais proxima tem a equipe apta para a missao*/
-    // intesecçao entre as habilidades dos herois presentes na base id_base e as habilidades necessarias para a missao
-    i = 0;
-    while (i < m->base[id_base].lotacao)
-    {
-        // aqui eu vejo se o heroi esta na lista de presentes
-        if (set_in(m->base[id_base].presentes, i))
-            if (!set_union(m->heroi[i].habil, uniao, uniao)) // faço a uniao de todas as habilidades de todos os herois
+    /*Estou na  base mais proxima, que é a id_base e faço a
+     Uniao entre as habilidades dos herois presentes na base id_base
+    e as habilidades necessarias para a missao*/
 
-                i++;
+    i = 0;
+    /*ele vai de 0 ate o lotação do conjunto set_t presentes*/
+    while (i <= m->base[id_base].lotacao)
+    {
+        /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
+        if (set_in(m->base[id_base].presentes, i))
+            if (!set_union(m->heroi[i].habil, uniao, uniao)) /*Se ele estiver contido faço a uniao de todas as habilidades de todos os herois*/
+                fim_execucao("nao aloc func evento_missao");
+        i++;
     }
-    /*foi apto entao adiciona xp*/
+
+    /* - Aqui ja chega salvo dentro da variavel "Uniao" a uniao de todos as
+    habilidades dos herois que estavam dentro da habilidade "id_base"*/
+    /* - Verifica se as habilidades "uniao" contem "m->[mis].habil"*/
     if (set_contains(uniao, m->missao[mis].habil))
     {
+        /*se estiver apto pra missao, ganha experiencia*/
         for (i = 0; i < m->base[id_base].lotacao; i++)
         {
+            /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
             if (set_in(m->base[id_base].presentes, i))
             {
                 m->heroi[i].experiencia += 10;
@@ -204,14 +216,15 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*se nao estiver apto pra missao adia*/
     else if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
         fim_execucao("nao aloc func evento_missao");
+    m->n_mimposs++;
     insere_lef(m->eventos, ev);
 }
 
 /*  apresenta as experiências dos heróis
   apresenta as estatísticas das missões
   encerra a simulação
-  
-  
+
+
   Evento FIM
 O evento FIM encerra a simulação, gerando um relatório com informações sobre heróis e missões:
 
@@ -234,8 +247,11 @@ O herói 0 tem paciência 32, velocidade 3879, experiência 441 e possui o conju
 Foram cumpridas 5242 das 5256 missões geradas (99,73% de sucesso); cada missão foi agendada em média 2,09 vezes até ser cumprida*/
 void evento_fim(mundo_t *m)
 {
-    long 
-    printf("%d: FIM\n", m->relogio);
-    for(int i = 0; i < m->n_herois; i++)
+    destruir_lef(m->eventos);
 
+    for (int i = 0; i < m->n_herois; i++)
+    {
+        printf("HEROI %2d PAC  %3d VEL %4d EXP %4d HABS ", m->heroi[i].id, m->heroi[i].paciencia, m->heroi[i].velocidade);
+        set_print(m->heroi[i].habil);
+    }
 }

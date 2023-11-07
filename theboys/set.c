@@ -5,6 +5,8 @@
 struct set_t *set_create(int max)
 {
     struct set_t *s;
+    if(!max)
+        max = 1;
 
     if (!(s = malloc(sizeof(struct set_t)))) // aloca memoria para o set
         return 0;
@@ -212,5 +214,4 @@ void set_print(struct set_t *s)
         i++;
     }
     printf("] ");
-    printf("(%d items) \n", s->num);
 }
