@@ -19,7 +19,6 @@ lista.o: lista.c lista.h
 set.o:   set.c   set.h
 simulador.o: simulador.c simulador.h
 eventos.o: eventos.c eventos.h
-# eventos.o: eventos.c eventos.h
 
 # Teste da LEF
 testa-lef:    testa-lef.o  lef.o

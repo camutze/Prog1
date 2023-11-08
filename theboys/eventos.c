@@ -16,7 +16,6 @@ long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
     return distancia;
 }
 
-/*Garanto que os ponteiros estao chegando certos dentro da função*/
 void testa_ponteiros(mundo_t *m)
 {
     if (!m)
@@ -49,15 +48,35 @@ float media_missao(mundo_t *m)
     return media;
 }
 
+struct set_t *uniao_habilidades(mundo_t *m, int id_base)
+{
+    struct set_t *uniao;
+    int i;
+
+    if (!(uniao = set_create(N_HABILIDADES)))
+        fim_execucao("set create in fun uniao_habilidades");
+
+    /*1 - Heroi esta na base mais proxima,onde o id é: "id_base"
+    **faço a uniao de todas as habilidades de todos os herois que estao na base.
+    **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
+    i = 0;
+    while (i <= m->base[id_base].lotacao)
+    {
+        /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
+        if (set_in(m->base[id_base].presentes, i))
+            if (!set_union(m->heroi[i].habil, uniao, uniao)) /*Se ele estiver contido faço a uniao de todas as habilidades de todos os herois*/
+                fim_execucao("nao aloc func evento_missao");
+        i++;
+    }
+    return uniao;
+}
+
 /******************EVENTOS************************/
 
 void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     bool espera;
-
-    printf("%6d: CHEGA  HEROI %2d ", clk, h);
-    printf("BASE %d (%2d/%2d) ", b, set_card(m->base[b].presentes), m->base[b].lotacao);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -69,6 +88,10 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     else
         /*Se for maior espera TRUE, FALSE caso contrario*/
         espera = (m->heroi[h].paciencia) > (10 * lista_tamanho(m->base->lista_espera));
+
+    /*Imprime o evento*/
+    printf("%6d: CHEGA  HEROI %2d ", clk, h);
+    printf("BASE %d (%2d/%2d) ", b, set_card(m->base[b].presentes), m->base[b].lotacao);
 
     /*Disparo de novos eventos*/
     if (espera)
@@ -130,7 +153,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
     while ((set_card(m->base->presentes) < m->base->lotacao) && !lista_vazia(m->base->lista_espera))
     {
-        printf("%6.d: AVISA  PORTEIRO BASE %d (%2d/%2d)", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao); 
+        printf("%6.d: AVISA  PORTEIRO BASE %d (%2d/%2d)", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao);
         lista_imprime("FILA ", m->base[b].lista_espera);
 
         /*retira primeiro herói (H') da fila de B*/
@@ -156,16 +179,12 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     tpb = 15 + m->heroi[h].paciencia * gera_aleat(1, 20);
     printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
-
     /*cria proximo evento que ira acontecer relogio + tpd*/
     if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
         fim_execucao("nao aloc func evento_entra");
     insere_lef(m->eventos, ev);
 }
-/*46101: SAI    HEROI 30 BASE 2 ( 7/9)
 
-%6d: SAI    HEROI %2d BASE %d (%2d/%2d)
-Significado: no instante 46101 o herói 30 sai da base 2, que passa a ter 7 heróis presentes e lotação de 9.*/
 void evento_sai(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -191,9 +210,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 }
-/*46101: VIAJA  HEROI 30 BASE 2 BASE 6 DIST 6922 VEL 4763 CHEGA 46102
 
-%6d: VIAJA  HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d*/
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -209,37 +226,17 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
 
     duracao = dist / m->heroi[h].velocidade;
 
-    printf("%6.d: VIAJA  HEROI %2.d BASE %d BASE %d DIST %d VEL %d CHEGA %d", clk, h, m->heroi[h].base_id, b, dist, m->heroi[h].velocidade, clk + duracao);
-
+    printf("%6.d: VIAJA  HEROI %2.d BASE %d BASE %d DIST %ld VEL %d CHEGA %ld, ", clk, h, id_origem, b, dist, m->heroi[h].velocidade, clk + duracao);
     if (!(ev = cria_evento(m->relogio + duracao, EV_CHEGA, h, b)))
         fim_execucao("nao aloc func evento_viaja");
     insere_lef(m->eventos, ev);
 }
 
-/* 45952: MISSAO 3053 HAB REQ: [ 0 3 4 5 8 9 ]
- 45952: MISSAO 3053 HAB BASE 3: [ 0 1 2 3 4 5 6 7 9 ]
- 45952: MISSAO 3053 HAB BASE 6: [ 0 2 5 7 8 9 ]
- 45952: MISSAO 3053 HAB BASE 4: [ 0 2 3 5 6 7 8 9 ]
- 45952: MISSAO 3053 HAB BASE 0: [ 0 1 2 3 4 5 6 8 9 ]
- 45952: MISSAO 3053 CUMPRIDA BASE 0 HEROIS: [ 8 11 16 18 23 24 39 ]
-ou 
- 45952: MISSAO 3053 IMPOSSIVEL
 
-%6d: MISSAO %d HAB REQ: [ %d %d ... ]
-%6d: MISSAO %d HAB BASE %d: [ %d %d ... ]
-%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: [ %d %d ... ]
-%6d: MISSAO %d IMPOSSIVEL
-Significado:
-
-Linha “HAB REQ”: a missão 3053 requer as habilidades 0, 3, 4, 5, 8 e 9.
-Linha “HAB BASE 3”: as habilidades conjuntas dos heróis da base 3 são 0, 1, 2, 3, 4, 5, 6, 7 e 9; as bases são listadas na ordem de distâncias crescentes do local da missão.
-… (idem para as demais bases)
-Linha “CUMPRIDA”: a missão 3053 foi cumprida pela equipe da base 0, composta pelos heróis 8, 11, 16, 18, 23, 24 e 39.
-Linha “IMPOSSIVEL”: não foi encontrada equipe para cumprir a missão 3053 naquele momento e ela foi reagendada.*/
 void evento_missao(mundo_t *m, int clk, int mis)
 {
     struct evento_t *ev;
-    struct set_t *uniao;
+    struct set_t *uniao, *uniao2;
     int i, id_base;
     long dist, menor_dist;
 
@@ -254,38 +251,33 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*Calculo da distancia da base 0 até a missao*/
     menor_dist = calcula_distancia(m->base[0].local, m->base[mis].local);
     dist = menor_dist;
+    uniao = uniao_habilidades(m, 0);
+    uniao2 = uniao;
+
     /*Calculo da distancia da base i até a missao*/
-    for (i = 1; i < m->n_bases; i++)
+    i = 0;
+    do
     {
+        printf("%6.d: MISSAO %d HAB BASE %d: ", clk, mis, i);
+        set_print(uniao);
         if (dist < menor_dist)
-        {
+        {   
+            uniao2 = uniao;
             menor_dist = dist;
             id_base = i;
         }
+        else
+            free(uniao);
+        uniao = uniao_habilidades(m, i);
         dist = calcula_distancia(m->base[i].local, m->base[mis].local);
-    }
-
-    if (!(uniao = set_create(N_HABILIDADES)))
-        fim_execucao("set create in fun ev missao");
-
-    /*1 - Heroi esta na base mais proxima,onde o id é: "id_base"
-    **faço a uniao de todas as habilidades de todos os herois que estao na base.
-    **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
-    i = 0;
-    while (i <= m->base[id_base].lotacao)
-    {
-        /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
-        if (set_in(m->base[id_base].presentes, i))
-            if (!set_union(m->heroi[i].habil, uniao, uniao)) /*Se ele estiver contido faço a uniao de todas as habilidades de todos os herois*/
-                fim_execucao("nao aloc func evento_missao");
-        i++;
-    }
+    } while (i < m->n_bases);
 
     /* - Aqui ja chega salvo dentro da variavel "Uniao" a uniao de todos as
     habilidades dos herois que estavam dentro da base "id_base"*/
     /* - Verifica se as habilidades "uniao" contem "m->[mis].habil"*/
     if (set_contains(uniao, m->missao[mis].habil))
     {
+        printf("%6.d: MISSAO %d CUMPRIDA BASE %d HEROIS:", clk, mis, id_base);
         /*se estiver apto pra missao, ganha experiencia*/
         for (i = 0; i < m->base[id_base].lotacao; i++)
         {
@@ -298,7 +290,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     else
     {
         m->n_miss_impos++; // incrementa o numero de missões impossiveis
-
+        printf("%6d: MISSAO %d IMPOSSIVEL", clk, mis);
         if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
             fim_execucao("nao aloc func evento_missao");
         insere_lef(m->eventos, ev);
