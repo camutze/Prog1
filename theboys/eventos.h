@@ -55,7 +55,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b);
 void evento_viaja(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a missao de um heroi .*/
-void evento_missao(mundo_t *m, int clk, int mis);
+void evento_missao(mundo_t *m, int clk, int mis, int id_base);
 
 /*Função responsável por tratar o fim da simulação .*/
 void evento_fim(mundo_t *m);

@@ -232,11 +232,11 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
 }
 
 
-void evento_missao(mundo_t *m, int clk, int mis)
+void evento_missao(mundo_t *m, int clk, int mis, int id_base)
 {
     struct evento_t *ev;
     struct set_t *uniao, *uniao2;
-    int i, id_base;
+    int i;
     long dist, menor_dist;
 
     printf("%6.d: MISSAO %d HAB REQ: ", clk, mis);
