@@ -79,6 +79,6 @@ int destroi_mundo(struct mundo_t *mundo);
 
 void fim_execucao(char *msg);
 
-int relogio_mundo(struct mundo_t *mundo);
+int retorna_relogio(struct mundo_t *mundo);
 
-struct evento_t *eventos_mundo(mundo_t *mundo);
+struct evento_t *retorna_eventos(mundo_t *mundo);

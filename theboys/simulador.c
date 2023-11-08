@@ -170,12 +170,12 @@ int destroi_mundo(struct mundo_t *mundo)
     return 1;
 }
 
-int relogio_mundo(mundo_t *mundo)
+int retorna_relogio(mundo_t *mundo)
 {
     return mundo->relogio;
 }
 
-struct evento_t *eventos_mundo(mundo_t *mundo)
+struct evento_t *retorna_eventos(mundo_t *mundo)
 {
     return mundo->eventos;
 }
