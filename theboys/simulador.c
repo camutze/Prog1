@@ -109,7 +109,6 @@ int cria_missoes(struct mundo_t *mundo)
 
         missao[i].habil = set_create(N_HABILIDADES -1);
         tam = gera_aleat(5, 9);
-        printf("%d \n", tam);
         
         set_aleat(missao[i].habil, tam);
     }

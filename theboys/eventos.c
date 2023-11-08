@@ -4,7 +4,6 @@
 
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
 {
-
     long distancia;
 
     // calculo da distancia
@@ -270,12 +269,13 @@ void evento_missao(mundo_t *m, int clk, int mis)
             free(uniao);
         uniao = uniao_habilidades(m, i);
         dist = calcula_distancia(m->base[i].local, m->base[mis].local);
+        i++;
     } while (i < m->n_bases);
 
     /* - Aqui ja chega salvo dentro da variavel "Uniao" a uniao de todos as
     habilidades dos herois que estavam dentro da base "id_base"*/
     /* - Verifica se as habilidades "uniao" contem "m->[mis].habil"*/
-    if (set_contains(uniao, m->missao[mis].habil))
+    if (set_contains(uniao2, m->missao[mis].habil))
     {
         printf("%6.d: MISSAO %d CUMPRIDA BASE %d HEROIS:", clk, mis, id_base);
         /*se estiver apto pra missao, ganha experiencia*/
