@@ -1,12 +1,9 @@
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
+/*Eventos feito por Carlos A. T. Mutzenberg
+**GRR 20215520*/
+#ifndef _EVENTOS_H
+#define _EVENTOS_H
 
-#include "set.h"
-#include "lef.h"
-#include "lista.h"
 #include "simulador.h"
-
 
 /*Define Lista*/
 #define L_FIM -1
@@ -66,4 +63,4 @@ void evento_fim(mundo_t *m);
 /*Função responsável por tratar o inicio da simulação .*/
 void evento_inicia(mundo_t *m);
 
-
+#endif

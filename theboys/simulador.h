@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "set.h"
 #include "lista.h"
 #include "lef.h"
@@ -81,4 +82,4 @@ void fim_execucao(char *msg);
 
 int retorna_relogio(struct mundo_t *mundo);
 
-struct evento_t *retorna_eventos(mundo_t *mundo);
+struct lef_t *retorna_eventos(mundo_t *mundo);

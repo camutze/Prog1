@@ -1,4 +1,8 @@
-#include <stdlib.h>
+/*Simulador feito por Carlos A. T. Mutzenberg
+**GRR 20215520*/
+#ifndef _SIMULADOR_H
+#define _SIMULADOR_H
+
 #include "simulador.h"
 
 int gera_aleat(int min, int max)
@@ -175,7 +179,7 @@ int retorna_relogio(mundo_t *mundo)
     return mundo->relogio;
 }
 
-struct evento_t *retorna_eventos(mundo_t *mundo)
+struct lef_t *retorna_eventos(mundo_t *mundo)
 {
     return mundo->eventos;
 }
@@ -185,3 +189,5 @@ void fim_execucao(char *msg)
     printf("Erro: %s\n", msg);
     exit(-1);
 }
+
+#endif
