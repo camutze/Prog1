@@ -5,14 +5,17 @@
 #include <stdlib.h>
 
 #include "simulador.h"
+#include "eventos.h"
 
 int main()
 {
   struct mundo_t *mundo;
+  struct evento_t *ev;
 
   mundo = cria_mundo();
+  destroi_mundo(mundo);
 
-  /*
+  
    while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
    {
      ev = retira_lef(retorna_eventos(mundo));
@@ -59,7 +62,6 @@ int main()
      }
    }
 
- */
-  destroi_mundo(mundo);
+ 
   return 0;
 }

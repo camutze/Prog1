@@ -1,7 +1,5 @@
 /*Simulador feito por Carlos A. T. Mutzenberg
 **GRR 20215520*/
-#ifndef _SIMULADOR_H
-#define _SIMULADOR_H
 
 #include "simulador.h"
 
@@ -189,5 +187,3 @@ void fim_execucao(char *msg)
     printf("Erro: %s\n", msg);
     exit(-1);
 }
-
-#endif

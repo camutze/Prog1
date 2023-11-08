@@ -1,3 +1,6 @@
+#ifndef _SIMULADOR_H
+#define _SIMULADOR_H
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,3 +86,5 @@ void fim_execucao(char *msg);
 int retorna_relogio(struct mundo_t *mundo);
 
 struct lef_t *retorna_eventos(mundo_t *mundo);
+
+#endif
