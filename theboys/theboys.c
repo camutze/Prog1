@@ -6,13 +6,33 @@
 #include "set.h"
 #include "lef.h"
 #include "simulador.h"
-
-void testa_tudo();
+#include "lista.h"
+#include "eventos.h"
 
 int main()
 {
-  struct mundo_t *w = cria_mundo();
-  destroi_mundo(w);
+  struct mundo_t *mundo;
+  struct evento_t *evento;
+
+  mundo = cria_mundo();
+  evento_inicia(mundo);
+
+  while (relogio_mundo(mundo) < T_FIM_DO_MUNDO)
+  {
+    evento = retira_lef(mundo->eventos);
+    
+    switch ()
+    {
+    case /* constant-expression */:
+      /* code */
+      break;
+    
+    default:
+      break;
+    }
+  }
+  
+
+  destroi_mundo(mundo);
   return 0;
 }
-

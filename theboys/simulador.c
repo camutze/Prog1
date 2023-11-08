@@ -170,6 +170,16 @@ int destroi_mundo(struct mundo_t *mundo)
     return 1;
 }
 
+int relogio_mundo(mundo_t *mundo)
+{
+    return mundo->relogio;
+}
+
+struct evento_t *eventos_mundo(mundo_t *mundo)
+{
+    return mundo->eventos;
+}
+
 void fim_execucao(char *msg)
 {
     printf("Erro: %s\n", msg);

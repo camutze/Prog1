@@ -5,7 +5,6 @@
 #include "lista.h"
 #include "lef.h"
 
-
 #define T_INICIO 0
 #define T_FIM_DO_MUNDO 525600
 #define N_TAMANHO_MUNDO 20000
@@ -45,7 +44,7 @@ struct missao_t
 };
 
 typedef struct mundo_t
-{   
+{
     struct lef_t *eventos;   // lista de eventos futuros
     struct heroi_t *heroi;   // vetor representando todos os heróis
     struct base_t *base;     // vetor representando todas as bases
@@ -79,3 +78,7 @@ struct mundo_t *cria_mundo();
 int destroi_mundo(struct mundo_t *mundo);
 
 void fim_execucao(char *msg);
+
+int relogio_mundo(struct mundo_t *mundo);
+
+struct evento_t *eventos_mundo(mundo_t *mundo);

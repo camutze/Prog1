@@ -319,3 +319,41 @@ void evento_fim(mundo_t *m)
     printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), ", m_compridas, m->n_missoes, media_tent);
     printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
 }
+/*para cada herói H:
+    base  = número aleatório [0...N_BASES-1]
+    tempo = número aleatório [0...4320]  // 4320 = 60*24*3 = 3 dias
+    inserir na LEF o evento CHEGA (tempo, H, base)
+
+para cada missão M:
+    tempo = número aleatório [0...T_FIM_DO_MUNDO]
+    inserir na LEF o evento MISSÃO (tempo, M) 
+
+inserir na LEF o evento FIM (T) com T = T_FIM_DO_MUNDO*/
+void evento_inicia(mundo_t *m)
+{
+    struct evento_t *ev;
+    int base, tempo;
+
+    testa_ponteiros(m);
+
+    for (int i = 0; i < m->n_herois; i++)
+    {
+        base = gera_aleat(0, m->n_bases - 1);
+        tempo = gera_aleat(0, T_FIM_DO_MUNDO); // 4320 = 60*24*3 = 3 dias
+        if (!(ev = cria_evento(tempo, EV_CHEGA, i, base)))
+            fim_execucao("nao aloc func evento_inicia");
+        insere_lef(m->eventos, ev);
+    }
+
+    for (int i = 0; i < m->n_missoes; i++)
+    {
+        tempo = gera_aleat(0, T_FIM_DO_MUNDO);
+        if (!(ev = cria_evento(tempo, EV_MISSAO, i, 0)))
+            fim_execucao("nao aloc func evento_inicia");
+        insere_lef(m->eventos, ev);
+    }
+
+    if (!(ev = cria_evento(T_FIM_DO_MUNDO, EV_FIM, 0, 0)))
+        fim_execucao("nao aloc func evento_inicia");
+    insere_lef(m->eventos, ev);
+}
