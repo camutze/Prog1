@@ -1,5 +1,7 @@
 /*Simulador feito por Carlos A. T. Mutzenberg
 **GRR 20215520*/
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "simulador.h"
 

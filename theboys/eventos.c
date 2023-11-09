@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#include "simulador.h"
 #include "eventos.h"
 
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)

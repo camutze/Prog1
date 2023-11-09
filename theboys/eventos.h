@@ -3,7 +3,16 @@
 #ifndef _EVENTOS_H
 #define _EVENTOS_H
 
+#include <math.h>
+
+#include "lef.h"
+#include "lista.h"
+#include "set.h"
+
+
 #include "simulador.h"
+#include "eventos.h"
+
 
 /*Define Lista*/
 #define L_FIM -1
@@ -23,8 +32,6 @@ NAO usar 0 ou -1 pois sao #defines da lista_t*/
 /*Retorna a distancia entre duas coordenadas*/
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc);
 
-/*Testa se os elementos alocados dentro de mundo estao ok, incluso o mundo
-caso não estiver ok, finaliza a execução*/
 void testa_ponteiros(mundo_t *m);
 
 /*Calcula a média de tentativas para uma missão em um mundo dado.*/

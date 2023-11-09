@@ -4,13 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "lef.h"
+#include "set.h"
+#include "lista.h"
+
 #include "simulador.h"
 #include "eventos.h"
 
 int main()
 {
   struct mundo_t *mundo;
-  struct eventos_t *ev;
+  struct evento_t *ev;
 
   mundo = cria_mundo();
   evento_inicia(mundo);
@@ -18,7 +22,9 @@ int main()
   
   while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
   {
+    
     ev = retira_lef(retorna_eventos(mundo));
+
     printf("\n");
 
     switch (ev->tipo)
