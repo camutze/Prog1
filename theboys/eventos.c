@@ -231,7 +231,6 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-
 void evento_missao(mundo_t *m, int clk, int mis, int id_base)
 {
     struct evento_t *ev;
@@ -260,7 +259,7 @@ void evento_missao(mundo_t *m, int clk, int mis, int id_base)
         printf("%6.d: MISSAO %d HAB BASE %d: ", clk, mis, i);
         set_print(uniao);
         if (dist < menor_dist)
-        {   
+        {
             uniao2 = uniao;
             menor_dist = dist;
             id_base = i;
@@ -326,7 +325,7 @@ void evento_fim(mundo_t *m)
 
 para cada missão M:
     tempo = número aleatório [0...T_FIM_DO_MUNDO]
-    inserir na LEF o evento MISSÃO (tempo, M) 
+    inserir na LEF o evento MISSÃO (tempo, M)
 
 inserir na LEF o evento FIM (T) com T = T_FIM_DO_MUNDO*/
 void evento_inicia(mundo_t *m)
@@ -339,20 +338,21 @@ void evento_inicia(mundo_t *m)
     for (int i = 0; i < m->n_herois; i++)
     {
         base = gera_aleat(0, m->n_bases - 1);
-        tempo = gera_aleat(0, T_FIM_DO_MUNDO); // 4320 = 60*24*3 = 3 dias
+        tempo = gera_aleat(0, 4320); // 4320 = 60*24*3 = 3 dias
         if (!(ev = cria_evento(tempo, EV_CHEGA, i, base)))
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
     }
 
+    ev = NULL;
     for (int i = 0; i < m->n_missoes; i++)
     {
-        tempo = gera_aleat(0, T_FIM_DO_MUNDO);
+        tempo = gera_aleat(0, T_FIM_DO_MUNDO - 1);
         if (!(ev = cria_evento(tempo, EV_MISSAO, i, 0)))
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
     }
-
+    ev = NULL;
     if (!(ev = cria_evento(T_FIM_DO_MUNDO, EV_FIM, 0, 0)))
         fim_execucao("nao aloc func evento_inicia");
     insere_lef(m->eventos, ev);
