@@ -59,7 +59,6 @@ typedef struct mundo_t
     int n_habil;             // número de habilidades distintas possíveis
 
 } mundo_t;
-#include <stdio.h>
 
 int gera_aleat(int min, int max);
 

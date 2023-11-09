@@ -108,7 +108,6 @@ struct evento_t *retira_lef(struct lef_t *l)
     l->primeiro = aux->prox;
 
     e = aux->evento;
-    free(aux);
 
     return e;
 }

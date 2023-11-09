@@ -18,27 +18,29 @@ int main()
 
   mundo = cria_mundo();
   evento_inicia(mundo);
-  
-  
+
   while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
   {
-    
+
     ev = retira_lef(retorna_eventos(mundo));
 
     printf("\n");
 
-    switch (ev->tipo)
+    switch (EV_ENTRA)
     {
     case EV_CHEGA:
       evento_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_ESPERA:
       evento_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_DESISTE:
       evento_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_AVISA:
@@ -47,29 +49,36 @@ int main()
 
     case EV_ENTRA:
       evento_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_SAI:
       evento_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_VIAJA:
       evento_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
 
     case EV_MISSAO:
       evento_missao(mundo, ev->tempo, ev->dado1, ev->dado2);
+      free(ev);
       break;
     case EV_FIM:
       evento_fim(mundo);
+      free(ev);
+
       break;
 
     default:
       break;
+      
     }
+    //chamar eventro destroi
   }
 
-  imprime_lef(mundo->eventos);
   destroi_mundo(mundo);
   return 0;
 }
