@@ -54,14 +54,14 @@ struct set_t *uniao_habilidades(mundo_t *m, int id_base)
     struct set_t *uniao;
     int i;
 
-    if (!(uniao = set_create(N_HABILIDADES)))
+    if (!(uniao = set_create(N_HABILIDADES - 1)))
         fim_execucao("set create in fun uniao_habilidades");
 
     /*1 - Heroi esta na base mais proxima,onde o id é: "id_base"
     **faço a uniao de todas as habilidades de todos os herois que estao na base.
     **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
     i = 0;
-    while (i <= m->base[id_base].lotacao)
+    while (i < m->base[id_base].lotacao)
     {
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
         if (set_in(m->base[id_base].presentes, i))
@@ -75,16 +75,16 @@ struct set_t *uniao_habilidades(mundo_t *m, int id_base)
 /*Adiciona experiencia aos herois que estao na base*/
 void adiciona_exp(mundo_t *m, int id_base)
 {
-     for (int i = 0; i < m->base[id_base].lotacao; i++)
-        {
-            /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
-            if (set_in(m->base[id_base].presentes, i))
-                m->heroi[i].experiencia += 10;
-        }
+    for (int i = 0; i < m->base[id_base].lotacao; i++)
+    {
+        /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
+        if (set_in(m->base[id_base].presentes, i))
+            m->heroi[i].experiencia += 10;
+    }
 }
 
 /******************EVENTOS************************/
-//ok
+// ok
 void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -121,7 +121,7 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-//ok
+// ok
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -139,7 +139,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-//ok
+// ok
 void evento_desiste(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -181,7 +181,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
         insere_lef(m->eventos, ev);
     }
 }
-//ok
+// ok
 void evento_entra(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -193,7 +193,7 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
     set_add(m->base[b].presentes, h);
     m->base[b].lotacao++;
-    
+
     printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
@@ -223,11 +223,11 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 
     /*cria ev AVISA*/
-    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))// BASE b ou base de destino dest_b???????????
+    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b))) // BASE b ou base de destino dest_b???????????
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 }
-//ok
+// ok
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -278,7 +278,7 @@ void evento_missao(mundo_t *m, int clk, int mis, int id_base)
         set_print(uniao);
         if (dist < menor_dist)
         {
-            uniao2 = uniao; //uniao 2 é pra salvar a uniao da base mais proxima
+            uniao2 = uniao; // uniao 2 é pra salvar a uniao da base mais proxima
             menor_dist = dist;
             id_base = i;
         }
@@ -297,7 +297,6 @@ void evento_missao(mundo_t *m, int clk, int mis, int id_base)
         printf("%6.d: MISSAO %d CUMPRIDA BASE %d HEROIS:", clk, mis, id_base);
         /*se estiver apto pra missao, ganha experiencia*/
         adiciona_exp(m, id_base);
-       
     }
     /*se nao estiver apto pra missao adia*/
     else
@@ -335,7 +334,6 @@ void evento_fim(mundo_t *m)
     exit(0);
 }
 
-
 void evento_inicia(mundo_t *m)
 {
     struct evento_t *ev;
@@ -352,16 +350,15 @@ void evento_inicia(mundo_t *m)
         insere_lef(m->eventos, ev);
     }
 
-    ev = NULL;
     for (int i = 0; i < m->n_missoes; i++)
     {
         tempo = gera_aleat(0, T_FIM_DO_MUNDO - 1);
-        if (!(ev = cria_evento(tempo, EV_MISSAO, i, 0)))
+        if (!(ev = cria_evento(tempo, EV_MISSAO, 3, 0)))
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
     }
-    ev = NULL;
     if (!(ev = cria_evento(T_FIM_DO_MUNDO, EV_FIM, 0, 0)))
         fim_execucao("nao aloc func evento_inicia");
     insere_lef(m->eventos, ev);
+
 }
