@@ -18,6 +18,20 @@ int main()
 
   mundo = cria_mundo();
   evento_inicia(mundo);
+  /*for (int i = 0; i < mundo->n_herois; i++)
+  {
+    printf("Heroi %d: %d %d %d %d", i, mundo->heroi[i].experiencia, mundo->heroi[i].paciencia, mundo->heroi[i].velocidade, mundo->heroi[i].base_id);
+    printf(" card habil: %d", set_card(mundo->heroi[i].habil));
+    set_print(mundo->heroi[i].habil);
+    printf("\n");
+  }*/
+  /*
+    for (int i = 0; i < mundo->n_bases; i++)
+    {
+      printf("Base %d: %d %d %d", i, mundo->base[i].id, mundo->base[i].lotacao, mundo->base[i].local.x);
+      printf(" card habil: %d", set_card(mundo->base[i].presentes));
+      printf("\n");
+    }*/
 
   while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
   {
@@ -26,21 +40,18 @@ int main()
 
     printf("\n");
 
-    switch (EV_ENTRA)
+    switch (ev->tipo)
     {
     case EV_CHEGA:
       evento_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_ESPERA:
       evento_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_DESISTE:
       evento_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_AVISA:
@@ -49,36 +60,30 @@ int main()
 
     case EV_ENTRA:
       evento_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_SAI:
       evento_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_VIAJA:
       evento_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
 
     case EV_MISSAO:
       evento_missao(mundo, ev->tempo, ev->dado1, ev->dado2);
-      free(ev);
       break;
     case EV_FIM:
       evento_fim(mundo);
-      free(ev);
-
       break;
 
     default:
       break;
-      
     }
-    //chamar eventro destroi
+    free(ev);
   }
 
   destroi_mundo(mundo);
+
   return 0;
 }

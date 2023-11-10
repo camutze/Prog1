@@ -72,8 +72,19 @@ struct set_t *uniao_habilidades(mundo_t *m, int id_base)
     return uniao;
 }
 
-/******************EVENTOS************************/
+/*Adiciona experiencia aos herois que estao na base*/
+void adiciona_exp(mundo_t *m, int id_base)
+{
+     for (int i = 0; i < m->base[id_base].lotacao; i++)
+        {
+            /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
+            if (set_in(m->base[id_base].presentes, i))
+                m->heroi[i].experiencia += 10;
+        }
+}
 
+/******************EVENTOS************************/
+//ok
 void evento_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -84,11 +95,11 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     m->heroi[h].base_id = b;
 
     /*se há vagas em B e a fila de espera está vazia:*/
-    if (set_card(m->base[b].presentes) < m->base->lotacao && lista_vazia(m->base[b].lista_espera))
+    if (set_card(m->base[b].presentes) < m->base[b].lotacao && lista_vazia(m->base[b].lista_espera))
         espera = true;
     else
         /*Se for maior espera TRUE, FALSE caso contrario*/
-        espera = (m->heroi[h].paciencia) > (10 * lista_tamanho(m->base->lista_espera));
+        espera = (m->heroi[h].paciencia) > (10 * lista_tamanho(m->base[b].lista_espera));
 
     /*Imprime o evento*/
     printf("%6d: CHEGA  HEROI %2d ", clk, h);
@@ -110,6 +121,7 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
+//ok
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -127,6 +139,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
+//ok
 void evento_desiste(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -152,23 +165,23 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     m->relogio = clk;
 
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
-    while ((set_card(m->base->presentes) < m->base->lotacao) && !lista_vazia(m->base->lista_espera))
+    while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
     {
-        printf("%6.d: AVISA  PORTEIRO BASE %d (%2d/%2d)", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao);
+        printf("%6.d: AVISA  PORTEIRO BASE %d (%2d/%2d)\n", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao);
         lista_imprime("FILA ", m->base[b].lista_espera);
 
-        /*retira primeiro herói (H') da fila de B*/
-        lista_retira(m->base->lista_espera, &h, L_INICIO);
-        /*adiciona H' ao conjunto de heróis presentes em B*/
-        set_add(m->base->presentes, h);
-        printf("%6.d: AVISA  PORTEIRO BASE %d ADMITE %2d", clk, b, h);
+        /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
+        lista_retira(m->base[b].lista_espera, &h, L_INICIO);
+        /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
+        set_add(m->base[b].presentes, h);
+        printf("%6.d: AVISA  PORTEIRO BASE %d ADMITE %2d \n", clk, b, h);
 
         if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
             fim_execucao("nao aloc func evento_avisa");
         insere_lef(m->eventos, ev);
     }
 }
-
+//ok
 void evento_entra(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -177,7 +190,10 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     testa_ponteiros(m);
     m->relogio = clk;
 
-    tpb = 15 + m->heroi[h].paciencia * gera_aleat(1, 20);
+    tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
+    set_add(m->base[b].presentes, h);
+    m->base[b].lotacao++;
+    
     printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
@@ -207,11 +223,11 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 
     /*cria ev AVISA*/
-    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, dest_b)))
+    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))// BASE b ou base de destino dest_b???????????
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 }
-
+//ok
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -262,14 +278,14 @@ void evento_missao(mundo_t *m, int clk, int mis, int id_base)
         set_print(uniao);
         if (dist < menor_dist)
         {
-            uniao2 = uniao;
+            uniao2 = uniao; //uniao 2 é pra salvar a uniao da base mais proxima
             menor_dist = dist;
             id_base = i;
         }
         else
             free(uniao);
         uniao = uniao_habilidades(m, i);
-        dist = calcula_distancia(m->base[i].local, m->base[mis].local);
+        dist = calcula_distancia(m->base[i].local, m->missao[mis].local);
         i++;
     } while (i < m->n_bases);
 
@@ -280,12 +296,8 @@ void evento_missao(mundo_t *m, int clk, int mis, int id_base)
     {
         printf("%6.d: MISSAO %d CUMPRIDA BASE %d HEROIS:", clk, mis, id_base);
         /*se estiver apto pra missao, ganha experiencia*/
-        for (i = 0; i < m->base[id_base].lotacao; i++)
-        {
-            /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
-            if (set_in(m->base[id_base].presentes, i))
-                m->heroi[i].experiencia += 10;
-        }
+        adiciona_exp(m, id_base);
+       
     }
     /*se nao estiver apto pra missao adia*/
     else
@@ -319,17 +331,11 @@ void evento_fim(mundo_t *m)
 
     printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), ", m_compridas, m->n_missoes, media_tent);
     printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
+    destroi_mundo(m);
+    exit(0);
 }
-/*para cada herói H:
-    base  = número aleatório [0...N_BASES-1]
-    tempo = número aleatório [0...4320]  // 4320 = 60*24*3 = 3 dias
-    inserir na LEF o evento CHEGA (tempo, H, base)
 
-para cada missão M:
-    tempo = número aleatório [0...T_FIM_DO_MUNDO]
-    inserir na LEF o evento MISSÃO (tempo, M)
 
-inserir na LEF o evento FIM (T) com T = T_FIM_DO_MUNDO*/
 void evento_inicia(mundo_t *m)
 {
     struct evento_t *ev;
