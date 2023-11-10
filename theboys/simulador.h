@@ -7,9 +7,10 @@
 #include "lef.h"
 
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 525600
-#define N_TAMANHO_MUNDO 20000
+#define T_FIM_DO_MUNDO 10
+#define N_TAMANHO_MUNDO 20
 #define N_HABILIDADES 10
+#define TEMPO_INICIAL 3 // 4320 = 60*24*3 = 3 dias
 
 struct heroi_t
 {

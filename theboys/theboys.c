@@ -14,37 +14,31 @@
 int main()
 {
   struct mundo_t *mundo;
-  struct evento_t *ev;
 
   mundo = cria_mundo();
+  struct evento_t *ev;
   evento_inicia(mundo);
+
+  // imprime_lef(mundo->eventos);
+
+  // evento_chega(mundo, 1, 5, 1);
+  // imprime_lef(mundo->eventos);
+
+  // evento_espera(mundo, 1, 5, 1);
+  // imprime_lef(mundo->eventos);
+
+  // evento_avisa(mundo, 1, 5, 1);
+  // imprime_lef(mundo->eventos);
+
+  // evento_entra(mundo, 1, 5, 1);
+  // imprime_lef(mundo->eventos);
+
+
   
-  
-  for (int i = 0; i < mundo->n_herois; i++)
-  {
-    printf("Heroi %d %d %d",mundo->heroi[i].id, mundo->heroi[i].experiencia, 
-    mundo->heroi[i].paciencia);
-    printf(" card habil: %d", set_card(mundo->heroi[i].habil));
-    set_print(mundo->heroi[i].habil);
-    printf("\n");
-  }
-
-  for (int i = 0; i < mundo->n_bases; i++)
-  {
-    printf("Base %d %d %d", mundo->base[i].id, mundo->base[i].lotacao, set_card(mundo->base[i].presentes));
-
-    printf(" card habil: %d", set_card(mundo->base[i].presentes));
-    printf("\n");
-  }
-
-  /*
     while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
     {
 
       ev = retira_lef(retorna_eventos(mundo));
-
-      printf("\n");
-
       switch (ev->tipo)
       {
       case EV_CHEGA:
@@ -87,8 +81,24 @@ int main()
       }
       free(ev);
     }
-  */
+  
   destroi_mundo(mundo);
 
   return 0;
 }
+// for (int i = 0; i < mundo->n_herois; i++)
+// {
+//   printf("Heroi %d %d %d",mundo->heroi[i].id, mundo->heroi[i].experiencia,
+//   mundo->heroi[i].paciencia);
+//   printf(" card habil: %d", set_card(mundo->heroi[i].habil));
+//   set_print(mundo->heroi[i].habil);
+//   printf("\n");
+// }
+
+// for (int i = 0; i < mundo->n_bases; i++)
+// {
+//   printf("Base %d %d %d", mundo->base[i].id, mundo->base[i].lotacao, set_card(mundo->base[i].presentes));
+
+//   printf(" card habil: %d", set_card(mundo->base[i].presentes));
+//   printf("\n");
+// }

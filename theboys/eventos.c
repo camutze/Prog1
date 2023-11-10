@@ -95,7 +95,7 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     m->heroi[h].base_id = b;
 
     /*se há vagas em B e a fila de espera está vazia:*/
-    if (set_card(m->base[b].presentes) < m->base[b].lotacao && lista_vazia(m->base[b].lista_espera))
+    if (set_card(m->base[b].presentes) < m->base[b].lotacao && !lista_vazia(m->base[b].lista_espera))
         espera = true;
     else
         /*Se for maior espera TRUE, FALSE caso contrario*/
@@ -118,6 +118,7 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
             fim_execucao("nao aloc func evento_chega");
         printf("DESISTE");
     }
+    printf("\n");
     insere_lef(m->eventos, ev);
 }
 
@@ -126,7 +127,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
 
-    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, lista_tamanho(m->base->lista_espera));
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, lista_tamanho(m->base->lista_espera));
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -145,7 +146,7 @@ void evento_desiste(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int dest_b;
 
-    printf("%6.d: DESIST HEROI %2.d BASE %.d", clk, h, b);
+    printf("%6.d: DESIST HEROI %2.d BASE %.d \n", clk, h, b);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -174,7 +175,8 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
         /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
         set_add(m->base[b].presentes, h);
-        printf("%6.d: AVISA  PORTEIRO BASE %d ADMITE %2d \n", clk, b, h);
+
+        printf("%6.d: AVISA  PORTEIRO BASE %d ADMITE %2.d \n", clk, b, h);
 
         if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
             fim_execucao("nao aloc func evento_avisa");
@@ -191,10 +193,9 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     m->relogio = clk;
 
     tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
-    set_add(m->base[b].presentes, h);
     m->base[b].lotacao++;
 
-    printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
+    printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
     if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
@@ -207,7 +208,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int dest_b;
 
-    printf("%6.d: SAI    HEROI %2.d BASE %.d (%2.d/%2.d)", clk, h, b, set_card(m->base[b].presentes) - 1, m->base[b].lotacao);
+    printf("%6.d: SAI    HEROI %2.d BASE %.d (%2.d/%2.d)\n", clk, h, b, set_card(m->base[b].presentes) - 1, m->base[b].lotacao);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -344,7 +345,7 @@ void evento_inicia(mundo_t *m)
     for (int i = 0; i < m->n_herois; i++)
     {
         base = gera_aleat(0, m->n_bases - 1);
-        tempo = gera_aleat(0, 4320); // 4320 = 60*24*3 = 3 dias
+        tempo = gera_aleat(0, TEMPO_INICIAL); // 4320 = 60*24*3 = 3 dias
         if (!(ev = cria_evento(tempo, EV_CHEGA, i, base)))
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
