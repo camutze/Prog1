@@ -49,7 +49,7 @@ float media_missao(mundo_t *m)
     return media;
 }
 
-struct set_t *uniao_habilidades(mundo_t *m, int id_base)
+struct set_t *uniao_habil(mundo_t *m, int id_base)
 {
     struct set_t *uniao;
     int i;
@@ -61,12 +61,14 @@ struct set_t *uniao_habilidades(mundo_t *m, int id_base)
     **faço a uniao de todas as habilidades de todos os herois que estao na base.
     **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
     i = 0;
-    while (i < m->base[id_base].lotacao)
+    while (i <= m->base[id_base].lotacao)
     {
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
         if (set_in(m->base[id_base].presentes, i))
+        {
             if (!set_union(m->heroi[i].habil, uniao, uniao)) /*Se ele estiver contido faço a uniao de todas as habilidades de todos os herois*/
                 fim_execucao("nao aloc func evento_missao");
+        }
         i++;
     }
     return uniao;
@@ -75,7 +77,7 @@ struct set_t *uniao_habilidades(mundo_t *m, int id_base)
 /*Adiciona experiencia aos herois que estao na base*/
 void adiciona_exp(mundo_t *m, int id_base)
 {
-    for (int i = 0; i < m->base[id_base].lotacao; i++)
+    for (int i = 0; i < m->n_herois; i++)
     {
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
         if (set_in(m->base[id_base].presentes, i))
@@ -127,7 +129,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
 
-    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, lista_tamanho(m->base->lista_espera));
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, lista_tamanho(m->base[b].lista_espera));
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -250,64 +252,69 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_missao(mundo_t *m, int clk, int mis, int id_base)
+void evento_missao(mundo_t *m, int clk, int mis)
 {
+    /*uniao = uniao_habilidades(m, i);
+    adiciona_exp(m, id_base);*/
     struct evento_t *ev;
-    struct set_t *uniao, *uniao2;
-    int i;
-    long dist, menor_dist;
-
-    printf("%6.d: MISSAO %d HAB REQ: ", clk, mis);
-    set_print(m->missao[mis].habil);
+    struct set_t *uniao;
+    int id_base, distancia, min_dist, i;
 
     testa_ponteiros(m);
     m->relogio = clk;
 
-    m->missao[mis].tentativa++; // incrementa o numero de tentativas
+    m->missao[mis].local;
+    m->base->local;
 
-    /*Calculo da distancia da base 0 até a missao*/
-    menor_dist = calcula_distancia(m->base[0].local, m->base[mis].local);
-    dist = menor_dist;
-    uniao = uniao_habilidades(m, 0);
-    uniao2 = uniao;
+    printf("%d: MISSAO %d HAB REQ: ", clk, mis);
+    set_print(m->missao[mis].habil);
 
-    /*Calculo da distancia da base i até a missao*/
-    i = 0;
-    do
+    distancia = calcula_distancia(m->base[0].local, m->missao[mis].local);
+    min_dist = distancia;
+    uniao = uniao_habil(m, 0);
+
+    printf("%d: MISSAO %d HAB BASE 0:", clk, mis);
+    set_print(uniao);
+    set_destroy(uniao);
+
+    i = 1;
+    while (i < m->n_bases)
     {
-        printf("%6.d: MISSAO %d HAB BASE %d: ", clk, mis, i);
-        set_print(uniao);
-        if (dist < menor_dist)
+        uniao = uniao_habil(m, i);
+        printf("%d: MISSAO %d HAB BASE %d:", clk, mis, i);
+        set_print(m->missao[mis].habil);
+        set_destroy(uniao);
+
+        if (min_dist < distancia)
         {
-            uniao2 = uniao; // uniao 2 é pra salvar a uniao da base mais proxima
-            menor_dist = dist;
+            min_dist = distancia;
             id_base = i;
         }
-        else
-            free(uniao);
-        uniao = uniao_habilidades(m, i);
-        dist = calcula_distancia(m->base[i].local, m->missao[mis].local);
-        i++;
-    } while (i < m->n_bases);
 
-    /* - Aqui ja chega salvo dentro da variavel "Uniao" a uniao de todos as
-    habilidades dos herois que estavam dentro da base "id_base"*/
-    /* - Verifica se as habilidades "uniao" contem "m->[mis].habil"*/
-    if (set_contains(uniao2, m->missao[mis].habil))
-    {
-        printf("%6.d: MISSAO %d CUMPRIDA BASE %d HEROIS:", clk, mis, id_base);
-        /*se estiver apto pra missao, ganha experiencia*/
-        adiciona_exp(m, id_base);
+        distancia = calcula_distancia(m->base[i].local, m->missao[mis].local);
+        i++;
     }
-    /*se nao estiver apto pra missao adia*/
-    else
+
+    uniao = uniao_habil(m, id_base);
+
+    /*Se não houver adia a missao para daqui tres dias */
+    if (!set_contains(uniao, m->missao[mis].habil))
     {
-        m->n_miss_impos++; // incrementa o numero de missões impossiveis
-        printf("%6d: MISSAO %d IMPOSSIVEL", clk, mis);
-        if (!(ev = cria_evento(m->relogio + (24 * 60), EV_MISSAO, mis, id_base)))
-            fim_execucao("nao aloc func evento_missao");
+        printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
+
+        if (!(ev = cria_evento(m->relogio + 24 * 60, EV_MISSAO, mis, 0)))
+            fim_execucao("fun even missao cria evento");
         insere_lef(m->eventos, ev);
     }
+    /*se houver incrementa xp aos herois presentes na base*/
+    else
+    {
+        printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
+        set_print(m->base[id_base].presentes);
+
+        adiciona_exp(m, id_base);
+    }
+    set_destroy(uniao);
 }
 
 void evento_fim(mundo_t *m)
@@ -316,6 +323,7 @@ void evento_fim(mundo_t *m)
     float media_tent; // media de tentativas por missão
 
     testa_ponteiros(m);
+    printf("%d: FIM\n", m->relogio);
 
     for (int i = 0; i < m->n_herois; i++)
     {
@@ -361,5 +369,4 @@ void evento_inicia(mundo_t *m)
     if (!(ev = cria_evento(T_FIM_DO_MUNDO, EV_FIM, 0, 0)))
         fim_execucao("nao aloc func evento_inicia");
     insere_lef(m->eventos, ev);
-
 }

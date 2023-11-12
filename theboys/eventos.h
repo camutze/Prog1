@@ -38,7 +38,7 @@ void testa_ponteiros(mundo_t *m);
 float media_missao(mundo_t *m);
 
 /*Retorna a uniao de todas as habilidades de todos os herois que estao na base*/
-struct set_t *uniao_habilidades(mundo_t *m, int id_base);
+struct set_t *uniao_habil(mundo_t *m, int id_base);
 
 /*Função responsável por tratar a chegada de um novo evento no mundo.*/
 void evento_chega(mundo_t *m, int clk, int h, int b);
@@ -62,7 +62,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b);
 void evento_viaja(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a missao de um heroi .*/
-void evento_missao(mundo_t *m, int clk, int mis, int id_base);
+void evento_missao(mundo_t *m, int clk, int mis);
 
 /*Função responsável por tratar o fim da simulação .*/
 void evento_fim(mundo_t *m);

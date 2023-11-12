@@ -19,69 +19,53 @@ int main()
   struct evento_t *ev;
   evento_inicia(mundo);
 
-  // imprime_lef(mundo->eventos);
+  while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
+  {
 
-  // evento_chega(mundo, 1, 5, 1);
-  // imprime_lef(mundo->eventos);
-
-  // evento_espera(mundo, 1, 5, 1);
-  // imprime_lef(mundo->eventos);
-
-  // evento_avisa(mundo, 1, 5, 1);
-  // imprime_lef(mundo->eventos);
-
-  // evento_entra(mundo, 1, 5, 1);
-  // imprime_lef(mundo->eventos);
-
-
-  
-    while (retorna_relogio(mundo) < T_FIM_DO_MUNDO)
+    ev = retira_lef(retorna_eventos(mundo));
+    switch (ev->tipo)
     {
+    case EV_CHEGA:
+      evento_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      ev = retira_lef(retorna_eventos(mundo));
-      switch (ev->tipo)
-      {
-      case EV_CHEGA:
-        evento_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_ESPERA:
+      evento_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_ESPERA:
-        evento_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_DESISTE:
+      evento_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_DESISTE:
-        evento_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_AVISA:
+      evento_avisa(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_AVISA:
-        evento_avisa(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_ENTRA:
+      evento_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_ENTRA:
-        evento_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_SAI:
+      evento_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_SAI:
-        evento_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_VIAJA:
+      evento_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
 
-      case EV_VIAJA:
-        evento_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
+    case EV_MISSAO:
+      evento_missao(mundo, ev->tempo, ev->dado1, ev->dado2);
+      break;
+    case EV_FIM:
+      evento_fim(mundo);
+      break;
 
-      case EV_MISSAO:
-        evento_missao(mundo, ev->tempo, ev->dado1, ev->dado2);
-        break;
-      case EV_FIM:
-        evento_fim(mundo);
-        break;
-
-      default:
-        break;
-      }
-      free(ev);
+    default:
+      break;
     }
-  
+    free(ev);
+  }
+
   destroi_mundo(mundo);
 
   return 0;
