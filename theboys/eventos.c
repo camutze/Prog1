@@ -229,6 +229,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
     testa_ponteiros(m);
     m->relogio = clk;
 
+    m->missao[mis].tentativas++; // incrementa tentativas
+
     printf("%d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
     printf("\n");
@@ -287,9 +289,10 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
 void evento_fim(mundo_t *m)
 {
-    int m_compridas;  // missões cumpridas (missao total - missao impossivel)
-    float media_tent; // media de tentativas por missão
-
+    int m_compridas, tentativas;  // missões cumpridas (missao total - missao impossivel)
+    m_compridas = 0;
+    tentativas = 0;
+    
     testa_ponteiros(m);
     printf("%d: FIM\n", m->relogio);
 
@@ -300,14 +303,16 @@ void evento_fim(mundo_t *m)
         set_print(m->heroi[i].habil);
         printf("\n");
     }
-    printf("\n\nn missao %d n missaoIMPO %d\n\n", m->n_missoes, m->n_miss_impos);
-    m_compridas = m->n_missoes - m->n_miss_impos;
-   
-    media_tent = m->n_missoes / m_compridas;
+    for(int i = 0; i < m->n_missoes; i++)
+        tentativas =  m->missao[i].tentativas + tentativas;
+    printf("TENTATIVAS: %d\n", tentativas);
+    
     /*5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO*/
+  
 
-    printf("%d/%d MISSOES CUMPRIDAS (%2f%%), ", m_compridas, m->n_missoes, media_tent);
-    printf("MEDIA %2f TENTATIVAS/MISSAO", media_tent);
+    // printf("%d/%d MISSOES CUMPRIDAS ", m_compridas, m->n_missoes);
+
+
 }
 
 void evento_inicia(mundo_t *m)

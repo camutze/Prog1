@@ -109,6 +109,7 @@ int cria_missoes(struct mundo_t *mundo)
         missao[i].local.x = gera_aleat(0, N_TAMANHO_MUNDO - 1);
         missao[i].local.y = gera_aleat(0, N_TAMANHO_MUNDO - 1);
         missao[i].realizada = 0;
+        missao[i].tentativas = 0;
 
 
         missao[i].habil = set_create(N_HABILIDADES -1);
