@@ -6,8 +6,8 @@
 #include "lef.h"
 
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 100
-#define N_TAMANHO_MUNDO 20
+#define T_FIM_DO_MUNDO 500//525600
+#define N_TAMANHO_MUNDO 2000 //20000
 #define N_HABILIDADES 10
 #define TEMPO_INICIAL 3 // 4320 = 60*24*3 = 3 dias
 /*

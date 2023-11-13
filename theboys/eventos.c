@@ -80,8 +80,9 @@ void adiciona_exp(mundo_t *m, int id_base)
     for (int i = 0; i < m->n_herois; i++)
     {
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
-        if (set_in(m->base[id_base].presentes, i))
-            m->heroi[i].experiencia += 10;
+        if (set_empty(m->base[id_base].presentes))
+            if (set_in(m->base[id_base].presentes, i))
+                m->heroi[i].experiencia += 10;
     }
 }
 
@@ -170,15 +171,15 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
     while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
     {
-        printf("%6.d: AVISA  PORTEIRO BASE %d (%2d/%2d)\n", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao);
-        lista_imprime("FILA", m->base[b].lista_espera);
+        printf("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d) ", m->relogio, b, set_card(m->base[b].presentes), m->base[b].lotacao);
+        lista_imprime("FILA:", m->base[b].lista_espera);
 
         /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
         /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
         set_add(m->base[b].presentes, h);
 
-        printf("%6.d: AVISA  PORTEIRO BASE %d ADMITE %2.d \n", clk, b, h);
+        printf("%6d: AVISA  PORTEIRO BASE %d ADMITE %2.d \n", m->relogio, b, h);
 
         if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
             fim_execucao("nao aloc func evento_avisa");
@@ -197,7 +198,7 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
     m->base[b].lotacao++;
 
-    printf("%6.d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
+    printf("%6d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
     if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
@@ -265,24 +266,21 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
     printf("%d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
+    printf("\n");
 
     distancia = calcula_distancia(m->base[0].local, m->missao[mis].local);
     min_dist = distancia;
 
-    uniao = uniao_habil(m, 0);
-    printf("%d: MISSAO %d HAB BASE 0:", clk, mis);
-    set_print(uniao);
-    set_destroy(uniao);
-
-    i = 1;
+    i = 0;
     while (i < m->n_bases)
     {
         uniao = uniao_habil(m, i);
         printf("%d: MISSAO %d HAB BASE %d:", clk, mis, i);
         set_print(uniao);
+        printf("\n");
         set_destroy(uniao);
 
-        if (min_dist < distancia)
+        if (min_dist > distancia)
         {
             min_dist = distancia;
             id_base = i;
@@ -293,10 +291,20 @@ void evento_missao(mundo_t *m, int clk, int mis)
     }
 
     uniao = uniao_habil(m, id_base);
+    // adiciona_exp(m, id_base);
 
     /*Se não houver adia a missao para daqui tres dias */
-    if (!set_contains(uniao, m->missao[mis].habil))
+    if (set_empty(uniao) && set_contains(uniao, m->missao[mis].habil))
     {
+        printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
+        set_print(m->base[id_base].presentes);
+
+        adiciona_exp(m, id_base);
+    }
+    /*se houver incrementa xp aos herois presentes na base*/
+    else
+    {
+
         printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
 
         if (!(ev = cria_evento(m->relogio + 24 * 60, EV_MISSAO, mis, 0)))
@@ -304,15 +312,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
         m->n_miss_impos++;
         insere_lef(m->eventos, ev);
     }
-    /*se houver incrementa xp aos herois presentes na base*/
-    else
-    {
-        printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
-        set_print(m->base[id_base].presentes);
-
-        adiciona_exp(m, id_base);
-    }
     set_destroy(uniao);
+    printf("\n");
 }
 
 void evento_fim(mundo_t *m)
