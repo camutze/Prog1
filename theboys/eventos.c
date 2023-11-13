@@ -171,13 +171,13 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
     while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
     {
-        printf("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d) ", m->relogio, b, set_card(m->base[b].presentes), m->base[b].lotacao);
+        printf("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d)", m->relogio, b, set_card(m->base[b].presentes), m->base[b].lotacao);
         lista_imprime("FILA:", m->base[b].lista_espera);
 
         /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
 
-        printf("%6d: AVISA  PORTEIRO BASE %d ADMITE %2.d \n", m->relogio, b, h);
+        printf("%6d: AVISA  PORTEIRO BASE %d ADMITE %2d\n", m->relogio, b, h);
 
         if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
             fim_execucao("nao aloc func evento_avisa");
@@ -195,9 +195,6 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
 
     /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
     set_add(m->base[b].presentes, h);
-
-    set_print(m->base[b].presentes);
-    printf("\n\n\n");
 
     tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
 
@@ -278,7 +275,6 @@ void evento_missao(mundo_t *m, int clk, int mis)
         set_print(uniao);
         printf("\n");
         set_destroy(uniao);
-        printf("\n\n\nDistancia %d, base %d\n\n", distancia, i);
         if (min_dist > distancia)
         {
             min_dist = distancia;
@@ -288,13 +284,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
         distancia = calcula_distancia(m->base[i].local, m->missao[mis].local);
         i++;
     }
-    printf("\n\n\nDistancia %d, base %d\n\n", min_dist, id_base);
-    set_print(m->base[id_base].presentes);
-    set_print(m->heroi[47].habil);
-
     uniao = uniao_habil(m, id_base);
-    set_print(uniao);
-
+    
     /*se houver incrementa xp aos herois presentes na base*/
     if (set_contains(uniao, m->missao[mis].habil))
     {   
