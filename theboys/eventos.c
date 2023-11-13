@@ -278,7 +278,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
         set_print(uniao);
         printf("\n");
         set_destroy(uniao);
-
+        printf("\n\n\nDistancia %d, base %d\n\n", distancia, i);
         if (min_dist > distancia)
         {
             min_dist = distancia;
@@ -288,13 +288,16 @@ void evento_missao(mundo_t *m, int clk, int mis)
         distancia = calcula_distancia(m->base[i].local, m->missao[mis].local);
         i++;
     }
+    printf("\n\n\nDistancia %d, base %d\n\n", min_dist, id_base);
+    set_print(m->base[id_base].presentes);
+    set_print(m->heroi[47].habil);
 
     uniao = uniao_habil(m, id_base);
     set_print(uniao);
 
     /*se houver incrementa xp aos herois presentes na base*/
-    if (!set_empty(uniao) && !set_contains(uniao, m->missao[mis].habil))
-    {
+    if (set_contains(uniao, m->missao[mis].habil))
+    {   
         printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
         set_print(m->base[id_base].presentes);
 
