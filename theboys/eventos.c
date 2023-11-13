@@ -131,7 +131,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     testa_ponteiros(m);
 
-    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, lista_tamanho(m->base[b].lista_espera));
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, lista_tamanho(m->base[b].lista_espera));
 
     m->relogio = clk;
 
@@ -144,7 +144,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-// ok
+
 void evento_desiste(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -185,7 +185,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
         insere_lef(m->eventos, ev);
     }
 }
-// ok
+
 void evento_entra(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -231,7 +231,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 }
-// ok
+
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -242,13 +242,11 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
 
     dist = calcula_distancia(m->base[b_ori].local, m->base[b].local);
     duração = dist / m->heroi[h].velocidade;
-    printf("%ld\n", m->heroi[h].velocidade);
-    printf("%ld\n", duração);
+   
 
     if(!(ev = cria_evento(clk + duração, EV_CHEGA, h, b)))
         fim_execucao("nao aloc func evento_viaja");
     insere_lef(m->eventos, ev);
-
 }
 
 void evento_missao(mundo_t *m, int clk, int mis)
@@ -265,7 +263,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
     printf("%d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
     printf("\n");
-
+    
+    /*calcula a distância de cada base ao local da missão M*/
     distancia = calcula_distancia(m->base[0].local, m->missao[mis].local);
     min_dist = distancia;
 
@@ -289,17 +288,17 @@ void evento_missao(mundo_t *m, int clk, int mis)
     }
 
     uniao = uniao_habil(m, id_base);
-    // adiciona_exp(m, id_base);
+    set_print(uniao);
 
-    /*Se não houver adia a missao para daqui tres dias */
-    if (set_empty(uniao) && set_contains(uniao, m->missao[mis].habil))
+    /*se houver incrementa xp aos herois presentes na base*/
+    if (!set_empty(uniao) && !set_contains(uniao, m->missao[mis].habil))
     {
         printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
         set_print(m->base[id_base].presentes);
 
         adiciona_exp(m, id_base);
     }
-    /*se houver incrementa xp aos herois presentes na base*/
+    /*Se não houver adia a missao para daqui tres dias */
     else
     {
 
@@ -324,8 +323,8 @@ void evento_fim(mundo_t *m)
 
     for (int i = 0; i < m->n_herois; i++)
     {
-        printf("HEROI %2.d PAC  %3.d", m->heroi[i].id, m->heroi[i].paciencia);
-        printf(" VEL %4.d EXP %4.d HABS ", m->heroi[i].velocidade, m->heroi[i].experiencia);
+        printf("HEROI %2d PAC  %3d", i, m->heroi[i].paciencia);
+        printf(" VEL %4d EXP %4d HABS ", m->heroi[i].velocidade, m->heroi[i].experiencia);
         set_print(m->heroi[i].habil);
         printf("\n");
     }
@@ -336,9 +335,8 @@ void evento_fim(mundo_t *m)
     media_tent = m->n_missoes / m_compridas;
     /*5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO*/
 
-    printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), ", m_compridas, m->n_missoes, media_tent);
-    printf("MEDIA %.2f TENTATIVAS/MISSAO", media_missao(m));
-    destroi_mundo(m);
+    printf("%d/%d MISSOES CUMPRIDAS (%2f%%), ", m_compridas, m->n_missoes, media_tent);
+    printf("MEDIA %2f TENTATIVAS/MISSAO", media_missao(m));
 }
 
 void evento_inicia(mundo_t *m)
