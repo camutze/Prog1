@@ -31,24 +31,6 @@ void testa_ponteiros(mundo_t *m)
         fim_execucao("missao nao existe");
 }
 
-/*Retorna a media de tentativas por missao*/
-float media_missao(mundo_t *m)
-{
-    float media;
-    if (!m)
-        fim_execucao("mundo nao existe");
-    if (!m->missao)
-        fim_execucao("Missao nao existe");
-
-    /*somo todas as as tentativas de cada uma missao, e divido pelo n_missoes*/
-    media = 0;
-    for (int i = 0; i < m->n_missoes; i++)
-        media += m->missao[i].tentativa;
-
-    media /= m->n_missoes;
-    return media;
-}
-
 struct set_t *uniao_habil(mundo_t *m, int id_base)
 {
     struct set_t *uniao;
@@ -72,18 +54,6 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
         i++;
     }
     return uniao;
-}
-
-/*Adiciona experiencia aos herois que estao na base*/
-void adiciona_exp(mundo_t *m, int id_base)
-{
-    for (int i = 0; i < m->n_herois; i++)
-    {
-        /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
-        if (set_empty(m->base[id_base].presentes))
-            if (set_in(m->base[id_base].presentes, i))
-                m->heroi[i].experiencia += 10;
-    }
 }
 
 /******************EVENTOS************************/
@@ -172,7 +142,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
     {
         printf("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d)", m->relogio, b, set_card(m->base[b].presentes), m->base[b].lotacao);
-        lista_imprime("FILA:", m->base[b].lista_espera);
+        lista_imprime("FILA", m->base[b].lista_espera);
 
         /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
@@ -285,14 +255,20 @@ void evento_missao(mundo_t *m, int clk, int mis)
         i++;
     }
     uniao = uniao_habil(m, id_base);
-    
+
     /*se houver incrementa xp aos herois presentes na base*/
     if (set_contains(uniao, m->missao[mis].habil))
-    {   
+    {
         printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
         set_print(m->base[id_base].presentes);
 
-        adiciona_exp(m, id_base);
+        m->missao[mis].realizada = 1; // missao realizada
+
+        for (int i = 0; i < m->n_herois; i++)
+        {
+            if (set_in(m->base[id_base].presentes, i))
+                m->heroi[i].experiencia++;
+        }
     }
     /*Se não houver adia a missao para daqui tres dias */
     else
@@ -326,13 +302,12 @@ void evento_fim(mundo_t *m)
     }
     printf("\n\nn missao %d n missaoIMPO %d\n\n", m->n_missoes, m->n_miss_impos);
     m_compridas = m->n_missoes - m->n_miss_impos;
-    if (!m_compridas)
-        m_compridas++;
+   
     media_tent = m->n_missoes / m_compridas;
     /*5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO*/
 
     printf("%d/%d MISSOES CUMPRIDAS (%2f%%), ", m_compridas, m->n_missoes, media_tent);
-    printf("MEDIA %2f TENTATIVAS/MISSAO", media_missao(m));
+    printf("MEDIA %2f TENTATIVAS/MISSAO", media_tent);
 }
 
 void evento_inicia(mundo_t *m)

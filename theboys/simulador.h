@@ -45,7 +45,7 @@ struct missao_t
 {
     int id;
     struct set_t *habil;   // conjunto de habilidades necessárias para cumprir a missão
-    int tentativa;         // número de tentativas para cumprir a missão
+    short realizada;         // se foi comcluida == 0, 1 caso contrario
     struct pontos_t local; // localização da missão
 };
 
