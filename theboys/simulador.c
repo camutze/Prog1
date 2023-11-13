@@ -70,7 +70,7 @@ int cria_bases(struct mundo_t *mundo)
         base[i].id = i;
         base[i].lotacao = gera_aleat(3, 10);
 
-        base[i].presentes = set_create(base[i].lotacao);
+        base[i].presentes = set_create(mundo->n_herois);
         base[i].lista_espera = lista_cria();
         base[i].local.x = gera_aleat(0, N_TAMANHO_MUNDO - 1); // x
         base[i].local.y = gera_aleat(0, N_TAMANHO_MUNDO - 1); // y

@@ -137,13 +137,12 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
 
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
-    lista_imprime("FILA:", m->base[b].lista_espera);
+    lista_imprime("FILA", m->base[b].lista_espera);
 
     if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))
         fim_execucao("nao aloc func evento_espera");
     insere_lef(m->eventos, ev);
 }
-
 
 void evento_desiste(mundo_t *m, int clk, int h, int b)
 {
@@ -194,9 +193,13 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     testa_ponteiros(m);
     m->relogio = clk;
 
-    tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
     /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
     set_add(m->base[b].presentes, h);
+
+    set_print(m->base[b].presentes);
+    printf("\n\n\n");
+
+    tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
 
     printf("%6d: ENTRA  HEROI %2d BASE %d (%2d/%2d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
@@ -242,9 +245,8 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
 
     dist = calcula_distancia(m->base[b_ori].local, m->base[b].local);
     duração = dist / m->heroi[h].velocidade;
-   
 
-    if(!(ev = cria_evento(clk + duração, EV_CHEGA, h, b)))
+    if (!(ev = cria_evento(clk + duração, EV_CHEGA, h, b)))
         fim_execucao("nao aloc func evento_viaja");
     insere_lef(m->eventos, ev);
 }
@@ -263,7 +265,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     printf("%d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
     printf("\n");
-    
+
     /*calcula a distância de cada base ao local da missão M*/
     distancia = calcula_distancia(m->base[0].local, m->missao[mis].local);
     min_dist = distancia;

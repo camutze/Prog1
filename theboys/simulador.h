@@ -6,10 +6,10 @@
 #include "lef.h"
 
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 500//525600
+#define T_FIM_DO_MUNDO 5000//525600
 #define N_TAMANHO_MUNDO 2000 //20000
 #define N_HABILIDADES 10
-#define TEMPO_INICIAL 3 // 4320 = 60*24*3 = 3 dias
+#define TEMPO_INICIAL 200 // 4320 = 60*24*3 = 3 dias
 /*
     mundo->n_missoes = T_FIM_DO_MUNDO / 100;
     mundo->n_herois = N_HABILIDADES * 5;
