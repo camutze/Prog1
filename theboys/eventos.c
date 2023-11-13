@@ -129,14 +129,15 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
+    testa_ponteiros(m);
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, lista_tamanho(m->base[b].lista_espera));
 
-    testa_ponteiros(m);
     m->relogio = clk;
 
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
+    lista_imprime("FILA:", m->base[b].lista_espera);
 
     if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))
         fim_execucao("nao aloc func evento_espera");
@@ -149,7 +150,7 @@ void evento_desiste(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int dest_b;
 
-    printf("%6.d: DESIST HEROI %2.d BASE %.d \n", clk, h, b);
+    printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -176,8 +177,6 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
 
         /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
-        /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
-        set_add(m->base[b].presentes, h);
 
         printf("%6d: AVISA  PORTEIRO BASE %d ADMITE %2.d \n", m->relogio, b, h);
 
@@ -196,9 +195,10 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     m->relogio = clk;
 
     tpb = 15 + (m->heroi[h].paciencia * gera_aleat(1, 20));
-    m->base[b].lotacao++;
+    /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
+    set_add(m->base[b].presentes, h);
 
-    printf("%6d: ENTRA  HEROI %2.d BASE %.d (%2.d/%2.d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
+    printf("%6d: ENTRA  HEROI %2d BASE %d (%2d/%2d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
     if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
@@ -211,7 +211,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int dest_b;
 
-    printf("%6.d: SAI    HEROI %2.d BASE %.d (%2.d/%2.d)\n", clk, h, b, set_card(m->base[b].presentes) - 1, m->base[b].lotacao);
+    printf("%6d: SAI  HEROI %2d BASE %d (%2d/%2d)\n", clk, h, b, set_card(m->base[b].presentes) - 1, m->base[b].lotacao);
 
     testa_ponteiros(m);
     m->relogio = clk;
@@ -235,22 +235,20 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
 void evento_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
-    long dist;     // calcular a distancia que vai viajar e o tempo que vai demorar
-    long duracao;  // tempo que vai demorar a viagem
-    int id_origem; // id da base de origem
+    int b_ori;
+    long dist, duração;
 
-    testa_ponteiros(m);
-    m->relogio = clk;
+    b_ori = m->heroi[h].base_id;
 
-    id_origem = m->heroi[h].base_id;
-    dist = calcula_distancia(m->base[id_origem].local, m->base[b].local);
+    dist = calcula_distancia(m->base[b_ori].local, m->base[b].local);
+    duração = dist / m->heroi[h].velocidade;
+    printf("%ld\n", m->heroi[h].velocidade);
+    printf("%ld\n", duração);
 
-    duracao = dist / m->heroi[h].velocidade;
-
-    printf("%6.d: VIAJA  HEROI %2.d BASE %d BASE %d DIST %ld VEL %d CHEGA %ld, ", clk, h, id_origem, b, dist, m->heroi[h].velocidade, clk + duracao);
-    if (!(ev = cria_evento(m->relogio + duracao, EV_CHEGA, h, b)))
+    if(!(ev = cria_evento(clk + duração, EV_CHEGA, h, b)))
         fim_execucao("nao aloc func evento_viaja");
     insere_lef(m->eventos, ev);
+
 }
 
 void evento_missao(mundo_t *m, int clk, int mis)
