@@ -1,16 +1,20 @@
 #ifndef _SIMULADOR_H
 #define _SIMULADOR_H
 
-
 #include "set.h"
 #include "lista.h"
 #include "lef.h"
 
 #define T_INICIO 0
-#define T_FIM_DO_MUNDO 10
+#define T_FIM_DO_MUNDO 100
 #define N_TAMANHO_MUNDO 20
 #define N_HABILIDADES 10
 #define TEMPO_INICIAL 3 // 4320 = 60*24*3 = 3 dias
+/*
+    mundo->n_missoes = T_FIM_DO_MUNDO / 100;
+    mundo->n_herois = N_HABILIDADES * 5;
+    mundo->n_bases = mundo->n_herois / 6;
+*/
 
 struct heroi_t
 {
