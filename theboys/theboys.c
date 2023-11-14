@@ -23,6 +23,8 @@ int main()
   {
 
     ev = retira_lef(retorna_eventos(mundo));
+    atualiza_relogio(mundo, ev);
+
     switch (ev->tipo)
     {
     case EV_CHEGA:

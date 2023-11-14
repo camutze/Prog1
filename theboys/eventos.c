@@ -56,6 +56,39 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     return uniao;
 }
 
+void ordena_vetor(int vetor[], int vetor_id[], int n)
+{
+    int i, j, min;
+
+    for (i = 0; i < n - 1; i++)
+    {
+        min = i;
+        for (j = i + 1; j < n; j++)
+            if (vetor[j] < vetor[min])
+                min = j;
+        troca(vetor, vetor_id, i, min);
+    }
+}
+
+void troca(int vetor[], int vetor_id[], int a, int b)
+{
+    int aux, aux_id;
+
+    aux = vetor[a];
+    aux_id = vetor_id[a];
+
+    vetor[a] = vetor[b];
+    vetor_id[a] = vetor_id[b];
+
+    vetor[b] = aux;
+    vetor_id[b] = aux_id;
+}
+
+void atualiza_relogio(mundo_t *m, struct evento_t *ev)
+{
+    m->relogio = ev->tempo;
+}
+
 /******************EVENTOS************************/
 // ok
 void evento_chega(mundo_t *m, int clk, int h, int b)
@@ -64,7 +97,6 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     bool espera;
 
     testa_ponteiros(m);
-    m->relogio = clk;
     m->heroi[h].base_id = b;
 
     /*se há vagas em B e a fila de espera está vazia:*/
@@ -81,13 +113,13 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     /*Disparo de novos eventos*/
     if (espera)
     {
-        if (!(ev = cria_evento(m->relogio, EV_ESPERA, h, b)))
+        if (!(ev = cria_evento(clk, EV_ESPERA, h, b)))
             fim_execucao("nao aloc func evento_chega");
         printf("ESPERA");
     }
     else
     {
-        if (!(ev = cria_evento(m->relogio, EV_DESISTE, h, b)))
+        if (!(ev = cria_evento(clk, EV_DESISTE, h, b)))
             fim_execucao("nao aloc func evento_chega");
         printf("DESISTE");
     }
@@ -103,13 +135,11 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
 
     printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, lista_tamanho(m->base[b].lista_espera));
 
-    m->relogio = clk;
-
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
     lista_imprime("FILA", m->base[b].lista_espera);
 
-    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b)))
+    if (!(ev = cria_evento(clk, EV_AVISA, h, b)))
         fim_execucao("nao aloc func evento_espera");
     insere_lef(m->eventos, ev);
 }
@@ -122,11 +152,10 @@ void evento_desiste(mundo_t *m, int clk, int h, int b)
     printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
 
     testa_ponteiros(m);
-    m->relogio = clk;
 
     dest_b = gera_aleat(0, m->n_bases - 1);
 
-    if (!(ev = cria_evento(m->relogio, EV_VIAJA, h, dest_b)))
+    if (!(ev = cria_evento(clk, EV_VIAJA, h, dest_b)))
         fim_execucao("nao aloc func evento_desiste");
     insere_lef(m->eventos, ev);
 }
@@ -136,7 +165,6 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
 
     testa_ponteiros(m);
-    m->relogio = clk;
 
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
     while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
@@ -149,7 +177,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
 
         printf("%6d: AVISA  PORTEIRO BASE %d ADMITE %2d\n", m->relogio, b, h);
 
-        if (!(ev = cria_evento(m->relogio, EV_ENTRA, h, b)))
+        if (!(ev = cria_evento(clk, EV_ENTRA, h, b)))
             fim_execucao("nao aloc func evento_avisa");
         insere_lef(m->eventos, ev);
     }
@@ -161,7 +189,6 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     int tpb; // tempo de permanência na base
 
     testa_ponteiros(m);
-    m->relogio = clk;
 
     /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
     set_add(m->base[b].presentes, h);
@@ -171,7 +198,7 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     printf("%6d: ENTRA  HEROI %2d BASE %d (%2d/%2d) SAI %d\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao, clk + tpb);
 
     /*cria proximo evento que ira acontecer relogio + tpd*/
-    if (!(ev = cria_evento(m->relogio + tpb, EV_SAI, h, b)))
+    if (!(ev = cria_evento(clk + tpb, EV_SAI, h, b)))
         fim_execucao("nao aloc func evento_entra");
     insere_lef(m->eventos, ev);
 }
@@ -184,7 +211,6 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     printf("%6d: SAI  HEROI %2d BASE %d (%2d/%2d)\n", clk, h, b, set_card(m->base[b].presentes) - 1, m->base[b].lotacao);
 
     testa_ponteiros(m);
-    m->relogio = clk;
 
     /*retira H do conjunto de heróis presentes em B*/
     set_del(m->base[b].presentes, h);
@@ -192,12 +218,12 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     dest_b = gera_aleat(0, m->n_bases - 1);
 
     /*cria ev VIAJA*/
-    if (!(ev = cria_evento(m->relogio, EV_VIAJA, h, dest_b)))
+    if (!(ev = cria_evento(clk, EV_VIAJA, h, dest_b)))
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 
     /*cria ev AVISA*/
-    if (!(ev = cria_evento(m->relogio, EV_AVISA, h, b))) // BASE b ou base de destino dest_b???????????
+    if (!(ev = cria_evento(clk, EV_AVISA, h, b))) // BASE b ou base de destino dest_b???????????
         fim_execucao("nao aloc func evento_sai");
     insere_lef(m->eventos, ev);
 }
@@ -224,10 +250,10 @@ void evento_missao(mundo_t *m, int clk, int mis)
     adiciona_exp(m, id_base);*/
     struct evento_t *ev;
     struct set_t *uniao;
-    int id_base, distancia, min_dist, i;
+    int id_base[m->n_bases], dist_b[m->n_bases];
+    int i, sair;
 
     testa_ponteiros(m);
-    m->relogio = clk;
 
     m->missao[mis].tentativas++; // incrementa tentativas
 
@@ -236,63 +262,64 @@ void evento_missao(mundo_t *m, int clk, int mis)
     printf("\n");
 
     /*calcula a distância de cada base ao local da missão M*/
-    distancia = calcula_distancia(m->base[0].local, m->missao[mis].local);
-    min_dist = distancia;
+    for (i = 0; i < m->n_bases; i++)
+    {
+        dist_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
+        id_base[i] = i;
+        printf("Base %d: %d\n", i, dist_b[i])
+    }
 
+    /*ordena o vetor de distancias*/
+    ordena_vetor(dist_b, id_base, m->n_bases);
+
+    for (i = 0; i < m->n_bases; i++)
+    {
+        printf("Base %d: %d\n", i, dist_b[i]);
+    }
+
+    sair = 0;
     i = 0;
-    while (i < m->n_bases)
+    while (!sair && i < m->n_bases)
     {
-        uniao = uniao_habil(m, i);
-        printf("%d: MISSAO %d HAB BASE %d:", clk, mis, i);
-        set_print(uniao);
-        printf("\n");
+        uniao = uniao_habil(m, id_base[i]);
+        /*se a base B[i] tem heróis com todas as habilidades necessárias para cumprir a missão M*/
+        if (set_contains(uniao, m->missao[mis].habil))
+        {
+            sair = 1;
+            printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
+            set_print(m->base[i].presentes);
+
+            m->missao[mis].realizada = 1; // missao realizada
+
+            for (int i = 0; i < m->n_herois; i++)
+            {
+                if (set_in(m->base[i].presentes, i))
+                    m->heroi[i].experiencia++;
+            }
+            i++;
+        }
         set_destroy(uniao);
-        if (min_dist > distancia)
-        {
-            min_dist = distancia;
-            id_base = i;
-        }
-
-        distancia = calcula_distancia(m->base[i].local, m->missao[mis].local);
-        i++;
+        /*Se não houver adia a missao para daqui tres dias */
     }
-    uniao = uniao_habil(m, id_base);
-
-    /*se houver incrementa xp aos herois presentes na base*/
-    if (set_contains(uniao, m->missao[mis].habil))
+    if (!sair)
     {
-        printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
-        set_print(m->base[id_base].presentes);
-
-        m->missao[mis].realizada = 1; // missao realizada
-
-        for (int i = 0; i < m->n_herois; i++)
-        {
-            if (set_in(m->base[id_base].presentes, i))
-                m->heroi[i].experiencia++;
-        }
-    }
-    /*Se não houver adia a missao para daqui tres dias */
-    else
-    {
-
         printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
 
-        if (!(ev = cria_evento(m->relogio + 24 * 60, EV_MISSAO, mis, 0)))
+        if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
             fim_execucao("fun even missao cria evento");
         m->n_miss_impos++;
         insere_lef(m->eventos, ev);
+
+        printf("\n");
     }
-    set_destroy(uniao);
-    printf("\n");
 }
 
 void evento_fim(mundo_t *m)
 {
-    int m_compridas, tentativas;  // missões cumpridas (missao total - missao impossivel)
+    int m_compridas, tentativas; // missões cumpridas (missao total - missao impossivel)
     m_compridas = 0;
     tentativas = 0;
-    
+
     testa_ponteiros(m);
     printf("%d: FIM\n", m->relogio);
 
@@ -303,16 +330,18 @@ void evento_fim(mundo_t *m)
         set_print(m->heroi[i].habil);
         printf("\n");
     }
-    for(int i = 0; i < m->n_missoes; i++)
-        tentativas =  m->missao[i].tentativas + tentativas;
+    for (int i = 0; i < m->n_missoes; i++)
+        tentativas = m->missao[i].tentativas + tentativas;
+
     printf("TENTATIVAS: %d\n", tentativas);
-    
+
+    printf("MISSOES IMPOSSIVEIS: %d\n", m->n_miss_impos);
+
+    m_compridas = m->n_missoes - m->n_miss_impos;
     /*5242/5256 MISSOES CUMPRIDAS (99.73%), MEDIA 2.09 TENTATIVAS/MISSAO*/
-  
 
-    // printf("%d/%d MISSOES CUMPRIDAS ", m_compridas, m->n_missoes);
-
-
+    printf("%d/%d MISSOES CUMPRIDAS ", m_compridas, m->n_missoes);
+    printf("(%2.2f%%), ", (float)m_compridas / m->n_missoes * 100);
 }
 
 void evento_inicia(mundo_t *m)

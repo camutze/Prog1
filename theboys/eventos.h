@@ -40,6 +40,12 @@ float media_missao(mundo_t *m);
 /*Retorna a uniao de todas as habilidades de todos os herois que estao na base*/
 struct set_t *uniao_habil(mundo_t *m, int id_base);
 
+/*Função responsável por atualizar o relogio do mundo.*/
+void atualiza_relogio(mundo_t *m, struct evento_t *ev);
+
+/*Função responsa por trocar os vet.*/
+void troca(int vetor[], int vetor_id[], int a, int b)
+
 /*Função responsável por tratar a chegada de um novo evento no mundo.*/
 void evento_chega(mundo_t *m, int clk, int h, int b);
 
