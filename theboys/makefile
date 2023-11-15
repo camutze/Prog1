@@ -25,7 +25,7 @@ testa-lef:    testa-lef.o  lef.o
 testa-lef.o:  testa-lef.c  lef.h
 
 clean:
-	rm -f *.o *~ $(MAIN) $(TESTES) $(ENTREGA) $(ENTREGA).tgz
+	rm -f *.o saida.txt *~ $(MAIN) $(TESTES) $(ENTREGA) $(ENTREGA).tgz
 
 entrega: clean
 	mkdir $(ENTREGA)
