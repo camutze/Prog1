@@ -83,7 +83,7 @@ int set_empty(struct set_t *s)
 {
     if (!s)
         return 0;
-    return !s->size ? 1 : 0; // se o tam for 0, retorna 1, se nao, retorna 0
+    return s->size; //0 se vazio, qualquer outra coisa caso contrario
 }
 
 int set_card(struct set_t *s)

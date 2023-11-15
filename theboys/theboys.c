@@ -15,7 +15,7 @@
 int main()
 {
   struct mundo_t *mundo;
-  srand(0);
+  srand(10);
 
 
   mundo = cria_mundo();
