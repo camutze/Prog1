@@ -253,7 +253,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     adiciona_exp(m, id_base);*/
     struct evento_t *ev;
     struct set_t *uniao;
-    int id_base[m->n_bases], dist_b[m->n_bases];
+    int id_base[m->n_bases], distancia_b[m->n_bases];
     int i, j, sair;
 
     testa_ponteiros(m);
@@ -267,11 +267,11 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*calcula a distância de cada base ao local da missão M*/
     for (i = 0; i < m->n_bases; i++)
     {
-        dist_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
+        distancia_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
         id_base[i] = i;
-        uniao = uniao_habil(m, id_base[i]);
 
-        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
+        uniao = uniao_habil(m, i);
+        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, i);
         set_print(uniao);
         printf("\n");
 
@@ -279,7 +279,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     }
 
     /*ordena o vetor de distancias*/
-    ordena_vetor(dist_b, id_base, m->n_bases);
+    ordena_vetor(distancia_b, id_base, m->n_bases);
 
     sair = 0;
     i = 0;
@@ -310,14 +310,12 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*se não há base com heróis com todas as habilidades necessárias para cumprir a missão M*/
     if (!sair)
     {
-        printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
+        printf("%d: MISSAO %d IMPOSSIVEL", clk, mis);
+        m->n_miss_impos++;
 
         if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
             fim_execucao("fun even missao cria evento");
-        m->n_miss_impos++;
         insere_lef(m->eventos, ev);
-
-        printf("\n");
     }
 }
 
