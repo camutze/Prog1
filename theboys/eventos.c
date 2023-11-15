@@ -56,20 +56,6 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     return uniao;
 }
 
-void ordena_vetor(int vetor[], int vetor_id[], int n)
-{
-    int i, j, min;
-
-    for (i = 0; i < n - 1; i++)
-    {
-        min = i;
-        for (j = i + 1; j < n; j++)
-            if (vetor[j] < vetor[min])
-                min = j;
-        troca(vetor, vetor_id, i, min);
-    }
-}
-
 void troca(int vetor[], int vetor_id[], int a, int b)
 {
     int aux, aux_id;
@@ -82,6 +68,20 @@ void troca(int vetor[], int vetor_id[], int a, int b)
 
     vetor[b] = aux;
     vetor_id[b] = aux_id;
+}
+
+void ordena_vetor(int vetor[], int vetor_id[], int n)
+{
+    int i, j, min;
+
+    for (i = 0; i < n - 1; i++)
+    {
+        min = i;
+        for (j = i + 1; j < n; j++)
+            if (vetor[j] < vetor[min])
+                min = j;
+        troca(vetor, vetor_id, i, min);
+    }
 }
 
 void atualiza_relogio(mundo_t *m, struct evento_t *ev)
@@ -266,7 +266,6 @@ void evento_missao(mundo_t *m, int clk, int mis)
     {
         dist_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
         id_base[i] = i;
-        printf("Base %d: %d\n", i, dist_b[i])
     }
 
     /*ordena o vetor de distancias*/
@@ -274,7 +273,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
     for (i = 0; i < m->n_bases; i++)
     {
-        printf("Base %d: %d\n", i, dist_b[i]);
+        printf("Base ORDENADA %d: %d\n", id_base[i], dist_b[i]);
     }
 
     sair = 0;
@@ -282,31 +281,34 @@ void evento_missao(mundo_t *m, int clk, int mis)
     while (!sair && i < m->n_bases)
     {
         uniao = uniao_habil(m, id_base[i]);
+        set_print(uniao);
         /*se a base B[i] tem heróis com todas as habilidades necessárias para cumprir a missão M*/
         if (set_contains(uniao, m->missao[mis].habil))
         {
-            sair = 1;
-            printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base);
+            printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
             set_print(m->base[i].presentes);
 
             m->missao[mis].realizada = 1; // missao realizada
 
-            for (int i = 0; i < m->n_herois; i++)
+            /*incrementa a experiência de todos os heróis que estão na base B[i]*/
+            for (int j = 0; j < m->n_herois; j++)
             {
-                if (set_in(m->base[i].presentes, i))
-                    m->heroi[i].experiencia++;
+                if (set_in(m->base[i].presentes, j))
+                    m->heroi[j].experiencia++;
             }
-            i++;
+            sair = 1;
         }
         set_destroy(uniao);
-        /*Se não houver adia a missao para daqui tres dias */
+        i++;
     }
+
+    /*se não há base com heróis com todas as habilidades necessárias para cumprir a missão M*/
     if (!sair)
     {
         printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
 
-        if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
-            fim_execucao("fun even missao cria evento");
+         if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
+             fim_execucao("fun even missao cria evento");
         m->n_miss_impos++;
         insere_lef(m->eventos, ev);
 
@@ -363,7 +365,7 @@ void evento_inicia(mundo_t *m)
     for (int i = 0; i < m->n_missoes; i++)
     {
         tempo = gera_aleat(0, T_FIM_DO_MUNDO - 1);
-        if (!(ev = cria_evento(tempo, EV_MISSAO, 3, 0)))
+        if (!(ev = cria_evento(tempo, EV_MISSAO, i, 0)))
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
     }
