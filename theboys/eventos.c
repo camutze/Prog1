@@ -257,7 +257,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
 
     m->missao[mis].tentativas++; // incrementa tentativas
 
-    printf("%d: MISSAO %d HAB REQ: ", clk, mis);
+    printf("%6d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
     printf("\n");
 
@@ -271,22 +271,22 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*ordena o vetor de distancias*/
     ordena_vetor(dist_b, id_base, m->n_bases);
 
-    for (i = 0; i < m->n_bases; i++)
-    {
-        printf("Base ORDENADA %d: %d\n", id_base[i], dist_b[i]);
-    }
-
     sair = 0;
     i = 0;
     while (!sair && i < m->n_bases)
     {
         uniao = uniao_habil(m, id_base[i]);
+        /*%6d: MISSAO %d HAB BASE %d: [ %d %d ... ]*/
+        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
         set_print(uniao);
+        printf("\n");
+
         /*se a base B[i] tem heróis com todas as habilidades necessárias para cumprir a missão M*/
         if (set_contains(uniao, m->missao[mis].habil))
         {
-            printf("%d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
+            printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
             set_print(m->base[i].presentes);
+            printf("\n");
 
             m->missao[mis].realizada = 1; // missao realizada
 
@@ -307,8 +307,8 @@ void evento_missao(mundo_t *m, int clk, int mis)
     {
         printf("%d: MISSAO %d IMPOSSIVEL:", clk, mis);
 
-         if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
-             fim_execucao("fun even missao cria evento");
+        if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
+            fim_execucao("fun even missao cria evento");
         m->n_miss_impos++;
         insere_lef(m->eventos, ev);
 

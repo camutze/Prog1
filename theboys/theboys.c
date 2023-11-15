@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "lef.h"
 #include "set.h"
@@ -14,6 +15,8 @@
 int main()
 {
   struct mundo_t *mundo;
+  srand(0);
+
 
   mundo = cria_mundo();
   struct evento_t *ev;
