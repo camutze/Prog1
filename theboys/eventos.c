@@ -53,10 +53,10 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     return uniao;
 }
 
+    /*Troca os valores de dois vetores*/
 void troca(int vetor[], int vetor_id[], int a, int b)
 {
     int aux, aux_id;
-    /*Troca os valores de dois vetores*/
     aux = vetor[a];
     aux_id = vetor_id[a];
 
@@ -67,10 +67,10 @@ void troca(int vetor[], int vetor_id[], int a, int b)
     vetor_id[b] = aux_id;
 }
 
+/*Ordena o vetor de distancias e o vetor de id_base,  usando SelectionSort*/
 void ordena_vetor(int vetor[], int vetor_id[], int n)
 {
     int i, j, min;
-    /*Ordena o vetor de distancias e o vetor de id_base,  usando SelectionSort*/
     for (i = 0; i < n - 1; i++)
     {
         min = i;
@@ -87,8 +87,7 @@ void atualiza_relogio(mundo_t *m, struct evento_t *ev)
 }
 
 /******************EVENTOS************************/
-// ok
-void evento_chega(mundo_t *m, int clk, int h, int b)
+void ev_chega(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     bool espera;
@@ -126,7 +125,7 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_espera(mundo_t *m, int clk, int h, int b)
+void ev_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     testa_ponteiros(m);
@@ -142,7 +141,7 @@ void evento_espera(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_desiste(mundo_t *m, int clk, int h, int b)
+void ev_desiste(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int dest_b;
@@ -158,7 +157,7 @@ void evento_desiste(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_avisa(mundo_t *m, int clk, int h, int b)
+void ev_avisa(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
 
@@ -181,7 +180,7 @@ void evento_avisa(mundo_t *m, int clk, int h, int b)
     }
 }
 
-void evento_entra(mundo_t *m, int clk, int h, int b)
+void ev_entra(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int tpb; // tempo de permanência na base
@@ -202,7 +201,7 @@ void evento_entra(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_sai(mundo_t *m, int clk, int h, int b)
+void ev_sai(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int dest_b;
@@ -228,7 +227,7 @@ void evento_sai(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_viaja(mundo_t *m, int clk, int h, int b)
+void ev_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int b_ori;
@@ -248,7 +247,7 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-void evento_missao(mundo_t *m, int clk, int mis)
+void ev_missao(mundo_t *m, int clk, int mis)
 {
     struct evento_t *ev;
     struct set_t *uniao;
@@ -320,7 +319,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     }
 }
 
-void evento_fim(mundo_t *m)
+void ev_fim(mundo_t *m)
 {
     int m_compridas, tentativas; // missões cumpridas (missao total - missao impossivel)
     m_compridas = 0;
@@ -348,7 +347,7 @@ void evento_fim(mundo_t *m)
            (float)m_compridas / m->n_missoes * 100, (float)tentativas / m->n_missoes);
 }
 
-void evento_inicia(mundo_t *m)
+void ev_inicia(mundo_t *m)
 {
     struct evento_t *ev;
     int base, tempo;

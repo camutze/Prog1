@@ -8,11 +8,8 @@
 #include "lef.h"
 #include "lista.h"
 #include "set.h"
-
-
 #include "simulador.h"
 #include "eventos.h"
-
 
 /*Define Lista*/
 #define L_FIM -1
@@ -32,6 +29,7 @@ NAO usar 0 ou -1 pois sao #defines da lista_t*/
 /*Retorna a distancia entre duas coordenadas*/
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc);
 
+/*Faço teste dos ponteiros para ver se estao alocados, caso não estão, finaliza o programa*/
 void testa_ponteiros(mundo_t *m);
 
 /*Calcula a média de tentativas para uma missão em um mundo dado.*/
@@ -43,36 +41,34 @@ struct set_t *uniao_habil(mundo_t *m, int id_base);
 /*Função responsável por atualizar o relogio do mundo.*/
 void atualiza_relogio(mundo_t *m, struct evento_t *ev);
 
-/*Função responsa por trocar os vet.*/
-
 /*Função responsável por tratar a chegada de um novo evento no mundo.*/
-void evento_chega(mundo_t *m, int clk, int h, int b);
+void ev_chega(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a espera de um novo evento no mundo.*/
-void evento_espera(mundo_t *m, int clk, int h, int b);
+void ev_espera(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a desistencia de um heroi .*/
-void evento_desiste(mundo_t *m, int clk, int h, int b);
+void ev_desiste(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por fazer a fila de espera andar se tiver vaga na base .*/
-void evento_avisa(mundo_t *m, int clk, int h, int b);
+void ev_avisa(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a entrada de um heroi na base .*/
-void evento_entra(mundo_t *m, int clk, int h, int b);
+void ev_entra(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a saida de um heroi da base .*/
-void evento_sai(mundo_t *m, int clk, int h, int b);
+void ev_sai(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a viagem de um heroi .*/
-void evento_viaja(mundo_t *m, int clk, int h, int b);
+void ev_viaja(mundo_t *m, int clk, int h, int b);
 
 /*Função responsável por tratar a missao de um heroi .*/
-void evento_missao(mundo_t *m, int clk, int mis);
+void ev_missao(mundo_t *m, int clk, int mis);
 
 /*Função responsável por tratar o fim da simulação .*/
-void evento_fim(mundo_t *m);
+void ev_fim(mundo_t *m);
 
 /*Função responsável por tratar o inicio da simulação .*/
-void evento_inicia(mundo_t *m);
+void ev_inicia(mundo_t *m);
 
 #endif

@@ -21,7 +21,7 @@ int main()
 
   mundo = cria_mundo();
   struct evento_t *ev;
-  evento_inicia(mundo);
+  ev_inicia(mundo);
 
   while (mundo->relogio < T_FIM_DO_MUNDO)
   {
@@ -33,38 +33,38 @@ int main()
     switch (ev->tipo)
     {
     case EV_CHEGA:
-      evento_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_ESPERA:
-      evento_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_DESISTE:
-      evento_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_AVISA:
-      evento_avisa(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_avisa(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_ENTRA:
-      evento_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_SAI:
-      evento_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_VIAJA:
-      evento_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
+      ev_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
       break;
 
     case EV_MISSAO:
-      evento_missao(mundo, ev->tempo, ev->dado1);
+      ev_missao(mundo, ev->tempo, ev->dado1);
       break;
     case EV_FIM:
-      evento_fim(mundo);
+      ev_fim(mundo);
       break;
 
     default:
