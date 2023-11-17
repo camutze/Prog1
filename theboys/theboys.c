@@ -12,10 +12,11 @@
 #include "simulador.h"
 #include "eventos.h"
 
+
 int main()
 {
   struct mundo_t *mundo;
-  srand(10);
+  srand(0);
 
 
   mundo = cria_mundo();
@@ -76,19 +77,3 @@ int main()
 
   return 0;
 }
-// for (int i = 0; i < mundo->n_herois; i++)
-// {
-//   printf("Heroi %d %d %d",mundo->heroi[i].id, mundo->heroi[i].experiencia,
-//   mundo->heroi[i].paciencia);
-//   printf(" card habil: %d", set_card(mundo->heroi[i].habil));
-//   set_print(mundo->heroi[i].habil);
-//   printf("\n");
-// }
-
-// for (int i = 0; i < mundo->n_bases; i++)
-// {
-//   printf("Base %d %d %d", mundo->base[i].id, mundo->base[i].lotacao, set_card(mundo->base[i].presentes));
-
-//   printf(" card habil: %d", set_card(mundo->base[i].presentes));
-//   printf("\n");
-// }

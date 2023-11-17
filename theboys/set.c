@@ -5,16 +5,17 @@
 struct set_t *set_create(int max)
 {
     struct set_t *s;
-    if(!max)
+    if (!max)
         max = 1;
 
-    if (!(s = malloc(sizeof(struct set_t)))) // aloca memoria para o set
+    /*Cria um set com max elementos*/
+    if (!(s = malloc(sizeof(struct set_t))))
         return 0;
-
-    if (!(s->flag = malloc(max * sizeof(bool)))) // aloca memoria para o array de flags
+    /*Cria um array de flags*/
+    if (!(s->flag = malloc(max * sizeof(bool))))
         return 0;
-
-    for (int i = 0; i < max; i++) // inicializa o array de flags
+    /*Inicializa todas as flags como falsas*/
+    for (int i = 0; i < max; i++)
     {
         s->flag[i] = false;
     }
@@ -29,9 +30,9 @@ struct set_t *set_destroy(struct set_t *s)
 {
     if (!s || !s->flag) // verifica se o set existe
         return 0;
-
-    free(s->flag); // libera a memoria do array de flags
-    free(s);       // libera a memoria do set
+    /*Libera a memoria de cada flag*/
+    free(s->flag);
+    free(s);
 
     return 0;
 }
@@ -41,11 +42,14 @@ int set_add(struct set_t *s, int item)
     if (!s || !s->flag)
         return 0;
 
-    if (item >= s->size) // verifica se o item é valido
+    /*Adiciona um item ao set*/
+    if (item >= s->size)
         return 0;
-    if (!s->flag[item]) // verifica se o item ja esta no set
+    /*Se o item ja estiver no set, nao adiciona*/
+    if (!s->flag[item])
     {
-        s->flag[item] = true; // se naao estiver, adiciona
+        /*Adiciona o item e aumenta o numero de elementos*/
+        s->flag[item] = true;
         s->num++;
         return 1;
     }
@@ -56,14 +60,13 @@ int set_del(struct set_t *s, int item)
 {
     if (!s || !s->flag)
         return 0;
-
-    // mesma logica do add, ao contrario
+    /*Remove um item do set*/
     if (item >= s->size)
         return 0;
     if (s->flag[item])
     {
         s->flag[item] = false;
-        s->num--;
+        s->num--; /*Diminui o numero de elementos*/
         return 1;
     }
     return 0;
@@ -73,7 +76,7 @@ int set_in(struct set_t *s, int item)
 {
     if (!s || !s->flag)
         return 0;
-
+    /*Verifica se um item esta no set*/
     if (!s->flag[item]) // verifica se o item esta no set
         return 0;
     return 1;
@@ -83,13 +86,14 @@ int set_empty(struct set_t *s)
 {
     if (!s)
         return 0;
-    return s->size; //0 se vazio, qualquer outra coisa caso contrario
+    return s->size; /* retorna o tamanho do set */
 }
 
 int set_card(struct set_t *s)
 {
     if (!s || !s->flag)
         return -1;
+    /*Retorna o numero de elementos do set*/
     return s->num;
 }
 
@@ -102,7 +106,7 @@ int set_contains(struct set_t *s1, struct set_t *s2)
 
     for (int i = 0; i < s1->size; i++)
     {
-        // se s1 tem e s2 nao tem, nao contem
+        /*se tem s1 E NAO tem s2, nao contem*/
         if (s1->flag[i] && !s2->flag[i])
             return 0;
     }
@@ -191,12 +195,11 @@ int set_copy(struct set_t *s1, struct set_t *s2)
     }
     return 1;
 }
-int set_size (struct set_t *s)
+int set_size(struct set_t *s)
 {
     if (!s || !s->flag)
         return 0;
     return s->size;
-
 }
 void set_print(struct set_t *s)
 {

@@ -14,7 +14,7 @@ int gera_aleat(int min, int max)
 void set_aleat(struct set_t *set, int tam)
 {
     /*Gera um conjunto aleatorio de tamanho tam*/
-    while (set_card(set) < tam)
+    while (set_card(set) < tam -1)
         set_add(set, gera_aleat(0, N_HABILIDADES -1));
 }
 
@@ -116,7 +116,7 @@ int cria_missoes(struct mundo_t *mundo)
 
 
         missao[i].habil = set_create(N_HABILIDADES -1);
-        tam = gera_aleat(5, 9);
+        tam = gera_aleat(6, 10);
         
         set_aleat(missao[i].habil, tam);
     }
