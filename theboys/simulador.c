@@ -6,14 +6,16 @@
 #include "simulador.h"
 
 int gera_aleat(int min, int max)
-{
+{   
+    /*Gera um numero aleatorio entre min e max*/
     return (rand() % (max - min + 1)) + min;
 }
 
 void set_aleat(struct set_t *set, int tam)
 {
+    /*Gera um conjunto aleatorio de tamanho tam*/
     while (set_card(set) < tam)
-        set_add(set, gera_aleat(0, N_HABILIDADES));
+        set_add(set, gera_aleat(0, N_HABILIDADES -1));
 }
 
 int cria_herois(struct mundo_t *mundo)
@@ -24,6 +26,7 @@ int cria_herois(struct mundo_t *mundo)
     if (!(heroi = malloc(sizeof(struct heroi_t) * mundo->n_herois)))
         fim_execucao("alocando herois");
 
+    /*Inicializa todas as variaveis de todos os herois*/
     for (i = 0; i < mundo->n_herois; i++)
     {
         heroi[i].id = i;

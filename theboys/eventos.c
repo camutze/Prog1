@@ -8,7 +8,7 @@ long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
 {
     long distancia;
 
-    // calculo da distancia
+    /*Calcula a distancia entre dois pontos*/
     long x = (next_loc.x - loc.x) * (next_loc.x - loc.x);
     long y = (next_loc.y - loc.y) * (next_loc.y - loc.y);
 
@@ -48,7 +48,6 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
         /*Pergunta se o heroi "i" esta contido no conjunto "presentes"*/
         if (set_in(m->base[id_base].presentes, i))
             set_union(m->heroi[i].habil, uniao, uniao);
-
         i++;
     }
     return uniao;
@@ -57,7 +56,7 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
 void troca(int vetor[], int vetor_id[], int a, int b)
 {
     int aux, aux_id;
-
+    /*Troca os valores de dois vetores*/
     aux = vetor[a];
     aux_id = vetor_id[a];
 
@@ -71,7 +70,7 @@ void troca(int vetor[], int vetor_id[], int a, int b)
 void ordena_vetor(int vetor[], int vetor_id[], int n)
 {
     int i, j, min;
-
+    /*Ordena o vetor de distancias e o vetor de id_base,  usando SelectionSort*/
     for (i = 0; i < n - 1; i++)
     {
         min = i;
@@ -108,13 +107,15 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     printf("%6d: CHEGA  HEROI %2d ", clk, h);
     printf("BASE %d (%2d/%2d) ", b, set_card(m->base[b].presentes), m->base[b].lotacao);
 
-    /*Disparo de novos eventos*/
+    /*Se espera, disparo EV Espera*/
     if (espera)
     {
+        
         if (!(ev = cria_evento(clk, EV_ESPERA, h, b)))
             fim_execucao("nao aloc func evento_chega");
         printf("ESPERA");
     }
+    /*Se não espera, disparo EV Desiste*/
     else
     {
         if (!(ev = cria_evento(clk, EV_DESISTE, h, b)))
@@ -125,7 +126,6 @@ void evento_chega(mundo_t *m, int clk, int h, int b)
     insere_lef(m->eventos, ev);
 }
 
-// ok
 void evento_espera(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
@@ -150,7 +150,7 @@ void evento_desiste(mundo_t *m, int clk, int h, int b)
     printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
 
     testa_ponteiros(m);
-
+    /*escolhe uma base destino D aleatória*/
     dest_b = gera_aleat(0, m->n_bases - 1);
 
     if (!(ev = cria_evento(clk, EV_VIAJA, h, dest_b)))
@@ -235,8 +235,9 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
     int dist, duracao;
 
     b_ori = m->heroi[h].base_id;
-
+    /*calcula a distancia entre a base de origem e a base destino*/
     dist = calcula_distancia(m->base[b_ori].local, m->base[b].local);
+    /*calcula o tempo de viagem*/
     duracao = dist / m->heroi[h].velocidade;
 
     printf("%6d: VIAJA  HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", clk, h, b_ori,
@@ -249,8 +250,6 @@ void evento_viaja(mundo_t *m, int clk, int h, int b)
 
 void evento_missao(mundo_t *m, int clk, int mis)
 {
-    /*uniao = uniao_habilidades(m, i);
-    adiciona_exp(m, id_base);*/
     struct evento_t *ev;
     struct set_t *uniao;
     int id_base[m->n_bases], distancia_b[m->n_bases];

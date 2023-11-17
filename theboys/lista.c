@@ -19,7 +19,7 @@ lnode_t *cria_nodo(int elem)
     lnode_t *novo;
     if (!(novo = malloc(sizeof(lnode_t))))
         return NULL;
-
+    /*Inicializa o nodo*/
     novo->next = NULL;
     novo->prev = NULL;
     novo->val = elem;
@@ -32,7 +32,7 @@ lista_t *lista_destroi(lista_t *lst)
 
     if (!lst)
         return NULL;
-
+    /*Libera a memoria de todos os nodos da lista*/
     while (lst->head)
     {
         aux = lst->head;
@@ -166,6 +166,7 @@ int lista_retira(lista_t *lst, int *elem, int pos)
         i++;
     }
 
+    /*se o elemento a ser retirado for o primeiro*/
     aux->prev->next = aux->next;
     aux->next->prev = aux->prev;
     *elem = aux->val;
@@ -244,7 +245,7 @@ int lista_vazia(lista_t *lst)
 {
     if (!lst)
         return -1;
-
+    /*se a lista não tiver nenhum elemento*/
     if (!lst->head)
         return 1;
     return 0;
@@ -272,7 +273,7 @@ void lista_imprime(char *nome, lista_t *lst)
 
     printf("%s: [", nome);
     aux = lst->head;
-
+    /*percorre a lista e imprime todos os elementos*/
     while (aux)
     {
         printf(" %d", aux->val);
