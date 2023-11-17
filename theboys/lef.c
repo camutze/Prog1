@@ -5,7 +5,7 @@
 struct evento_t *cria_evento(int tempo, int tipo, int dado1, int dado2)
 {
     struct evento_t *e;
-
+    /*Aloca memoria para o evento*/
     if (!(e = malloc(sizeof(struct evento_t))))
         return NULL;
 
@@ -33,7 +33,7 @@ struct lef_t *cria_lef()
 
     if (!(l = malloc(sizeof(struct lef_t))))
         return NULL;
-
+    /*Inicializa a lista*/
     l->primeiro = NULL;
 
     return l;
@@ -45,9 +45,9 @@ struct lef_t *destroi_lef(struct lef_t *l)
 
     if (!l)
         return NULL;
-
     aux = l->primeiro;
 
+    /*Liberta a memoria de todos os nodos da lista*/
     while (aux)
     {
         l->primeiro = aux->prox;
@@ -55,9 +55,7 @@ struct lef_t *destroi_lef(struct lef_t *l)
         free(aux);
         aux = l->primeiro;
     }
-
     free(l);
-
     return NULL;
 }
 
@@ -77,14 +75,14 @@ int insere_lef(struct lef_t *l, struct evento_t *e)
     ant = NULL;
     while (aux && aux->evento->tempo <= e->tempo)
     {
-        // se o tempo for igual, respeita a politica FIFO
+        /*se o tempo for igual, respeita a politica FIFO*/
         ant = aux;
         aux = aux->prox;
     }
 
     novo->evento = e;
     novo->prox = aux;
-
+    /*se o novo elemento for o primeiro da lista*/
     if (!ant)
         l->primeiro = novo;
     else
@@ -103,7 +101,7 @@ struct evento_t *retira_lef(struct lef_t *l)
 
     if (!l->primeiro)
         return NULL;
-
+    /*retira o primeiro elemento da lista*/
     aux = l->primeiro;
     l->primeiro = aux->prox;
 
@@ -133,6 +131,7 @@ void imprime_lef(struct lef_t *l)
         return;
 
     aux = l->primeiro;
+    /*percorre a lista e imprime todos os elementos*/
     printf("LEF:\n");
     while (aux)
     {
