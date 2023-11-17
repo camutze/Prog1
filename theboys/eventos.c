@@ -269,17 +269,19 @@ void evento_missao(mundo_t *m, int clk, int mis)
     {
         distancia_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
         id_base[i] = i;
-
-        uniao = uniao_habil(m, i);
-        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, i);
-        set_print(uniao);
-        printf("\n");
-
-        set_destroy(uniao);
     }
 
     /*ordena o vetor de distancias*/
     ordena_vetor(distancia_b, id_base, m->n_bases);
+
+    for (i = 0; i < m->n_bases; i++)
+    {
+        uniao = uniao_habil(m, id_base[i]);
+        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
+        set_print(uniao);
+        printf("\n");
+        set_destroy(uniao);
+    }
 
     sair = 0;
     i = 0;
@@ -310,7 +312,7 @@ void evento_missao(mundo_t *m, int clk, int mis)
     /*se não há base com heróis com todas as habilidades necessárias para cumprir a missão M*/
     if (!sair)
     {
-        printf("%d: MISSAO %d IMPOSSIVEL", clk, mis);
+        printf("%d: MISSAO %d IMPOSSIVEL\n", clk, mis);
         m->n_miss_impos++;
 
         if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
@@ -335,7 +337,7 @@ void evento_fim(mundo_t *m)
         set_print(m->heroi[i].habil);
         printf("\n");
     }
-    
+
     for (int i = 0; i < m->n_missoes; i++)
     {
         tentativas = m->missao[i].tentativas + tentativas;
