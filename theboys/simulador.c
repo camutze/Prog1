@@ -130,7 +130,7 @@ int destroi_missoes(struct mundo_t *mundo)
         return 0;
     if (!mundo->missao)
         return 0;
-
+    /*Passa por cada babilidade de missao destruido*/
     for (int i = 0; i < mundo->n_missoes; i++)
         set_destroy(mundo->missao[i].habil);
 
