@@ -116,7 +116,7 @@ int cria_missoes(struct mundo_t *mundo)
         missao[i].tentativas = 0;
 
         missao[i].habil = set_create(N_HABILIDADES - 1);
-        tam = gera_aleat(6, 10);
+        tam = gera_aleat(3, 10);
 
         set_aleat(missao[i].habil, tam);
     }
