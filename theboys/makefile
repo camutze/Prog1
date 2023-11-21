@@ -24,6 +24,8 @@ eventos.o: eventos.c eventos.h
 testa-lef:    testa-lef.o  lef.o
 testa-lef.o:  testa-lef.c  lef.h
 
+cc:
+	make clean; reset; make
 clean:
 	rm -f *.o saida.txt *~ $(MAIN) $(TESTES) $(ENTREGA) $(ENTREGA).tgz
 

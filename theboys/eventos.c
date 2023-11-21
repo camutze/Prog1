@@ -53,7 +53,7 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     return uniao;
 }
 
-    /*Troca os valores de dois vetores*/
+/*Troca os valores de dois vetores*/
 void troca(int vetor[], int vetor_id[], int a, int b)
 {
     int aux, aux_id;
@@ -109,7 +109,7 @@ void ev_chega(mundo_t *m, int clk, int h, int b)
     /*Se espera, disparo EV Espera*/
     if (espera)
     {
-        
+
         if (!(ev = cria_evento(clk, EV_ESPERA, h, b)))
             fim_execucao("nao aloc func evento_chega");
         printf("ESPERA");
@@ -251,71 +251,75 @@ void ev_missao(mundo_t *m, int clk, int mis)
 {
     struct evento_t *ev;
     struct set_t *uniao;
-    int id_base[m->n_bases], distancia_b[m->n_bases];
-    int i, j, sair;
+    int base_id[m->n_bases], base_distancia[m->n_bases];
+    int i, base_cumpre;
 
-    testa_ponteiros(m);
-
-    m->missao[mis].tentativas++; // incrementa tentativas
+    if (!m)
+        return;
 
     printf("%6d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
     printf("\n");
 
-    /*calcula a distância de cada base ao local da missão M*/
+    m->missao[mis].tentativas++;
+
+    /* Calcula distancia de cada base em relação a missão.*/
     for (i = 0; i < m->n_bases; i++)
     {
-        distancia_b[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
-        id_base[i] = i;
+        base_distancia[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
+        base_id[i] = i;
     }
 
-    /*ordena o vetor de distancias*/
-    ordena_vetor(distancia_b, id_base, m->n_bases);
+    /* Ordena vetor distância. */
+    ordena_vetor(base_distancia, base_id, m->n_bases);
+
+    /* Imprime a união das habilidades da mais próxima até a mais distante. */
 
     for (i = 0; i < m->n_bases; i++)
     {
-        uniao = uniao_habil(m, id_base[i]);
-        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
+        uniao = uniao_habil(m, base_id[i]);
+        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, base_id[i]);
+
         set_print(uniao);
         printf("\n");
+
         set_destroy(uniao);
     }
 
-    sair = 0;
+    /* Acha a base que cumpre a missão. */
     i = 0;
-    while (!sair && i < m->n_bases)
+    base_cumpre = 0;
+    while (i < m->n_bases && !base_cumpre)
     {
-        uniao = uniao_habil(m, id_base[i]);
-        /*se a base B[i] tem heróis com todas as habilidades necessárias para cumprir a missão M*/
+        uniao = uniao_habil(m, base_id[i]);
         if (set_contains(uniao, m->missao[mis].habil))
-        {
-            printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
-            set_print(m->base[i].presentes);
-            printf("\n");
-
-            m->missao[mis].realizada = 1; // missao realizada
-
-            /*incrementa a experiência de todos os heróis que estão na base B[i]*/
-            for (j = 0; j < m->n_herois; j++)
-            {
-                if (set_in(m->base[i].presentes, j))
-                    m->heroi[j].experiencia++;
-            }
-            sair = 1;
-        }
+            base_cumpre = m->base[base_id[i]].id;
         set_destroy(uniao);
         i++;
     }
 
-    /*se não há base com heróis com todas as habilidades necessárias para cumprir a missão M*/
-    if (!sair)
+    /* Verifica se a missão foi realizada. */
+    if (base_cumpre)
     {
-        printf("%d: MISSAO %d IMPOSSIVEL\n", clk, mis);
-        m->n_miss_impos++;
+        m->missao[mis].realizada = 1;
+        printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, base_cumpre);
+        set_print(m->base[base_cumpre].presentes);
+        printf("\n");
 
-        if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
-            fim_execucao("fun even missao cria evento");
+        /*se cumpre, adiciona XP*/
+        for (i = 0; i < m->n_herois; i++)
+            if (set_in(m->base[base_cumpre].presentes, i))
+                m->heroi[i].experiencia++;
+    }
+
+    /* Adiar a missão em 24 h. */
+    else
+    {
+        if (!(ev = cria_evento(clk + (24 * 60), EV_MISSAO, mis, 0)))
+            fim_execucao("EV cria");
         insere_lef(m->eventos, ev);
+
+        printf("%6d: MISSAO %d IMPOSSIVEL\n", clk, mis);
     }
 }
 
