@@ -69,7 +69,8 @@ void troca(int vetor[], int vetor_id[], int a, int b)
 
 /*Ordena o vetor de distancias e o vetor de id_base,  usando SelectionSort*/
 void ordena_vetor(int vetor[], int vetor_id[], int n)
-{
+{   
+    
     int i, j, min;
     for (i = 0; i < n - 1; i++)
     {
@@ -79,6 +80,7 @@ void ordena_vetor(int vetor[], int vetor_id[], int n)
                 min = j;
         troca(vetor, vetor_id, i, min);
     }
+   
 }
 
 void atualiza_relogio(mundo_t *m, struct evento_t *ev)
@@ -279,7 +281,6 @@ void ev_missao(mundo_t *m, int clk, int mis)
     {
         uniao = uniao_habil(m, base_id[i]);
         printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, base_id[i]);
-
         set_print(uniao);
         printf("\n");
 
