@@ -29,14 +29,16 @@ int cria_herois(struct mundo_t *mundo)
     /*Inicializa todas as variaveis de todos os herois*/
     for (i = 0; i < mundo->n_herois; i++)
     {
-        heroi[i].id = i;
+        heroi[i].id = i; 
         heroi[i].experiencia = 0;
-        heroi[i].paciencia = gera_aleat(1, 100);
+        heroi[i].paciencia = gera_aleat(0, 100);
         heroi[i].velocidade = gera_aleat(50, 5000);
+        heroi[i].habil = set_create(N_HABILIDADES);
 
         tam = gera_aleat(1, 3);
-        heroi[i].habil = set_create(N_HABILIDADES - 1);
-        set_aleat(heroi[i].habil, tam);
+
+        while (set_card(mundo->heroi[i].habil) < tam)
+            set_add(mundo->heroi[i].habil, gera_aleat(0, mundo->n_habil));
     }
 
     mundo->heroi = heroi;
@@ -115,10 +117,14 @@ int cria_missoes(struct mundo_t *mundo)
         missao[i].realizada = 0;
         missao[i].tentativas = 0;
 
-        missao[i].habil = set_create(N_HABILIDADES - 1);
+        missao[i].habil = set_create(N_HABILIDADES);
+
         tam = gera_aleat(6, 10);
 
-        set_aleat(missao[i].habil, tam);
+        while (set_card(missao[i].habil) < tam)
+            set_add(missao[i].habil, gera_aleat(0, N_HABILIDADES - 1));
+
+        
     }
     mundo->missao = missao;
     return 1;
@@ -145,6 +151,7 @@ struct mundo_t *cria_mundo()
 
     if (!(mundo = malloc(sizeof(struct mundo_t))))
         fim_execucao("alocando mundo");
+
     /*Inicializa todas as variaveis do mundo*/
     mundo->relogio = T_INICIO;
     mundo->size_max = N_TAMANHO_MUNDO;
@@ -154,11 +161,12 @@ struct mundo_t *cria_mundo()
     mundo->n_bases = mundo->n_herois / 6;
     mundo->n_miss_impos = 0;
 
-    mundo->eventos = cria_lef();
-    cria_herois(mundo);
-    cria_bases(mundo);
-    cria_missoes(mundo);
 
+    cria_missoes(mundo);
+    cria_bases(mundo);
+    cria_herois(mundo);
+
+    mundo->eventos = cria_lef();
     return mundo;
 }
 
