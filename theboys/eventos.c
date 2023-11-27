@@ -97,8 +97,8 @@ void ev_chega(mundo_t *m, int clk, int h, int b)
     m->heroi[h].base_id = b;
 
     /*se há vagas em B e a fila de espera está vazia:*/
-    if (set_card(m->base[b].presentes) < m->base[b].lotacao && !lista_vazia(m->base[b].lista_espera))
-        espera = true;
+    if (set_card(m->base[b].presentes) < m->base[b].lotacao && (!lista_vazia(m->base[b].lista_espera)))
+        espera = 1;
     else
         /*Se for maior espera TRUE, FALSE caso contrario*/
         espera = (m->heroi[h].paciencia) > (10 * lista_tamanho(m->base[b].lista_espera));
@@ -131,11 +131,10 @@ void ev_espera(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     testa_ponteiros(m);
 
-    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, lista_tamanho(m->base[b].lista_espera));
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, set_card(m->base[b].presentes));
 
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
-    lista_imprime("FILA", m->base[b].lista_espera);
 
     if (!(ev = cria_evento(clk, EV_AVISA, h, b)))
         fim_execucao("nao aloc func evento_espera");
@@ -147,9 +146,9 @@ void ev_desiste(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int dest_b;
 
-    printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
-
     testa_ponteiros(m);
+
+    printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
     /*escolhe uma base destino D aleatória*/
     dest_b = gera_aleat(0, m->n_bases - 1);
 
@@ -167,9 +166,8 @@ void ev_avisa(mundo_t *m, int clk, int h, int b)
     lista_imprime("FILA", m->base[b].lista_espera);
 
     /*enquanto houver vaga em B e houver heróis esperando na fila*/
-    while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !lista_vazia(m->base[b].lista_espera))
+    while ((set_card(m->base[b].presentes) < m->base[b].lotacao) && !(lista_vazia(m->base[b].lista_espera)))
     {
-
         /*retira primeiro herói (H') da fila de B, armazena o id do heroi em h*/
         lista_retira(m->base[b].lista_espera, &h, L_INICIO);
 
@@ -231,16 +229,16 @@ void ev_sai(mundo_t *m, int clk, int h, int b)
 void ev_viaja(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
-    int b_ori;
+    int b_origem;
     int dist, duracao;
 
-    b_ori = m->heroi[h].base_id;
+    b_origem = m->heroi[h].base_id;
     /*calcula a distancia entre a base de origem e a base destino*/
-    dist = calcula_distancia(m->base[b_ori].local, m->base[b].local);
+    dist = calcula_distancia(m->base[b_origem].local, m->base[b].local);
     /*calcula o tempo de viagem*/
     duracao = dist / m->heroi[h].velocidade;
 
-    printf("%6d: VIAJA  HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", clk, h, b_ori,
+    printf("%6d: VIAJA  HEROI %2d BASE %d BASE %d DIST %d VEL %d CHEGA %d\n", clk, h, b_origem,
            b, dist, m->heroi[h].velocidade, clk + duracao);
 
     if (!(ev = cria_evento(clk + duracao, EV_CHEGA, h, b)))
