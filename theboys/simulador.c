@@ -37,8 +37,8 @@ int cria_herois(struct mundo_t *mundo)
 
         tam = gera_aleat(1, 3);
 
-        while (set_card(mundo->heroi[i].habil) < tam)
-            set_add(mundo->heroi[i].habil, gera_aleat(0, mundo->n_habil));
+        while (set_card(heroi[i].habil) < tam)
+            set_add(heroi[i].habil, gera_aleat(0, mundo->n_habil));
     }
 
     mundo->heroi = heroi;
