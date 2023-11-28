@@ -5,6 +5,7 @@
 #include "eventos.h"
 #include "lef.h"
 
+/*Calcula a discancia entre dois pontos*/
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
 {
     long distancia;
@@ -18,9 +19,9 @@ long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
     return distancia;
 }
 
+/*Testa se os ponteiros do mundo existem, se não existem, encerra o programa*/
 void testa_ponteiros(mundo_t *m)
 {
-    /*se algum deles for nulo, mata a*/
     if (!m)
         fim_execucao("mundo nao existe");
     if (!m->eventos)
@@ -33,6 +34,7 @@ void testa_ponteiros(mundo_t *m)
         fim_execucao("missao nao existe");
 }
 
+/*faço a uniao das habilidades de todos os herois presentes na base*/
 struct set_t *uniao_habil(mundo_t *m, int id_base)
 {
     struct set_t *uniao;
@@ -69,7 +71,8 @@ void troca(int vetor[], int vetor_id[], int a, int b)
     vetor_id[b] = aux_id;
 }
 
-/*Ordena o vetor de distancias e o vetor de id_base,  usando SelectionSort*/
+/*Ordena o vetor de distancias e o vetor de id_base,
+ usando SelectionSort*/
 void ordena_vetor(int vetor[], int vetor_id[], int n)
 {
 
@@ -324,6 +327,7 @@ void ev_fim(mundo_t *m)
 
     printf("%d: FIM\n", m->relogio);
 
+    /*Imprime o estado final d cada heroi*/
     for (int i = 0; i < m->n_herois; i++)
     {
         printf("HEROI %2d PAC  %3d", i, m->heroi[i].paciencia);
@@ -331,13 +335,13 @@ void ev_fim(mundo_t *m)
         set_print(m->heroi[i].habil);
         printf("\n");
     }
-
+    /*faz o calculo das missões cumpridas e das tentativas*/
     for (int i = 0; i < m->n_missoes; i++)
     {
         tentativas = m->missao[i].tentativas + tentativas;
         m_compridas += m->missao[i].realizada;
     }
-
+    
     printf("%d MISSOES CUMPRIDAS\n", m_compridas);
     printf("%d/%d MISSOES CUMPRIDAS (%.2f%%), MEDIA %.2f TENTATIVAS/MISSAO\n", m_compridas, m->n_missoes,
            (float)m_compridas / m->n_missoes * 100, (float)tentativas / m->n_missoes);

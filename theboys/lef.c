@@ -1,6 +1,7 @@
 #include <stdlib.h>
-#include "lef.h"
 #include <stdio.h>
+
+#include "lef.h"
 
 struct evento_t *cria_evento(int tempo, int tipo, int dado1, int dado2)
 {
@@ -99,6 +100,7 @@ struct evento_t *retira_lef(struct lef_t *l)
     if (!l)
         return NULL;
 
+    /*se a lista estiver vazia, retorna NULL*/
     if (!l->primeiro)
         return NULL;
     /*retira o primeiro elemento da lista*/

@@ -62,13 +62,13 @@ int cria_bases(struct mundo_t *mundo)
 
     if (!(base = malloc(sizeof(struct base_t) * mundo->n_bases)))
         fim_execucao("alocando base");
+
     /*Inicializa todas as variaveis de todas as bases*/
     for (i = 0; i < mundo->n_bases; i++)
     {
         base[i].id = i;
         base[i].local.x = gera_aleat(0, N_TAMANHO_MUNDO - 1); // x
         base[i].local.y = gera_aleat(0, N_TAMANHO_MUNDO - 1); // y
-
         base[i].lotacao = gera_aleat(3, 10);
         base[i].presentes = set_create(mundo->n_herois);
         base[i].lista_espera = lista_cria();
@@ -88,6 +88,7 @@ int destroi_bases(struct mundo_t *mundo)
         set_destroy(mundo->base[i].presentes);
         lista_destroi(mundo->base[i].lista_espera);
     }
+    
     free(mundo->base);
     return 1;
 }

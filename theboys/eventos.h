@@ -26,15 +26,6 @@ NAO usar 0 ou -1 pois sao #defines da lista_t*/
 #define EV_MISSAO 8
 #define EV_FIM 9
 
-/*Retorna a distancia entre duas coordenadas*/
-long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc);
-
-/*Faço teste dos ponteiros para ver se estao alocados, caso não estão, finaliza o programa*/
-void testa_ponteiros(mundo_t *m);
-
-/*Retorna a uniao de todas as habilidades de todos os herois que estao na base*/
-struct set_t *uniao_habil(mundo_t *m, int id_base);
-
 /*Função responsável por atualizar o relogio do mundo.*/
 void atualiza_relogio(mundo_t *m, struct evento_t *ev);
 
@@ -68,6 +59,7 @@ void ev_fim(mundo_t *m);
 /*Função responsável por tratar o inicio da simulação .*/
 void ev_inicia(mundo_t *m);
 
+/*Função responsável por selecionar o evento que vai ser tratado .*/
 void ev_seleciona(mundo_t *mundo ,struct evento_t *ev);
 
 #endif
