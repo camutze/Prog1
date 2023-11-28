@@ -21,6 +21,7 @@ int main()
 
   mundo = cria_mundo();
   struct evento_t *ev;
+
   ev_inicia(mundo);
 
   while (mundo->relogio < T_FIM_DO_MUNDO)
