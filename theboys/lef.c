@@ -75,14 +75,14 @@ int insere_lef(struct lef_t *l, struct evento_t *e)
     ant = NULL;
     while (aux && aux->evento->tempo <= e->tempo)
     {
-        /*se o tempo for igual, respeita a politica FIFO*/
+        /*se o tempo for igual, insere na fila*/
         ant = aux;
         aux = aux->prox;
     }
 
     novo->evento = e;
     novo->prox = aux;
-    /*se o novo elemento for o primeiro da lista*/
+    /*primeiro elemento*/
     if (!ant)
         l->primeiro = novo;
     else

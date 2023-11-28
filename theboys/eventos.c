@@ -248,8 +248,8 @@ void ev_viaja(mundo_t *m, int clk, int h, int b)
 
 void ev_missao(mundo_t *m, int clk, int mis)
 {
-    struct evento_t *evento;
-    struct set_t *uniao_set;
+    struct evento_t *ev;
+    struct set_t *uniao_h;
     int id_base[m->n_bases], distancia[m->n_bases];
     int i, j;
 
@@ -257,68 +257,58 @@ void ev_missao(mundo_t *m, int clk, int mis)
     set_print(m->missao[mis].habil);
     printf("\n");
 
-    // Calcula as distâncias entre a localização da missão e cada base, ordenando-as em ordem crescente de distância
+    /*Mais uma tentativa*/
+    m->missao[mis].tentativas++;
+
+    /*Armazena em um vetor o indice e o outro a distancia para posteriormente ordenar*/
     for (i = 0; i < m->n_bases; i++)
     {
         distancia[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
         id_base[i] = i;
+        /*Imprime as bases em ordem ID*/
+        uniao_h = uniao_habil(m, id_base[i]);
+        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
+        set_print(uniao_h);
+        printf("\n");
+        set_destroy(uniao_h);
     }
 
-    // Chama a função de ordenação para
+    
     ordena_vetor(distancia, id_base, m->n_bases);
 
-    // Imprime informações sobre as habilidades da base sem estar ordenada.
+    /*Com o vetor ordenado, começamos a busca da base que cumpre*/
     for (i = 0; i < m->n_bases; i++)
     {
-        uniao_set = uniao_habil(m, id_base[i]);
-        printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
-        set_print(uniao_set);
-        printf("\n");
+        uniao_h = uniao_habil(m, id_base[i]);
 
-        set_destroy(uniao_set);
-    }
-
-    // Tenta cumprir a missão verificando se alguma base possui as habilidades necessárias
-    for (i = 0; i < m->n_bases; i++)
-    {
-        uniao_set = uniao_habil(m, id_base[i]);
-
-        // Se a base possui as habilidades necessárias, a missão é cumprida.
-        if (set_contains(uniao_set, m->missao[mis].habil))
+        /*Se dentro de uniao, tem todas as habilidades da missão, ela pode ser cumprida*/
+        if (set_contains(uniao_h, m->missao[mis].habil))
         {
             printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
             set_print(m->base[id_base[i]].presentes);
             printf("\n");
 
+            set_destroy(uniao_h);
+
             m->missao[mis].realizada = 1;
 
-            // Incrementa a experiência dos heróis presentes na base.
+            /*incrementa a experiencia dos herois presentes na base*/
             for (j = 0; j < m->n_herois; j++)
-            {
                 if (set_in(m->base[id_base[i]].presentes, j))
-                {
                     m->heroi[j].experiencia++;
-                }
-            }
 
-            // Incrementa o número de tentativas para cada missão.
-            m->missao[mis].tentativas++;
-
-            set_destroy(uniao_set);
-            return; // Sai da função se a missão for cumprida.
+            return; /*sai da funçaõ*/
         }
-        set_destroy(uniao_set);
+        set_destroy(uniao_h);
     }
 
-    // Se não for possível cumprir a missão, adia em 1 dia o evento missão.
+    /* se ele não saiu da função, a missao é impossivel*/
     printf("%6d: MISSAO %d IMPOSSIVEL\n", clk, mis);
     m->n_miss_impos++;
 
-    evento = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0);
-    insere_lef(m->eventos, evento);
-
-    // Incrementa o número de tentativas para cada missão.
-    m->missao[mis].tentativas++;
+    if(!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
+        fim_execucao("nao aloc func evento_missao");
+    insere_lef(m->eventos, ev);
 }
 
 void ev_fim(mundo_t *m)
