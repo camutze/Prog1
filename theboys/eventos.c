@@ -131,7 +131,7 @@ void ev_espera(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     testa_ponteiros(m);
 
-    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)", clk, h, b, set_card(m->base[b].presentes));
+    printf("%6d: ESPERA HEROI %2d BASE %d (%2d)\n", clk, h, b, set_card(m->base[b].presentes));
 
     /*adiciona H ao fim da fila de espera de B*/
     lista_insere(m->base[b].lista_espera, h, L_FIM);
@@ -273,7 +273,6 @@ void ev_missao(mundo_t *m, int clk, int mis)
         set_destroy(uniao_h);
     }
 
-    
     ordena_vetor(distancia, id_base, m->n_bases);
 
     /*Com o vetor ordenado, começamos a busca da base que cumpre*/
@@ -306,7 +305,7 @@ void ev_missao(mundo_t *m, int clk, int mis)
     printf("%6d: MISSAO %d IMPOSSIVEL\n", clk, mis);
     m->n_miss_impos++;
 
-    if(!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
+    if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
         fim_execucao("nao aloc func evento_missao");
     insere_lef(m->eventos, ev);
 }
