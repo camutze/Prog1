@@ -159,7 +159,8 @@ struct mundo_t *cria_mundo()
     cria_bases(mundo);
     cria_herois(mundo);
 
-    mundo->eventos = cria_lef();
+    if(!(mundo->eventos = cria_lef()))
+        fim_execucao("criando lef");
     return mundo;
 }
 
@@ -183,7 +184,7 @@ int retorna_relogio(mundo_t *mundo)
     return mundo->relogio;
 }
 
-struct lef_t *retorna_eventos(mundo_t *mundo)
+struct lef_t *retorna_evento(mundo_t *mundo)
 {
     return mundo->eventos;
 }

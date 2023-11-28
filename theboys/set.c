@@ -106,7 +106,7 @@ int set_contains(struct set_t *s1, struct set_t *s2)
 
     for (int i = 0; i < s1->size; i++)
     {
-        /*se tem s1 E NAO tem s2, nao contem*/
+        /*se tem s2 E NAO tem s1, nao contem*/
         if (s2->flag[i] && !s1->flag[i])
             return 0;
     }

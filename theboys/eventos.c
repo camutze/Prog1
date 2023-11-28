@@ -3,6 +3,7 @@
 
 #include "simulador.h"
 #include "eventos.h"
+#include "lef.h"
 
 long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
 {
@@ -19,6 +20,7 @@ long calcula_distancia(struct pontos_t loc, struct pontos_t next_loc)
 
 void testa_ponteiros(mundo_t *m)
 {
+    /*se algum deles for nulo, mata a*/
     if (!m)
         fim_execucao("mundo nao existe");
     if (!m->eventos)
@@ -39,9 +41,9 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     if (!(uniao = set_create(N_HABILIDADES - 1)))
         fim_execucao("set create in fun uniao_habilidades");
 
-    /*1 - Heroi esta na base mais proxima,onde o id é: "id_base"
-    **faço a uniao de todas as habilidades de todos os herois que estao na base.
-    **2- ele vai de 0 ate o lotação do conjunto set_t presentes*/
+    /*para cada heroi, pergunto se ele esta na base, caso esteja,
+    incluo as suas habilidades ao conjunto de habilidades da base,
+    sem repetir alguma que ja esta la. Def. Uniao*/
     i = 0;
     while (i < m->n_herois)
     {
@@ -145,7 +147,6 @@ void ev_desiste(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int dest_b;
-
     testa_ponteiros(m);
 
     printf("%6d: DESIST HEROI %2d BASE %d \n", clk, h, b);
@@ -160,8 +161,8 @@ void ev_desiste(mundo_t *m, int clk, int h, int b)
 void ev_avisa(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
-
     testa_ponteiros(m);
+
     printf("%6d: AVISA  PORTEIRO BASE %d (%2d/%2d)", clk, b, set_card(m->base[b].presentes), m->base[b].lotacao);
     lista_imprime("FILA", m->base[b].lista_espera);
 
@@ -182,8 +183,7 @@ void ev_avisa(mundo_t *m, int clk, int h, int b)
 void ev_entra(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
-    int tpb; // tempo de permanência na base
-
+    int tpb;
     testa_ponteiros(m);
 
     /*adiciona H' ao conjunto de heróis presentes em B, o mesmo h que foi removido*/
@@ -204,7 +204,6 @@ void ev_sai(mundo_t *m, int clk, int h, int b)
 {
     struct evento_t *ev;
     int dest_b;
-
     testa_ponteiros(m);
 
     printf("%6d: SAI  HEROI %2d BASE %d (%2d/%2d)\n", clk, h, b, set_card(m->base[b].presentes), m->base[b].lotacao);
@@ -231,6 +230,7 @@ void ev_viaja(mundo_t *m, int clk, int h, int b)
     struct evento_t *ev;
     int b_origem;
     int dist, duracao;
+    testa_ponteiros(m);
 
     b_origem = m->heroi[h].base_id;
     /*calcula a distancia entre a base de origem e a base destino*/
@@ -252,6 +252,7 @@ void ev_missao(mundo_t *m, int clk, int mis)
     struct set_t *uniao_h;
     int id_base[m->n_bases], distancia[m->n_bases];
     int i, j, base_apta;
+    testa_ponteiros(m);
 
     printf("%6d: MISSAO %d HAB REQ: ", clk, mis);
     set_print(m->missao[mis].habil);
@@ -265,18 +266,12 @@ void ev_missao(mundo_t *m, int clk, int mis)
     {
         distancia[i] = calcula_distancia(m->base[i].local, m->missao[mis].local);
         id_base[i] = i;
-        /*Imprime as bases em ordem ID*/
-        //uniao_h = uniao_habil(m, id_base[i]);
-        //printf("%6d: MISSAO %d HAB BASE %d: ", clk, mis, id_base[i]);
-        //set_print(uniao_h);
-        //printf("\n");
-        //set_destroy(uniao_h);
     }
 
     ordena_vetor(distancia, id_base, m->n_bases);
 
     /*Com o vetor ordenado, começamos a busca da base que cumpre*/
-    base_apta = -1 ;
+    base_apta = -1;
     for (i = 0; i < m->n_bases; i++)
     {
         uniao_h = uniao_habil(m, id_base[i]);
@@ -288,25 +283,25 @@ void ev_missao(mundo_t *m, int clk, int mis)
         /*Se dentro de uniao, tem todas as habilidades da missão, ela pode ser cumprida*/
         if (set_contains(uniao_h, m->missao[mis].habil))
         {
-            base_apta = id_base[i] ;
+            base_apta = id_base[i];
             set_destroy(uniao_h);
-            break ;
+            break;
         }
         set_destroy(uniao_h);
     }
 
     if (base_apta >= 0)
     {
-            printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
-            set_print(m->base[id_base[i]].presentes);
-            printf("\n");
+        printf("%6d: MISSAO %d CUMPRIDA BASE %d HEROIS: ", clk, mis, id_base[i]);
+        set_print(m->base[id_base[i]].presentes);
+        printf("\n");
 
-            m->missao[mis].realizada = 1;
+        m->missao[mis].realizada = 1;
 
-            /*incrementa a experiencia dos herois presentes na base*/
-            for (j = 0; j < m->n_herois; j++)
-                if (set_in(m->base[id_base[i]].presentes, j))
-                    m->heroi[j].experiencia++;
+        /*incrementa a experiencia dos herois presentes na base*/
+        for (j = 0; j < m->n_herois; j++)
+            if (set_in(m->base[id_base[i]].presentes, j))
+                m->heroi[j].experiencia++;
     }
     else
     {
@@ -315,7 +310,7 @@ void ev_missao(mundo_t *m, int clk, int mis)
         m->n_miss_impos++;
 
         if (!(ev = cria_evento(clk + 24 * 60, EV_MISSAO, mis, 0)))
-           fim_execucao("nao aloc func evento_missao");
+            fim_execucao("nao aloc func evento_missao");
         insere_lef(m->eventos, ev);
     }
 }
@@ -325,8 +320,8 @@ void ev_fim(mundo_t *m)
     int m_compridas, tentativas; // missões cumpridas (missao total - missao impossivel)
     m_compridas = 0;
     tentativas = 0;
-
     testa_ponteiros(m);
+
     printf("%d: FIM\n", m->relogio);
 
     for (int i = 0; i < m->n_herois; i++)
@@ -352,9 +347,9 @@ void ev_inicia(mundo_t *m)
 {
     struct evento_t *ev;
     int base, tempo;
-
     testa_ponteiros(m);
 
+    /*cria evento CHEGA para cada herói*/
     for (int i = 0; i < m->n_herois; i++)
     {
         base = gera_aleat(0, m->n_bases - 1);
@@ -364,6 +359,7 @@ void ev_inicia(mundo_t *m)
         insere_lef(m->eventos, ev);
     }
 
+    /*cria evento MISSAO para cada missão*/
     for (int i = 0; i < m->n_missoes; i++)
     {
         tempo = gera_aleat(0, T_FIM_DO_MUNDO - 1);
@@ -371,7 +367,52 @@ void ev_inicia(mundo_t *m)
             fim_execucao("nao aloc func evento_inicia");
         insere_lef(m->eventos, ev);
     }
+    /*Cria fim do mundo*/
     if (!(ev = cria_evento(T_FIM_DO_MUNDO, EV_FIM, 0, 0)))
         fim_execucao("nao aloc func evento_inicia");
     insere_lef(m->eventos, ev);
+}
+
+void ev_seleciona(mundo_t *mundo, struct evento_t *ev)
+{
+    switch (ev->tipo)
+    {
+    case EV_CHEGA:
+        ev_chega(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_ESPERA:
+        ev_espera(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_DESISTE:
+        ev_desiste(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_AVISA:
+        ev_avisa(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_ENTRA:
+        ev_entra(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_SAI:
+        ev_sai(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_VIAJA:
+        ev_viaja(mundo, ev->tempo, ev->dado1, ev->dado2);
+        break;
+
+    case EV_MISSAO:
+        ev_missao(mundo, ev->tempo, ev->dado1);
+        break;
+    case EV_FIM:
+        ev_fim(mundo);
+        break;
+
+    default:
+        break;
+    }
 }
