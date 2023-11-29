@@ -40,7 +40,7 @@ struct set_t *uniao_habil(mundo_t *m, int id_base)
     struct set_t *uniao;
     int i;
 
-    if (!(uniao = set_create(N_HABILIDADES - 1)))
+    if (!(uniao = set_create(N_HABILIDADES)))
         fim_execucao("set create in fun uniao_habilidades");
 
     /*para cada heroi, pergunto se ele esta na base, caso esteja,
